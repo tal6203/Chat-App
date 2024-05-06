@@ -1,0 +1,292 @@
+import React, { Component } from 'react';
+import axios from 'axios';
+import './Register.css';
+import config from './config/default.json';
+import { sha1 } from 'crypto-hash';
+import Swal from 'sweetalert2';
+
+
+class Register extends Component {
+  constructor() {
+    super();
+    this.state = {
+      username: '',
+      password: '',
+      confirmPassword: '',
+      profilePicture: '',
+      errorMessage: '',
+      imagePreviewUrl: '',
+      uploadedPublicId: '',
+      uploading: false,
+      passwordsMatch: false,
+      showPassword: false,
+      showConfirmPassword: false,
+      confirmPasswordTouched: false,
+      passwordCriteria: {
+        length: false,
+        upper: false,
+        lower: false,
+        special: false
+      }
+    }
+  }
+
+  handleInputChange = (e) => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value }, () => {
+      if (name === 'password' || name === 'confirmPassword') {
+        this.validatePassword(this.state.password);
+        if (name === 'confirmPassword') {
+          this.setState({ confirmPasswordTouched: true });
+        }
+        this.checkPasswordsMatch();
+      }
+    });
+  };
+
+
+  checkPasswordsMatch = () => {
+    const { password, confirmPassword } = this.state;
+    const match = password === confirmPassword;
+    this.setState({ passwordsMatch: match });
+  };
+
+
+  validatePassword = (password) => {
+    this.setState({
+      passwordCriteria: {
+        length: password.length >= 6,
+        upper: /[A-Z]/.test(password),
+        lower: /[a-z]/.test(password),
+        special: /[\W_]/.test(password),
+        number: /\d/.test(password)
+      }
+    });
+  };
+  handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    this.setState({ uploading: true });
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', config.uploadPreset);
+
+    try {
+      const response = await axios.post(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, formData);
+      this.setState({
+        profilePicture: response.data.url,
+        imagePreviewUrl: response.data.url,
+        uploadedPublicId: response.data.public_id,
+        uploading: false
+      });
+    } catch (error) {
+      this.setState({ isUploadingImage: false });
+      let errorMessage = 'Failed to upload file.';
+      if (error.response && error.response.data && error.response.data.error.message.includes('File size too large')) {
+        const maxAllowedSize = (10485760 / 1024 / 1024).toFixed(1);
+        errorMessage = `The file size is too large. The maximum allowed size is ${maxAllowedSize} MB.`;
+      }
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: errorMessage,
+      });
+    }
+  };
+
+  handleCancelImage = async () => {
+    const fileInput = document.getElementById("profilePicture");
+    if (fileInput) {
+      fileInput.value = '';  // Reset the file input value
+    }
+
+    const publicId = this.state.uploadedPublicId;
+    if (!publicId) return;
+
+    const timestamp = new Date().getTime()
+    const string = `public_id=${publicId}&timestamp=${timestamp}${config.YOUR_CLOUDINARY_API_SECRET}`
+    const signature = await sha1(string)
+    const formData = new FormData()
+    formData.append("public_id", publicId)
+    formData.append("signature", signature)
+    formData.append("api_key", config.API_KEY)
+    formData.append("timestamp", timestamp)
+    await axios.post(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/destroy`, formData);
+    this.setState({ profilePicture: '', imagePreviewUrl: '', uploadedPublicId: '' })
+  }
+
+  handleRegister = async (event) => {
+    event.preventDefault();
+    const { username, password, profilePicture, confirmPassword } = this.state;
+
+    if (password !== confirmPassword) {
+      this.setState({ errorMessage: 'Passwords do not match.' });
+      return; // Stop the registration process
+    }
+
+    if (username.length < 4) {
+      this.setState({ errorMessage: 'Username must be at least 4 characters long.' });
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:8080/auth/register', {
+        username,
+        password,
+        profilePicture
+      });
+
+      console.log('Registration successful:', response.data);
+      window.location.href = '/login'; // Redirect to login page
+    } catch (error) {
+      console.log(error)
+      this.setState({
+        errorMessage: error.response?.data?.error || 'Internal Server Error'
+      });
+    }
+  };
+
+  renderPasswordCriteriaPopover = () => {
+    const { length, upper, lower, special, number } = this.state.passwordCriteria;
+    const allValid = length && upper && lower && special && number;
+
+    if (allValid) {
+      // Return null to render nothing when all criteria are valid
+      return null;
+    }
+
+    return (
+      <div className="popover">
+        <ul className="password-criteria">
+          <li className={length ? 'valid' : 'invalid'}>At least 6 characters {length ? '✓' : '✗'}</li>
+          <li className={upper ? 'valid' : 'invalid'}>At least one uppercase letter {upper ? '✓' : '✗'}</li>
+          <li className={lower ? 'valid' : 'invalid'}>At least one lowercase letter {lower ? '✓' : '✗'}</li>
+          <li className={special ? 'valid' : 'invalid'}>At least one special character {special ? '✓' : '✗'}</li>
+          <li className={number ? 'valid' : 'invalid'}>At least one number {number ? '✓' : '✗'}</li>
+        </ul>
+      </div>
+    );
+  };
+
+  render() {
+    const { username, password, imagePreviewUrl, errorMessage, uploading, showPassword, confirmPassword,
+      showConfirmPassword, passwordsMatch, showPopover, confirmPasswordTouched } = this.state;
+    return (
+      <div className="register-container">
+        <form onSubmit={this.handleRegister}>
+          <div className="logo">Chat</div>
+          <h2>Register</h2>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          <div className="input-group">
+            <i className="bi bi-person-fill input-icon"></i>
+            <input type="text" autoComplete="username" name="username" placeholder="Username" value={username} onChange={this.handleInputChange} />
+          </div>
+          <div className="input-group">
+            <i className="bi bi-lock-fill input-icon"></i>
+            <input
+              type={showPassword ? "text" : "password"}
+              className={confirmPasswordTouched ? (passwordsMatch ? 'input-valid' : 'input-invalid') : ''}
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={this.handleInputChange}
+              onFocus={() => this.setState({ showPopover: true })}
+              onBlur={() => {
+                this.setState({ showPopover: false });
+                this.checkPasswordsMatch();
+              }}
+              autoComplete="new-password"
+            />
+            <button
+              onClick={() => this.setState(prevState => ({ showPassword: !prevState.showPassword }))}
+              className="toggle-password"
+            >
+              {showPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye"></i>}
+            </button>
+            {showPopover && this.renderPasswordCriteriaPopover()}
+          </div>
+
+          <div className="input-group" >
+            <i className="bi bi-lock-fill input-icon"></i>
+            <input
+              className={confirmPasswordTouched ? (passwordsMatch ? 'input-valid' : 'input-invalid') : ''}
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={this.handleInputChange}
+              onFocus={() => this.setState({ showPopover: true })}
+              onBlur={() => {
+                this.setState({ showPopover: false });
+                this.checkPasswordsMatch();
+              }}
+              autoComplete="new-password"
+            />
+            <button
+              onClick={() => this.setState(prevState => ({ showConfirmPassword: !prevState.showConfirmPassword }))}
+              className="toggle-password"
+            >
+              {showConfirmPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye"></i>}
+            </button>
+          </div>
+          <div className="input-group file-input">
+            {imagePreviewUrl ? (
+              <div className="image-preview" style={{ position: 'relative', display: 'block', marginBottom: '10px', width: '100px' }}>
+                <img src={imagePreviewUrl} alt="Profile Preview" onClick={() => window.open(imagePreviewUrl, '_blank')} />
+                <button style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  padding: '5px 10px',
+                  border: 'none',
+                  borderRadius: '0 5px 0 0', // rounded corners only on the top right
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  cursor: 'pointer'
+                }} type='button' onClick={this.handleCancelImage}><i className="bi bi-trash3"></i></button>
+              </div>
+            ) : (
+              <>
+                <button
+                  className= {uploading ? 'reload-button' : 'upload-button'}
+                  type='button'
+                  onClick={() => document.getElementById('profilePicture').click()}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    maxWidth: '200px'
+                  }}
+                  disabled={uploading}
+                >
+                  {uploading ? (
+                    <i className="bi bi-arrow-clockwise spin-icon"></i>  // Ensure you have Bootstrap Icons included if using 'bi' classes
+                  ) : (<span>
+                    <i className="bi bi-cloud-upload-fill"></i> Upload Profile Picture
+                  </span>
+                  )}
+                </button>
+                <input
+                  type="file"
+                  id="profilePicture"
+                  onChange={this.handleImageChange}
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                />
+              </>
+            )}
+
+          </div>
+          <button type="submit" className='btn-register' disabled={uploading}>Register</button>
+        </form>
+        <footer className="footer-register">
+          <span style={{ fontSize: '16px' }}>
+            You have already registered?
+            <a href="/login"> Login here</a>
+          </span>
+        </footer>
+      </div>
+    );
+  }
+}
+
+export default Register;
