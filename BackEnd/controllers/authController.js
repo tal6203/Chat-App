@@ -44,7 +44,7 @@ const authController = {
       const newUser = new User({
         username,
         password: hashedPassword,
-        profilePicture: profilePicture || "http://res.cloudinary.com/dfa7zee9i/image/upload/v1714290409/anonymous-avatar_wcrklv.png" // Default if not provided
+        profilePicture: profilePicture || "https://res.cloudinary.com/dfa7zee9i/image/upload/v1715111941/anonymous-avatar_wcrklv_u0kzbb.png" // Default if not provided
       });
 
       // Save the user to the database
