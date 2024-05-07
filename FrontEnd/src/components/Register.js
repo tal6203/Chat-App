@@ -71,10 +71,10 @@ class Register extends Component {
     formData.append('upload_preset', config.uploadPreset);
 
     try {
-      const response = await axios.post(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, formData);
+      const response = await axios.post(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, formData,);
       this.setState({
-        profilePicture: response.data.url,
-        imagePreviewUrl: response.data.url,
+        profilePicture: response.data.secure_url,
+        imagePreviewUrl: response.data.secure_url,
         uploadedPublicId: response.data.public_id,
         uploading: false
       });
