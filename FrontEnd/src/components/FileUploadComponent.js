@@ -80,10 +80,6 @@ class FileUploadComponent extends Component {
     renderPreview = () => {
         const { preview, fileType } = this.state;
         if (!preview) return null;
-
-        console.log(preview)
-
-
         let content;
         if (preview.endsWith('.docx')) {
             content = (
