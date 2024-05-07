@@ -1153,7 +1153,7 @@ class Chat extends Component {
     selectedGroupMembers.add(currentUser._id);
     const groupDetails = {
       chatName: newGroupName || "No group name",
-      groupPicture: newGroupPicture || "http://res.cloudinary.com/dfa7zee9i/image/upload/v1714290409/anonymous-avatar_wcrklv.png",
+      groupPicture: newGroupPicture || "https://res.cloudinary.com/dfa7zee9i/image/upload/v1715111941/anonymous-avatar_wcrklv_u0kzbb.png",
       members: Array.from(selectedGroupMembers),
     };
 
@@ -1717,11 +1717,9 @@ class Chat extends Component {
                         )}
                         <Form.Control
                           type="text"
-                          className="group-name-input"
                           placeholder="Enter new group name"
                           value={this.state.updateGroupName}
-                          onChange={(e) => this.setState({ updateGroupName: e.target.value })}
-                          style={{ marginBottom: '10px', maxWidth: '350px' }} />
+                          onChange={(e) => this.setState({ updateGroupName: e.target.value })} />
                       </div>
                     </Form.Group>
                     <Button
@@ -2011,7 +2009,7 @@ class Chat extends Component {
 
     try {
       const response = await axios.post(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, formData);
-      this.setState({ newGroupPicture: response.data.url, uploadedPublicId: response.data.public_id, isUploadingImage: false });
+      this.setState({ newGroupPicture: response.data.secure_url, uploadedPublicId: response.data.public_id, isUploadingImage: false });
     } catch (error) {
       this.setState({ isUploadingImage: false });
       let errorMessage = 'Failed to upload file.';
@@ -2041,7 +2039,7 @@ class Chat extends Component {
 
     try {
       const response = await axios.post(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, formData);
-      this.setState({ updatePictureGroup: response.data.url, uploadedPublicId: response.data.public_id, isUploadingImage: false });
+      this.setState({ updatePictureGroup: response.data.secure_url, uploadedPublicId: response.data.public_id, isUploadingImage: false });
     } catch (error) {
       this.setState({ updatePictureGroup: '', isUploadingImage: false, });
       let errorMessage = 'Failed to upload file.';
