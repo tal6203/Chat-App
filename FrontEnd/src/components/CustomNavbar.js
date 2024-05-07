@@ -77,7 +77,7 @@ class CustomNavbar extends Component {
         )
         .then((response) => {
           this.setState({
-            newProfilePicture: response.data.url,
+            newProfilePicture: response.data.secure_url,
             isUploading: false, // Reset uploading state
           });
         })
