@@ -1717,6 +1717,7 @@ class Chat extends Component {
                         )}
                         <Form.Control
                           type="text"
+                          style={{ padding: '0.375rem 0.75rem 0.375rem 0.75rem' }}
                           placeholder="Enter new group name"
                           value={this.state.updateGroupName}
                           onChange={(e) => this.setState({ updateGroupName: e.target.value })} />
