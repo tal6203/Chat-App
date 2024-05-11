@@ -107,14 +107,21 @@ class Chat extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     // Check if messages have been updated
-    const { messages } = this.state;
+    const { messages, showScrollToBottomButton } = this.state;
     const user = JSON.parse(localStorage.getItem("user"));
     if (prevState.messages.length !== this.state.messages.length && messages && messages[messages.length - 1]?.senderUsername === user.username && !messages[messages.length - 1].systemMessage) {
       if (this.messagesListRef.current) {
         this.messagesListRef.current.scrollTop = this.messagesListRef.current.scrollHeight;
       }
     }
-  }
+    else if (prevState.messages.length !== this.state.messages.length && messages && messages[messages.length - 1]?.senderUsername !== user.username && !messages[messages.length - 1].systemMessage && !showScrollToBottomButton) {
+      if (this.messagesListRef.current) {
+        this.messagesListRef.current.scrollTo({
+          top: this.messagesListRef.current.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
+    }
 
 
   componentWillUnmount() {
