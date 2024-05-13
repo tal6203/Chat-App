@@ -124,6 +124,7 @@ class Chat extends Component {
     }
   }
 
+
   componentWillUnmount() {
     // Disconnect from socket.io when the component unmounts
     const { socket } = this.state;
@@ -707,7 +708,7 @@ class Chat extends Component {
       const bottom = scrollHeight - scrollTop - clientHeight;
 
       // Show the button when the user scrolls up and hide when at the bottom
-      this.setState({ showScrollToBottomButton: bottom > 10 && scrollHeight > clientHeight });
+      this.setState({ showScrollToBottomButton: bottom > 400 && scrollHeight > clientHeight });
     }
   };
 
@@ -1219,7 +1220,7 @@ class Chat extends Component {
                 )}
                 <Form.Control
                   type="text"
-                  style={{ borderColor: '#ddd', borderRadius: '4px' }}
+                  style={{ borderColor: '#ddd', borderRadius: '4px', padding: '0.375rem 0.75rem 0.375rem 0.75rem' }}
                   placeholder="Enter group name"
                   value={this.state.newGroupName}
                   onChange={(e) => this.setState({ newGroupName: e.target.value })}
@@ -1954,6 +1955,14 @@ class Chat extends Component {
     // Convert the difference to days
     const diffDays = Math.floor(diffMinutes / (24 * 60));
 
+    // Function to format date as dd/mm/yyyy
+    const formatDate = (date) => {
+      let day = date.getDate().toString().padStart(2, '0');
+      let month = (date.getMonth() + 1).toString().padStart(2, '0'); // January is 0!
+      let year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    };
+
     // Return relative time based on the difference
     if (diffMinutes < 60) {
       // Display the time in a format like "5:30 PM"
@@ -1966,9 +1975,10 @@ class Chat extends Component {
       const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       return daysOfWeek[messageTime.getDay()];
     } else {
-      return messageTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      return formatDate(messageTime);
     }
   }
+
 
   toggleEmojiPicker = () => {
     this.setState({ showEmojiPicker: !this.state.showEmojiPicker });
@@ -2149,7 +2159,7 @@ class Chat extends Component {
 
     switch (message.fileType) {
       case 'image':
-        return <img src={message.fileUrl} alt="Uploaded-img" onClick={(event) => this.handleImageClick(event, message.fileUrl)} className="message-image" />;
+        return <img loading='lazy' src={message && message.fileUrl} alt="Uploaded-img" onClick={(event) => this.handleImageClick(event, message.fileUrl)} className="message-image" />;
       case 'video':
         return <video preload="none" src={message.fileUrl} controls className="message-video" />;
       default:
@@ -2754,7 +2764,7 @@ class Chat extends Component {
                 )}
 
                 {showImageModal && (
-                  <Modal className="transparent-modal" show={showImageModal} onHide={() => this.setState({ showImageModal: false })} centered>
+                  <Modal className="transparent-modal" show={showImageModal} onHide={() => this.setState({ showImageModal: false })} size="lg" centered>
                     <Modal.Body>
                       <img src={enlargedImageUrl} onClick={() => this.setState({ showImageModal: false })} alt="Enlarged" style={{ width: '100%' }} />
                     </Modal.Body>
