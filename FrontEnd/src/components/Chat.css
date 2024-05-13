@@ -395,6 +395,13 @@ input[type='search']::-webkit-search-cancel-button {
   transition: transform 0.3s ease;
 }
 
+@media (max-width: 768px) {
+  .text-for-phone{
+    display:none;
+  }
+
+}
+
 .no-chat-selected {
   display: flex;
   justify-content: center;
@@ -467,7 +474,21 @@ input[type='search']::-webkit-search-cancel-button {
     padding: 8px; /* Adjust padding for message bubbles */
   }
 
+  .send-btn i {
+    transform: rotate(45deg);
+    
+  }
+
+  .send-btn {
+    background-color: #25D366; /* Slightly darker green on hover */
+  }
+
+  .send-btn:hover {
+    transform:none; /* Slightly darker green on hover */
+  }
+
   .send-btn, .close-button {
+    border-radius: 50%;
     padding: 10px 15px; /* Larger touch targets for buttons */
   }
 
