@@ -33,7 +33,14 @@ class Register extends Component {
 
   handleInputChange = (e) => {
     const { name, value } = e.target;
-    this.setState({ [name]: value }, () => {
+    let modifiedValue = value;
+  
+    // Remove spaces from specific fields
+    if (name === 'username' || name === 'password' || name === 'confirmPassword') {
+      modifiedValue = value.replace(/\s/g, '');  
+    }
+  
+    this.setState({ [name]: modifiedValue }, () => {
       if (name === 'password' || name === 'confirmPassword') {
         this.validatePassword(this.state.password);
         if (name === 'confirmPassword') {
@@ -71,7 +78,7 @@ class Register extends Component {
     formData.append('upload_preset', config.uploadPreset);
 
     try {
-      const response = await axios.post(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, formData,);
+      const response = await axios.post(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, formData);
       this.setState({
         profilePicture: response.data.secure_url,
         imagePreviewUrl: response.data.secure_url,
@@ -117,6 +124,7 @@ class Register extends Component {
   handleRegister = async (event) => {
     event.preventDefault();
     const { username, password, profilePicture, confirmPassword } = this.state;
+
 
     if (password !== confirmPassword) {
       this.setState({ errorMessage: 'Passwords do not match.' });
@@ -178,13 +186,13 @@ class Register extends Component {
           {errorMessage && <p className="error-message">{errorMessage}</p>}
           <div className="input-group">
             <i className="bi bi-person-fill input-icon"></i>
-            <input type="text" autoComplete="username" name="username" placeholder="Username" value={username} onChange={this.handleInputChange} />
+            <input type="text" autoComplete="username" className='register-username' name="username" placeholder="Username" value={username} onChange={this.handleInputChange} />
           </div>
           <div className="input-group">
             <i className="bi bi-lock-fill input-icon"></i>
             <input
               type={showPassword ? "text" : "password"}
-              className={confirmPasswordTouched ? (passwordsMatch ? 'input-valid' : 'input-invalid') : ''}
+              className={`register-password ${confirmPasswordTouched ? (passwordsMatch ? 'input-valid' : 'input-invalid') : ''}`}
               name="password"
               placeholder="Password"
               value={password}
@@ -247,7 +255,7 @@ class Register extends Component {
             ) : (
               <>
                 <button
-                  className= {uploading ? 'reload-button' : 'upload-button'}
+                  className={uploading ? 'reload-button' : 'upload-button'}
                   type='button'
                   onClick={() => document.getElementById('profilePicture').click()}
                   style={{
