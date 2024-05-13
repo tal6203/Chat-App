@@ -24,8 +24,8 @@ class Login extends Component {
 
   handleLogin = async (e) => {
     e.preventDefault();
-    const { username, password } = this.state;
-
+    const username = this.state.username.trim();  
+    const password = this.state.password.trim();
     try {
       const response = await axios.post('http://localhost:8080/auth/login', {
         username,
@@ -61,6 +61,7 @@ class Login extends Component {
                 type="text"
                 name="username"
                 placeholder="Username"
+                className='login-username'
                 value={username}
                 onChange={this.handleInputChange}
                 autoComplete="username"
@@ -74,6 +75,7 @@ class Login extends Component {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Password"
+                className='login-password'
                 value={password}
                 onChange={this.handleInputChange}
                 autoComplete="current-password"
