@@ -2803,8 +2803,8 @@ class Chat extends Component {
                     disabled={this.state.uploading}
                     className="send-btn"
                     onClick={this.handleSendMessage}>
-                    {this.state.isEditing ? <><i className="bi bi-pencil"></i> Edit</> : <><i className="bi bi-send"></i>
-                      Send</>
+                    {this.state.isEditing ? <><i className="bi bi-pencil"></i><span className="text-for-phone"> Edit</span></> : <><i className="bi bi-send"></i>
+                    <span className="text-for-phone">Send</span> </>
                     }
                   </button>
                 </div>
