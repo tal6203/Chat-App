@@ -991,6 +991,8 @@ class Chat extends Component {
 
   deleteMessage = async (messageId, forEveryone) => {
     try {
+      const { socket, selectedChat } = this.state;
+      const currentUser = JSON.parse(localStorage.getItem("user"));
       const token = localStorage.getItem("token");
       await axios.post(`http://localhost:8080/message/deleteMessage`,
         { messageId, deleteForEveryone: forEveryone },
@@ -1003,10 +1005,24 @@ class Chat extends Component {
             message._id === messageId ? { ...message, content: "This message has been deleted" } : message),
           contextMenu: { isVisible: false }
         }));
-        const { socket, selectedChat } = this.state;
         socket.emit('message deleted for everyone', { chatId: selectedChat._id, messageId });
       } else {
         this.setState(prevState => ({
+          contacts: prevState.contacts.map(contact => {
+            if (contact._id === selectedChat._id) {
+              return {
+                ...contact,
+                lastMessage: contact.lastMessage._id === messageId ? {
+                  ...contact.lastMessage,
+                  content: "You deleted this message",
+                  deletedForUsers: contact.lastMessage.deletedForUsers
+                    ? [...contact.lastMessage.deletedForUsers, currentUser._id]
+                    : [currentUser._id]
+                } : contact.lastMessage
+              };
+            }
+            return contact;
+          }),
           messages: prevState.messages.filter(message => message._id !== messageId),
           contextMenu: { isVisible: false }
         }));
@@ -2285,38 +2301,41 @@ class Chat extends Component {
                                         ? "You deleted this message"
                                         : "This message has been deleted"
                                       :
-                                      <>
-                                        {`${contact.lastMessage.senderUsername}: `}
-                                        {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                          (<>
-                                            <i className="bi bi-file-earmark"></i>&nbsp;
-                                            {contact.lastMessage.content || 'document'}
-                                          </>)
-                                          : contact.lastMessage.fileType ? (
-                                            <>
-                                              {contact.lastMessage.fileType === 'image' && (
-                                                <>
-                                                  <i className="bi bi-image"></i>&nbsp;
-                                                  {contact.lastMessage.content || 'image'}
-                                                </>
-                                              )}
-                                              {contact.lastMessage.fileType === 'video' && (
-                                                <>
-                                                  <i className="bi bi-camera-video"></i>&nbsp;
-                                                  {contact.lastMessage.content || 'video'}
-                                                </>
-                                              )}
-                                              {contact.lastMessage.fileType === 'raw' && (
-                                                <>
-                                                  <i className="bi bi-file-earmark"></i>&nbsp;
-                                                  {contact.lastMessage.content || 'document'}
-                                                </>
-                                              )}
-                                            </>
-                                          ) : (
-                                            <> {contact.lastMessage.content} </>
-                                          )}
-                                      </>
+                                      contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
+                                        ? "You deleted this message"
+                                        :
+                                        <>
+                                          {`${contact.lastMessage.senderUsername}: `}
+                                          {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
+                                            (<>
+                                              <i className="bi bi-file-earmark"></i>&nbsp;
+                                              {contact.lastMessage.content || 'document'}
+                                            </>)
+                                            : contact.lastMessage.fileType ? (
+                                              <>
+                                                {contact.lastMessage.fileType === 'image' && (
+                                                  <>
+                                                    <i className="bi bi-image"></i>&nbsp;
+                                                    {contact.lastMessage.content || 'image'}
+                                                  </>
+                                                )}
+                                                {contact.lastMessage.fileType === 'video' && (
+                                                  <>
+                                                    <i className="bi bi-camera-video"></i>&nbsp;
+                                                    {contact.lastMessage.content || 'video'}
+                                                  </>
+                                                )}
+                                                {contact.lastMessage.fileType === 'raw' && (
+                                                  <>
+                                                    <i className="bi bi-file-earmark"></i>&nbsp;
+                                                    {contact.lastMessage.content || 'document'}
+                                                  </>
+                                                )}
+                                              </>
+                                            ) : (
+                                              <> {contact.lastMessage.content} </>
+                                            )}
+                                        </>
                                     : "No messages yet"
                                 : "No messages yet" :
 
@@ -2327,38 +2346,41 @@ class Chat extends Component {
                                     :
                                     "This message has been deleted"
                                   :
-                                  <>
-                                    {`${contact.lastMessage.senderUsername}: `}
-                                    {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                      (<>
-                                        <i className="bi bi-file-earmark"></i>&nbsp;
-                                        {contact.lastMessage.content || 'document'}
-                                      </>)
-                                      : contact.lastMessage.fileType ? (
-                                        <>
-                                          {contact.lastMessage.fileType === 'image' && (
-                                            <>
-                                              <i className="bi bi-image"></i>&nbsp;
-                                              {contact.lastMessage.content || 'image'}
-                                            </>
-                                          )}
-                                          {contact.lastMessage.fileType === 'video' && (
-                                            <>
-                                              <i className="bi bi-camera-video"></i>&nbsp;
-                                              {contact.lastMessage.content || 'video'}
-                                            </>
-                                          )}
-                                          {contact.lastMessage.fileType === 'raw' && (
-                                            <>
-                                              <i className="bi bi-file-earmark"></i>&nbsp;
-                                              {contact.lastMessage.content || 'document'}
-                                            </>
-                                          )}
-                                        </>
-                                      ) : (
-                                        <> {contact.lastMessage.content} </>
-                                      )}
-                                  </>
+                                  contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
+                                    ? "You deleted this message"
+                                    :
+                                    <>
+                                      {`${contact.lastMessage.senderUsername}: `}
+                                      {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
+                                        (<>
+                                          <i className="bi bi-file-earmark"></i>&nbsp;
+                                          {contact.lastMessage.content || 'document'}
+                                        </>)
+                                        : contact.lastMessage.fileType ? (
+                                          <>
+                                            {contact.lastMessage.fileType === 'image' && (
+                                              <>
+                                                <i className="bi bi-image"></i>&nbsp;
+                                                {contact.lastMessage.content || 'image'}
+                                              </>
+                                            )}
+                                            {contact.lastMessage.fileType === 'video' && (
+                                              <>
+                                                <i className="bi bi-camera-video"></i>&nbsp;
+                                                {contact.lastMessage.content || 'video'}
+                                              </>
+                                            )}
+                                            {contact.lastMessage.fileType === 'raw' && (
+                                              <>
+                                                <i className="bi bi-file-earmark"></i>&nbsp;
+                                                {contact.lastMessage.content || 'document'}
+                                              </>
+                                            )}
+                                          </>
+                                        ) : (
+                                          <> {contact.lastMessage.content} </>
+                                        )}
+                                    </>
                                 :
                                 "No messages yet"
                             }
@@ -2453,38 +2475,41 @@ class Chat extends Component {
                                             ? "You deleted this message"
                                             : "This message has been deleted"
                                           :
-                                          <>
-                                            {`${contact.lastMessage.senderUsername}: `}
-                                            {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                              (<>
-                                                <i className="bi bi-file-earmark"></i>&nbsp;
-                                                {contact.lastMessage.content || 'document'}
-                                              </>)
-                                              : contact.lastMessage.fileType ? (
-                                                <>
-                                                  {contact.lastMessage.fileType === 'image' && (
-                                                    <>
-                                                      <i className="bi bi-image"></i>&nbsp;
-                                                      {contact.lastMessage.content || 'image'}
-                                                    </>
-                                                  )}
-                                                  {contact.lastMessage.fileType === 'video' && (
-                                                    <>
-                                                      <i className="bi bi-camera-video"></i>&nbsp;
-                                                      {contact.lastMessage.content || 'video'}
-                                                    </>
-                                                  )}
-                                                  {contact.lastMessage.fileType === 'raw' && (
-                                                    <>
-                                                      <i className="bi bi-file-earmark"></i>&nbsp;
-                                                      {contact.lastMessage.content || 'document'}
-                                                    </>
-                                                  )}
-                                                </>
-                                              ) : (
-                                                <> {contact.lastMessage.content} </>
-                                              )}
-                                          </>
+                                          contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
+                                            ? "You deleted this message"
+                                            :
+                                            <>
+                                              {`${contact.lastMessage.senderUsername}: `}
+                                              {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
+                                                (<>
+                                                  <i className="bi bi-file-earmark"></i>&nbsp;
+                                                  {contact.lastMessage.content || 'document'}
+                                                </>)
+                                                : contact.lastMessage.fileType ? (
+                                                  <>
+                                                    {contact.lastMessage.fileType === 'image' && (
+                                                      <>
+                                                        <i className="bi bi-image"></i>&nbsp;
+                                                        {contact.lastMessage.content || 'image'}
+                                                      </>
+                                                    )}
+                                                    {contact.lastMessage.fileType === 'video' && (
+                                                      <>
+                                                        <i className="bi bi-camera-video"></i>&nbsp;
+                                                        {contact.lastMessage.content || 'video'}
+                                                      </>
+                                                    )}
+                                                    {contact.lastMessage.fileType === 'raw' && (
+                                                      <>
+                                                        <i className="bi bi-file-earmark"></i>&nbsp;
+                                                        {contact.lastMessage.content || 'document'}
+                                                      </>
+                                                    )}
+                                                  </>
+                                                ) : (
+                                                  <> {contact.lastMessage.content} </>
+                                                )}
+                                            </>
                                         : "No messages yet"
                                     : "No messages yet"
                                 }
@@ -2525,39 +2550,42 @@ class Chat extends Component {
                                           :
                                           "This message has been deleted"
                                         :
-                                        <>
-                                          {`${contact.lastMessage.senderUsername}: `}
-                                          {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                            (<>
-                                              <i className="bi bi-file-earmark"></i>&nbsp;
-                                              {contact.lastMessage.content || 'document'}
-                                            </>)
-                                            : contact.lastMessage.fileType ? (
-                                              <>
+                                        contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
+                                          ? "You deleted this message"
+                                          :
+                                          <>
+                                            {`${contact.lastMessage.senderUsername}: `}
+                                            {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
+                                              (<>
+                                                <i className="bi bi-file-earmark"></i>&nbsp;
+                                                {contact.lastMessage.content || 'document'}
+                                              </>)
+                                              : contact.lastMessage.fileType ? (
+                                                <>
 
-                                                {contact.lastMessage.fileType === 'image' && (
-                                                  <>
-                                                    <i className="bi bi-image"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'image'}
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'video' && (
-                                                  <>
-                                                    <i className="bi bi-camera-video"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'video'}
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'raw' && (
-                                                  <>
-                                                    <i className="bi bi-file-earmark"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'document'}
-                                                  </>
-                                                )}
-                                              </>
-                                            ) : (
-                                              <> {contact.lastMessage.content} </>
-                                            )}
-                                        </>
+                                                  {contact.lastMessage.fileType === 'image' && (
+                                                    <>
+                                                      <i className="bi bi-image"></i>&nbsp;
+                                                      {contact.lastMessage.content || 'image'}
+                                                    </>
+                                                  )}
+                                                  {contact.lastMessage.fileType === 'video' && (
+                                                    <>
+                                                      <i className="bi bi-camera-video"></i>&nbsp;
+                                                      {contact.lastMessage.content || 'video'}
+                                                    </>
+                                                  )}
+                                                  {contact.lastMessage.fileType === 'raw' && (
+                                                    <>
+                                                      <i className="bi bi-file-earmark"></i>&nbsp;
+                                                      {contact.lastMessage.content || 'document'}
+                                                    </>
+                                                  )}
+                                                </>
+                                              ) : (
+                                                <> {contact.lastMessage.content} </>
+                                              )}
+                                          </>
                                       :
                                       "No messages yet"
                                     }
@@ -2804,7 +2832,7 @@ class Chat extends Component {
                     className="send-btn"
                     onClick={this.handleSendMessage}>
                     {this.state.isEditing ? <><i className="bi bi-pencil"></i><span className="text-for-phone"> Edit</span></> : <><i className="bi bi-send"></i>
-                    <span className="text-for-phone">Send</span> </>
+                      <span className="text-for-phone">Send</span> </>
                     }
                   </button>
                 </div>
