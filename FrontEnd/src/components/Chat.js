@@ -1958,19 +1958,19 @@ class Chat extends Component {
   formatLastMessageTime = (timestamp) => {
     const now = new Date();
     const messageTime = new Date(timestamp);
-
+  
     // Calculate the difference in milliseconds
     const diffMs = now - messageTime;
-
+  
     // Convert the difference to minutes
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
-
+  
     // Convert the difference to hours
     const diffHours = Math.floor(diffMinutes / 60);
-
+  
     // Convert the difference to days
-    const diffDays = Math.floor(diffMinutes / (24 * 60));
-
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  
     // Function to format date as dd/mm/yyyy
     const formatDate = (date) => {
       let day = date.getDate().toString().padStart(2, '0');
@@ -1978,14 +1978,18 @@ class Chat extends Component {
       let year = date.getFullYear();
       return `${day}/${month}/${year}`;
     };
-
+  
+    // Create a new date object representing yesterday
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+  
     // Return relative time based on the difference
     if (diffMinutes < 60) {
       // Display the time in a format like "5:30 PM"
       return messageTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     } else if (diffHours < 24 && messageTime.getDate() === now.getDate()) {
       return "Today";
-    } else if (diffDays === 1 && messageTime.getDate() === now.getDate() - 1) {
+    } else if (messageTime.toDateString() === yesterday.toDateString()) {
       return "Yesterday";
     } else if (diffDays < 7) {
       const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -1993,7 +1997,7 @@ class Chat extends Component {
     } else {
       return formatDate(messageTime);
     }
-  }
+  };
 
 
   toggleEmojiPicker = () => {
