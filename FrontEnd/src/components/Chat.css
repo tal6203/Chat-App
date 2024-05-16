@@ -38,7 +38,7 @@ input[type='search']::-webkit-search-cancel-button {
 .chat-list-panel {
   background-color: #f6f6f6; /* Lighter background for the panel */
   color: #495057;  /* Darker text for contrast */
-  overflow-y: auto;
+  overflow-y: scroll;
   height: 100%;
   max-height: calc(100vh - 92px);
 }
