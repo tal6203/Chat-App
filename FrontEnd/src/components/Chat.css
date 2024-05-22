@@ -1093,9 +1093,16 @@ input[type='search']::-webkit-search-cancel-button {
   margin: 10px 0;
 }
 
+.message-content-with-media{
+  max-width: 100%;
+  padding: 2px 0px 0px 2px;
+  width: 300px;
+}
+
+
 .message-image {
   max-width: 100%;
-  width: 250px; /* Allow flexibility */
+  width: 300px; /* Allow flexibility */
   height: auto; /* Maintain aspect ratio */
   border-radius: 8px;
   display: block; /* Ensure proper layout */
