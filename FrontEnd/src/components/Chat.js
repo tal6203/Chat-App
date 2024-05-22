@@ -14,6 +14,7 @@ import CustomNavbar from './CustomNavbar';
 
 
 
+
 class Chat extends Component {
   constructor(props) {
     super(props);
@@ -667,7 +668,7 @@ class Chat extends Component {
               const firstUnreadMessage = this.messagesListRef.current.children[firstUnreadMessageIndex];
               this.setState({ showUnreadTitle: true });
               if (firstUnreadMessage) {
-                firstUnreadMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstUnreadMessage.scrollIntoView({ behavior: 'smooth' });
               }
             }
           }
@@ -801,7 +802,15 @@ class Chat extends Component {
         );
 
         socket.emit('new message', response.data.message);
-        this.setState({ newMessage: '', uploadedFileUrl: '', uploadedFileType: '', showEmojiPicker: false });
+        this.setState({
+          newMessage: '',
+          uploadedFileUrl: '',
+          uploadedFileType: '',
+          showEmojiPicker: false,
+          firstUnreadMessageIndex: null,
+          unreadMessages: 0,
+          showUnreadTitle: false
+        });
         if (this.fileUploadRef.current) {
           this.fileUploadRef.current.resetPreview();
         }
@@ -1958,19 +1967,19 @@ class Chat extends Component {
   formatLastMessageTime = (timestamp) => {
     const now = new Date();
     const messageTime = new Date(timestamp);
-  
+
     // Calculate the difference in milliseconds
     const diffMs = now - messageTime;
-  
+
     // Convert the difference to minutes
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
-  
+
     // Convert the difference to hours
     const diffHours = Math.floor(diffMinutes / 60);
-  
+
     // Convert the difference to days
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  
+
     // Function to format date as dd/mm/yyyy
     const formatDate = (date) => {
       let day = date.getDate().toString().padStart(2, '0');
@@ -1978,11 +1987,11 @@ class Chat extends Component {
       let year = date.getFullYear();
       return `${day}/${month}/${year}`;
     };
-  
+
     // Create a new date object representing yesterday
     const yesterday = new Date(now);
     yesterday.setDate(now.getDate() - 1);
-  
+
     // Return relative time based on the difference
     if (diffMinutes < 60) {
       // Display the time in a format like "5:30 PM"
@@ -2179,7 +2188,7 @@ class Chat extends Component {
 
     switch (message.fileType) {
       case 'image':
-        return <img loading='lazy' src={message && message.fileUrl} alt="Uploaded-img" onClick={(event) => this.handleImageClick(event, message.fileUrl)} className="message-image" />;
+        return <img src={message && message.fileUrl} alt="Uploaded-img" onClick={(event) => this.handleImageClick(event, message.fileUrl)} className="message-image" />;
       case 'video':
         return <video preload="none" src={message.fileUrl} controls className="message-video" />;
       default:
@@ -2731,26 +2740,30 @@ class Chat extends Component {
                                     {message.fileUrl && this.renderFileContent(message)}
 
                                     {(message.content && message.content.length > 100 && !this.state.expandedMessages[message._id])
-                                      ? <>
-                                        {`${message.content.substring(0, 100)}... `}
+                                      ? <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}>
+                                      
+                                          {`${message.content.substring(0, 100)}... `}
+                                         
                                         <span className="read-more" onClick={(e) => {
                                           e.stopPropagation();
                                           this.handleExpandMessage(message._id);
                                         }}>
                                           Read More
                                         </span>
-                                      </>
+                                      </div>
                                       : (message.content.length > 100 && this.state.expandedMessages[message._id])
-                                        ? <>
-                                          {message.content} {/* Show full message */}
+                                        ? <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}>
+                                          
+                                            {message.content} {/* Show full message */}
+                                          
                                           <span className="read-more" onClick={(e) => {
                                             e.stopPropagation();
                                             this.handleExpandMessage(message._id);
                                           }}>
                                             Read Less
                                           </span>
-                                        </>
-                                        : message.content
+                                        </div>
+                                        : <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}>{message.content}</div>
                                     }
                                   </>
                             }</div>
