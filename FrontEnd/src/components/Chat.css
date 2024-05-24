@@ -1209,27 +1209,36 @@ input[type='search']::-webkit-search-cancel-button {
 
 
 
-.download-docx-button a {
+.docx-preview-container {
+  display: block;
+  cursor: pointer;
+}
+
+.docx-preview-card {
+  background-color: #03b86a;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #25D366; /* WhatsApp Green */
-  color: white;
-  text-decoration: none;
-  padding: 10px 15px;
-  border-radius: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  font-weight: bold;
   transition: background-color 0.3s;
 }
 
-.download-docx-button a:hover {
-  background-color: #128C7E; /* Darker Green */
+
+.docx-preview-content {
+  display: flex;
+  align-items: center;
 }
 
-.download-docx-button i {
-  font-size: 20px;
-  margin-right: 8px;
+.docx-icon {
+  font-size: 24px; /* Adjust the size as needed */
+  margin-right: 10px;
+}
+
+.docx-file-name {
+  font-size: 14px; /* Adjust the size as needed */
+  font-weight: 500;
 }
 
 .pdf-preview-container {
@@ -1672,5 +1681,16 @@ input[type='search']::-webkit-search-cancel-button {
 
 .dark-mode .emoji-text-area:hover{
   background-color: #d3d4d5;
+}
 
+.dark-mode .docx-preview-card {
+  background-color: #007945;
+}
+
+.dark-mode .docx-preview-card:hover {
+  background-color: #1f5c41;
+}
+
+.docx-preview-card:hover {
+  background-color: #075e54;
 }
