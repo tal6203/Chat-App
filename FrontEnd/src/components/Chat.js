@@ -244,7 +244,6 @@ class Chat extends Component {
     socket.on('disconnect', () => {
       clearTimeout(typingTimeout); // Clear timeout on disconnect
       this.setState({ userTyping: null });
-      console.log('User disconnected');
     });
 
     // Check if the event listeners are already set up
@@ -304,13 +303,20 @@ class Chat extends Component {
         updatedMessages = [...prevState.messages, systemMessage];
       }
 
+      // Update filteredContacts
+      const updatedFilteredContacts = updatedContacts.filter(contact =>
+        contact.chatName.toLowerCase().includes(prevState.searchUsername.toLowerCase())
+      );
+
       return {
         contacts: updatedContacts,
         selectedChat: updatedSelectedChat,
-        messages: updatedMessages
+        messages: updatedMessages,
+        filteredContacts: updatedFilteredContacts
       };
     });
   };
+
 
   handleUpdatedPictureGroup = (systemMessage, updatedChat) => {
     this.setState(prevState => {
@@ -330,13 +336,20 @@ class Chat extends Component {
         updatedMessages = [...prevState.messages, systemMessage];
       }
 
+      // Update filteredContacts
+      const updatedFilteredContacts = updatedContacts.filter(contact =>
+        contact.chatName.toLowerCase().includes(prevState.searchUsername.toLowerCase())
+      );
+
       return {
         contacts: updatedContacts,
         selectedChat: updatedSelectedChat,
-        messages: updatedMessages
+        messages: updatedMessages,
+        filteredContacts: updatedFilteredContacts
       };
     });
   };
+
 
   handleAddedUsersGroup = (systemMessage, updatedChat) => {
     this.setState(prevState => {
@@ -353,10 +366,16 @@ class Chat extends Component {
         // Add the system message to the existing messages
         const updatedMessages = [...prevState.messages, systemMessage];
 
+        // Update filteredContacts
+        const updatedFilteredContacts = updatedContacts.filter(contact =>
+          contact.chatName.toLowerCase().includes(prevState.searchUsername.toLowerCase())
+        );
+
         return {
           contacts: updatedContacts,
           selectedChat: updatedSelectedChat,
-          messages: updatedMessages
+          messages: updatedMessages,
+          filteredContacts: updatedFilteredContacts
         };
       } else {
         // If the updated chat is not the currently selected chat
@@ -367,13 +386,19 @@ class Chat extends Component {
           )
           : [...prevState.contacts, { ...updatedChat, lastMessage: systemMessage }];
 
+        // Update filteredContacts
+        const updatedFilteredContacts = updatedContacts.filter(contact =>
+          contact.chatName.toLowerCase().includes(prevState.searchUsername.toLowerCase())
+        );
+
         return {
           contacts: updatedContacts,
-          messages: prevState.messages
+          messages: prevState.messages,
+          filteredContacts: updatedFilteredContacts
         };
       }
     });
-  }
+  };
 
 
   handleDeletedUsersGroup = (systemMessage, updatedChat, removedUserId) => {
@@ -418,14 +443,21 @@ class Chat extends Component {
         }
       }
 
+      // Update filteredContacts
+      const updatedFilteredContacts = updatedContacts.filter(contact =>
+        contact.chatName.toLowerCase().includes(prevState.searchUsername.toLowerCase())
+      );
+
       return {
         contacts: updatedContacts,
         selectedChat: updatedSelectedChat,
         messages: updatedMessages,
-        filteredGroupMembers: updatedFilteredGroupMembers
+        filteredGroupMembers: updatedFilteredGroupMembers,
+        filteredContacts: updatedFilteredContacts
       };
     });
-  }
+  };
+
 
 
 
@@ -453,13 +485,20 @@ class Chat extends Component {
         selectedChatUpdated = { ...prevState.selectedChat, ...updatedChat };
       }
 
+      // Update filteredContacts
+      const updatedFilteredContacts = updatedContacts.filter(contact =>
+        contact.chatName.toLowerCase().includes(prevState.searchUsername.toLowerCase())
+      );
+
       return {
         contacts: updatedContacts,
         messages: updatedMessages,
-        selectedChat: selectedChatUpdated
+        selectedChat: selectedChatUpdated,
+        filteredContacts: updatedFilteredContacts
       };
     });
-  }
+  };
+
 
   handleUpdateLastMessage = (updatedChat) => {
     this.setState(prevState => {
@@ -609,7 +648,7 @@ class Chat extends Component {
       editingMessageId: null,
       uploadedFileUrl: '',
       uploadedFileType: '',
-      showChatDetailsModal: false
+      showChatDetailsModal: false,
     }, () => {
       // Reset unread count for the selected chat
       this.resetUnreadCount(chat._id);
@@ -801,7 +840,10 @@ class Chat extends Component {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
+        const currentUser = JSON.parse(localStorage.getItem("user"));
+
         socket.emit('new message', response.data.message);
+        socket.emit('stop typing', selectedChat._id, currentUser._id, currentUser.username);
         this.setState({
           newMessage: '',
           uploadedFileUrl: '',
@@ -852,7 +894,7 @@ class Chat extends Component {
       });
 
 
-      const contactUserIds = new Set(this.state.contacts.flatMap(contact => contact.users.map(u => u._id)));
+      const contactUserIds = new Set(this.state.contacts.flatMap(contact => !contact.isGroupChat && contact.users.map(u => u._id)));
       const newUsers = response.data.results.filter(user => !contactUserIds.has(user._id));
 
 
@@ -871,6 +913,7 @@ class Chat extends Component {
       _id: null, // Temporary placeholder ID
       isGroupChat: false,
       chatName: user.username, // Use username as the chat name
+      profilePicture: user.profilePicture,
       users: [user] // Include the selected user in the users array
     };
 
@@ -892,15 +935,18 @@ class Chat extends Component {
 
     // Clear the selected chat in the state
     this.setState({
-      selectedChat: null, messages: [],
+      selectedChat: null,
+      messages: [],
       newMessage: '',
       showScrollToBottomButton: false,
       isEditing: false,
       showEmojiPicker: false,
       uploadedFileUrl: '',
       uploadedFileType: '',
-      editingMessageId: null
+      editingMessageId: null,
+      showChatDetailsModal: false,
     });
+
 
     if (this.fileUploadRef.current) {
       this.fileUploadRef.current.resetPreview();
@@ -1016,8 +1062,8 @@ class Chat extends Component {
         }));
         socket.emit('message deleted for everyone', { chatId: selectedChat._id, messageId });
       } else {
-        this.setState(prevState => ({
-          contacts: prevState.contacts.map(contact => {
+        this.setState(prevState => {
+          const updatedContacts = prevState.contacts.map(contact => {
             if (contact._id === selectedChat._id) {
               return {
                 ...contact,
@@ -1031,10 +1077,31 @@ class Chat extends Component {
               };
             }
             return contact;
-          }),
-          messages: prevState.messages.filter(message => message._id !== messageId),
-          contextMenu: { isVisible: false }
-        }));
+          });
+
+          const updatedFilteredContacts = prevState.filteredContacts.map(contact => {
+            if (contact._id === selectedChat._id) {
+              return {
+                ...contact,
+                lastMessage: contact.lastMessage._id === messageId ? {
+                  ...contact.lastMessage,
+                  content: "You deleted this message",
+                  deletedForUsers: contact.lastMessage.deletedForUsers
+                    ? [...contact.lastMessage.deletedForUsers, currentUser._id]
+                    : [currentUser._id]
+                } : contact.lastMessage
+              };
+            }
+            return contact;
+          });
+
+          return {
+            contacts: updatedContacts,
+            filteredContacts: updatedFilteredContacts,
+            messages: prevState.messages.filter(message => message._id !== messageId),
+            contextMenu: { isVisible: false }
+          };
+        });
       }
     } catch (error) {
       console.error('Error deleting message:', error);
@@ -1567,6 +1634,7 @@ class Chat extends Component {
     const currentUser = JSON.parse(localStorage.getItem("user"));
 
 
+
     // Function to render group members (used for both admin and non-admin view)
     const renderGroupMembers = (members) => {
       const membersToShow = existingUserSearchTerm ? filteredGroupMembers : selectedChat.users;
@@ -1706,7 +1774,7 @@ class Chat extends Component {
         <Modal className="modal-chat-details" show={showChatDetailsModal} onHide={() => this.setState({
           showChatDetailsModal: false, updateGroupName: '',
           newUserSearchTerm: '', newUserSearchResults: [], existingUserSearchTerm: '', showEmojiPickerForChatDetailsModal: false,
-          updatePictureGroup: '', isUploadingImage: false, selectedNewUsers: new Map(), isImageZoomed: false
+          updatePictureGroup: '', isUploadingImage: false, selectedNewUsers: new Map(), isImageZoomed: false, sharedGroups: []
         })} {...modalProps}>
           <Modal.Header closeButton>
             <Modal.Title className="title-chat-details">
@@ -2163,9 +2231,11 @@ class Chat extends Component {
           <a href={message.fileUrl} target="_blank" rel="noopener noreferrer" download onClick={(e) => e.stopPropagation()}>
             <iframe title="PDF" src={message.fileUrl} alt="Uploaded-pdf" className="pdf-image">
             </iframe>
-            <div className="hover-download-button">
-              <i className="bi bi-download" style={{ marginRight: '5px' }}></i>
-              <span>Preview</span>
+            <div>
+              <div className="hover-download-button">
+                <i className="bi bi-download" style={{ marginRight: '5px' }}></i>
+                <span>Preview</span>
+              </div>
             </div>
           </a>
         </div>
@@ -2174,15 +2244,26 @@ class Chat extends Component {
 
     // Render DOCX as a download button
     if (isDocx) {
-      return (
-        <div style={{ display: 'block' }}>
-          <iframe
-            title="Document Viewer"
-            style={{ width: '100%', minHeight: '400px', border: 'none' }}
-            src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(message.fileUrl)}`}
-          ></iframe>
-        </div>
+      const fullFileName = message.fileUrl.split('/').pop();
+      const fileParts = fullFileName.split('_');
+      const fileExtension = fileParts.pop().split('.').pop();
+      const baseFileName = fileParts.join('_');
+      const truncatedFileName = baseFileName.length > 15 ? baseFileName.substring(0, 15) + '...' : baseFileName;
+      const fileName = `${truncatedFileName}.${fileExtension}`;
 
+      
+      return (
+        <div className="docx-preview-container" onClick={(e) => {
+          e.stopPropagation();
+          window.open(`https://view.officeapps.live.com/op/embed.aspx?src=${message.fileUrl}`, '_blank');
+        }}>
+          <div className="docx-preview-card">
+            <div className="docx-preview-content">
+              <i className="bi bi-filetype-docx docx-icon"></i>
+              <span className="docx-file-name">{fileName}</span>
+            </div>
+          </div>
+        </div>
       );
     }
 
@@ -2671,7 +2752,7 @@ class Chat extends Component {
                       </>
                     ) : (
                       <>
-                        <img src='https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg'
+                        <img src={selectedChat.profilePicture || 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg'}
                           alt='anonymousPicture'
                           className="profile-image" />
                         <div className="chat-details">
@@ -2684,7 +2765,10 @@ class Chat extends Component {
                     )}
                   </h4>
 
-                  <button className="btn close-button" onClick={this.handleCloseChat}>
+                  <button className="btn close-button" onClick={(e) => {
+                    e.stopPropagation();
+                    this.handleCloseChat()
+                  }}>
                     <i className="bi bi-x-lg"></i>
                   </button>
                 </div>
@@ -2741,9 +2825,9 @@ class Chat extends Component {
 
                                     {(message.content && message.content.length > 100 && !this.state.expandedMessages[message._id])
                                       ? <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}>
-                                      
-                                          {`${message.content.substring(0, 100)}... `}
-                                         
+
+                                        {`${message.content.substring(0, 100)}... `}
+
                                         <span className="read-more" onClick={(e) => {
                                           e.stopPropagation();
                                           this.handleExpandMessage(message._id);
@@ -2753,9 +2837,9 @@ class Chat extends Component {
                                       </div>
                                       : (message.content.length > 100 && this.state.expandedMessages[message._id])
                                         ? <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}>
-                                          
-                                            {message.content} {/* Show full message */}
-                                          
+
+                                          {message.content} {/* Show full message */}
+
                                           <span className="read-more" onClick={(e) => {
                                             e.stopPropagation();
                                             this.handleExpandMessage(message._id);
