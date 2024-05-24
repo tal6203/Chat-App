@@ -2226,16 +2226,28 @@ class Chat extends Component {
 
     // Render PDF as an image and make it downloadable
     if (isPdf || isTxt) {
+      const fullFileName = message.fileUrl.split('/').pop();
+      const fileParts = fullFileName.split('_');
+      const fileExtension = fileParts.pop().split('.').pop();
+      const baseFileName = fileParts.join('_');
+      const truncatedFileName = baseFileName.length > 15 ? baseFileName.substring(0, 15) + '...' : baseFileName;
+      const fileName = `${truncatedFileName}.${fileExtension}`;
+
       return (
         <div className="pdf-preview-container">
           <a href={message.fileUrl} target="_blank" rel="noopener noreferrer" download onClick={(e) => e.stopPropagation()}>
-            <iframe title="PDF" src={message.fileUrl} alt="Uploaded-pdf" className="pdf-image">
+            <iframe title={fileExtension === "pdf" ? "PDF" : "TEXT"} src={message.fileUrl} alt="Uploaded-pdf" className="pdf-image">
             </iframe>
-            <div>
-              <div className="hover-download-button">
-                <i className="bi bi-download" style={{ marginRight: '5px' }}></i>
-                <span>Preview</span>
+            <div className='pdf-text-preview-card'>
+              <div className="pdf-text-preview-content">
+                {fileExtension === "pdf" ?
+                  (
+                    <i className="bi bi-filetype-pdf pdf-text-icon"></i>
+                  ) : (<i className="bi bi-file-earmark-text-fill pdf-text-icon"></i>)
+                }
+                <span className="pdf-text-name">{fileName}</span>
               </div>
+
             </div>
           </a>
         </div>
@@ -2251,7 +2263,7 @@ class Chat extends Component {
       const truncatedFileName = baseFileName.length > 15 ? baseFileName.substring(0, 15) + '...' : baseFileName;
       const fileName = `${truncatedFileName}.${fileExtension}`;
 
-      
+
       return (
         <div className="docx-preview-container" onClick={(e) => {
           e.stopPropagation();
