@@ -3,28 +3,75 @@ https://github.com/tal6203/Chat-App/assets/112417918/50a5eb39-dcbc-42b1-9892-3fb
 
 
 # Chat-App
-This is a real-time chat application built with React, Node.js, and MongoDB.
-This README file explains how to run the app.
+This repository contains a real-time chat application built with React, Node.js, and MongoDB. The app provides seamless communication between users with features such as instant messaging, user authentication, chat rooms, and private messaging.
 
 ## Installation
-Clone the repository to your local machine.
-Make sure to have Node.js and MongoDB installed on your machine.
+Follow the steps below to set up the project locally:
+
+### Prerequisites
+- Node.js
+- MongoDB
+
+### Clone the Repository
+Clone the repository to your local machine using the following command:
+\`\`\`bash
+git clone https://github.com/tal6203/Chat-App.git
+\`\`\`
 
 ## Running the App
-To run the app, you need to open two terminals:
-one for the React server and one for the Node.js server.
+To run the application, open two terminal windows: one for the React server and one for the Node.js server.
 
 ### React Server
-Open a new terminal in the root directory of the project.
-Navigate to the \"FrontEnd\" directory.
-Install dependencies by running \"npm install\".
-Run \"npm start\" to start the React server.
+1. Open a terminal and navigate to the \`FrontEnd\` directory:
+   \`\`\`bash
+   cd FrontEnd
+   \`\`\`
+2. Install the required dependencies:
+   \`\`\`bash
+   npm install
+   \`\`\`
+3. Start the React server:
+   \`\`\`bash
+   npm start
+   \`\`\`
 
 ### Node.js Server
-Open another terminal in the root directory of the project.
-Navigate to the \"BackEnd\" directory.
-Install dependencies by running \"npm install\".
-Run \"npm start\" to start the Node.js server.
+1. Open another terminal and navigate to the \`BackEnd\` directory:
+   \`\`\`bash
+   cd BackEnd
+   \`\`\`
+2. Install the required dependencies:
+   \`\`\`bash
+   npm install
+   \`\`\`
+3. Start the Node.js server:
+   \`\`\`bash
+   npm start
+   \`\`\`
 
-The app should now be running, and you can access it by navigating to http://localhost:3000 in your browser.
-If you encounter any issues, please refer to the documentation or raise an issue on the repository.
+## Accessing the Application
+Once both servers are running, open your browser and navigate to:
+\`\`\`
+http://localhost:3000
+\`\`\`
+You should now be able to use the chat application. If you encounter any issues, please refer to the documentation or raise an issue on the repository.
+
+## Folder Structure
+The repository is structured as follows:
+\`\`\`
+Chat-App/
+├── BackEnd/          # Server-side code
+├── FrontEnd/         # Client-side code
+└── README.md         # Project documentation
+\`\`\`
+
+## Contributing
+We welcome contributions to improve the Chat-App. To contribute, follow these steps:
+1. Fork the repository.
+2. Create a new branch (\`git checkout -b feature/your-feature-name\`).
+3. Make your changes and commit them (\`git commit -m 'Add new feature'\`).
+4. Push to the branch (\`git push origin feature/your-feature-name\`).
+5. Open a pull request.
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
