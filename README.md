@@ -3,17 +3,39 @@ https://github.com/tal6203/Chat-App/assets/112417918/50a5eb39-dcbc-42b1-9892-3fb
 
 
 # Chat-App
-This repository contains a real-time chat application built with React, Node.js, and MongoDB. The app provides seamless communication between users with features such as instant messaging, user authentication, chat rooms, and private messaging.
 
-## Installation
-Follow the steps below to set up the project locally:
+Welcome to the Chat-App repository! This project is a real-time chat application built with React, Node.js, and MongoDB.
 
-### Prerequisites
+## Table of Contents
+- [Introduction](#introduction)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Running the App](#running-the-app)
+  - [React Server](#react-server)
+  - [Node.js Server](#nodejs-server)
+- [Accessing the Application](#accessing-the-application)
+- [Folder Structure](#folder-structure)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Introduction
+Chat-App is designed to provide seamless communication between users with features such as instant messaging, user authentication, chat rooms, and private messaging.
+
+## Features
+- Real-time messaging
+- User authentication
+- Chat rooms
+- Private messaging
+
+## Prerequisites
+Before you begin, ensure you have the following installed:
 - Node.js
 - MongoDB
 
-### Clone the Repository
-Clone the repository to your local machine using the following command:
+## Installation
+Clone the repository to your local machine:
+
 \`\`\`bash
 git clone https://github.com/tal6203/Chat-App.git
 \`\`\`
@@ -51,14 +73,15 @@ To run the application, open two terminal windows: one for the React server and 
 
 ## Accessing the Application
 Once both servers are running, open your browser and navigate to:
-\`\`\`
+\`\`\`plaintext
 http://localhost:3000
 \`\`\`
 You should now be able to use the chat application. If you encounter any issues, please refer to the documentation or raise an issue on the repository.
 
 ## Folder Structure
 The repository is structured as follows:
-\`\`\`
+
+\`\`\`plaintext
 Chat-App/
 ├── BackEnd/          # Server-side code
 ├── FrontEnd/         # Client-side code
@@ -67,6 +90,7 @@ Chat-App/
 
 ## Contributing
 We welcome contributions to improve the Chat-App. To contribute, follow these steps:
+
 1. Fork the repository.
 2. Create a new branch (\`git checkout -b feature/your-feature-name\`).
 3. Make your changes and commit them (\`git commit -m 'Add new feature'\`).
