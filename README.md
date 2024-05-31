@@ -1,7 +1,3 @@
-https://github.com/tal6203/Chat-App/assets/112417918/50a5eb39-dcbc-42b1-9892-3fb094f23373
-
-
-
 # Chat-App
 
 Welcome to the Chat-App repository! This project is a real-time chat application built with React, Node.js, and MongoDB.
@@ -99,3 +95,6 @@ We welcome contributions to improve the Chat-App. To contribute, follow these st
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+
+https://github.com/tal6203/Chat-App/assets/112417918/50a5eb39-dcbc-42b1-9892-3fb094f23373
