@@ -2794,10 +2794,10 @@ class Chat extends Component {
                 )}
                 <div className="chat-window" ref={this.messagesListRef} onScroll={this.handleScroll}>
                   {loadingOlderMessages && (
-                    <div className="loader-container">
-                      <div className="neon-dot"></div>
-                      <div className="neon-dot"></div>
-                      <div className="neon-dot"></div>
+                     <div className="loader-container">
+                      <div className="loader-message"></div>
+                      <div className="loader-message"></div>
+                      <div className="loader-message"></div>
                     </div>
                   )}
 
