@@ -681,7 +681,7 @@ input[type='search']::-webkit-search-cancel-button {
   position: relative;
 }
 
-.neon-dot {
+.loader-message {
   width: 10px;
   height: 10px;
   border-radius: 50%;
