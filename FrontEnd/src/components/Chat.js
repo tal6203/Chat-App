@@ -10,7 +10,7 @@ import EmojiPicker, { EmojiStyle } from 'emoji-picker-react';
 import { sha1 } from 'crypto-hash';
 import FileUploadComponent from './FileUploadComponent';
 import CustomNavbar from './CustomNavbar';
-
+import Linkify from 'react-linkify';
 
 
 
@@ -2337,6 +2337,11 @@ class Chat extends Component {
     });
 
 
+    const linkDecorator = (href, text, key) => (
+      <a href={href} key={key} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ fontWeight: 'bold' }}>
+        {text}
+      </a>
+    );
 
     return (
       <div className={`container ${this.state.isDarkMode ? 'dark-mode' : ''}`}>
@@ -2838,7 +2843,7 @@ class Chat extends Component {
                                     {(message.content && message.content.length > 100 && !this.state.expandedMessages[message._id])
                                       ? <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}>
 
-                                        {`${message.content.substring(0, 100)}... `}
+                                        <Linkify componentDecorator={linkDecorator}>{`${message.content.substring(0, 100)}... `}</Linkify>
 
                                         <span className="read-more" onClick={(e) => {
                                           e.stopPropagation();
@@ -2850,7 +2855,7 @@ class Chat extends Component {
                                       : (message.content.length > 100 && this.state.expandedMessages[message._id])
                                         ? <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}>
 
-                                          {message.content} {/* Show full message */}
+                                          <Linkify componentDecorator={linkDecorator}>{message.content}</Linkify> {/* Show full message */}
 
                                           <span className="read-more" onClick={(e) => {
                                             e.stopPropagation();
@@ -2859,7 +2864,7 @@ class Chat extends Component {
                                             Read Less
                                           </span>
                                         </div>
-                                        : <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}>{message.content}</div>
+                                        : <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}><Linkify componentDecorator={linkDecorator}>{message.content}</Linkify></div>
                                     }
                                   </>
                             }</div>
