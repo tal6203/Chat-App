@@ -211,7 +211,7 @@ input[type='search']::-webkit-search-cancel-button {
   max-height: calc(100vh - 225px);
   background-size: cover;
   background-position: center;
-  background-image: url('./img/background.png');
+  background-image: url('https://res.cloudinary.com/dfa7zee9i/image/upload/s--TB-F7xJo--/f_auto,q_auto/Background_dethfh');
   transition: background-image 0.5s ease-in-out;
 }
 
