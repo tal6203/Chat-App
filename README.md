@@ -13,6 +13,7 @@ Welcome to the Chat-App repository! This project is a real-time chat application
 - [Accessing the Application](#accessing-the-application)
 - [Folder Structure](#folder-structure)
 - [Contributing](#contributing)
+- [Deployment](#Deployment)
 - [License](#license)
 
 ## Introduction
@@ -92,6 +93,9 @@ We welcome contributions to improve the Chat-App. To contribute, follow these st
 3. Make your changes and commit them (\`git commit -m 'Add new feature'\`).
 4. Push to the branch (\`git push origin feature/your-feature-name\`).
 5. Open a pull request.
+
+## Deployment
+The application is deployed and can be accessed using the following link: [Chat-App](https://chat-app-tal.netlify.app/)
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
