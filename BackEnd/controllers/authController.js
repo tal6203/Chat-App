@@ -84,6 +84,19 @@ const authController = {
     }
   },
 
+  loginGuest: async (req, res) => {
+    try {
+      const guestUser = await User.findOne({ username: 'guest' });
+      const token = jwt.sign({ userId: guestUser._id }, process.env.JWT_SECRET, {
+        expiresIn: '1h'
+      });
+
+      res.json({ user: guestUser, token });
+    } catch (error) {
+      res.status(500).json({ error: 'Guest login failed' });
+    }
+  },
+
   logout: async (req, res) => {
     try {
       req.header('Authorization').replace('Bearer ', '');
