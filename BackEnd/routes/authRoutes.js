@@ -8,6 +8,9 @@ router.post('/register', authController.register);
 // Login
 router.post('/login', authController.login);
 
+// Login-Guest
+router.post('/guest', authController.loginGuest);
+
 //Logout
 router.get('/logout', authController.logout);
 
