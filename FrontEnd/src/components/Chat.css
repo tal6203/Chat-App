@@ -58,6 +58,12 @@ input[type='search']::-webkit-search-cancel-button {
   min-height: 468px;
 }
 
+@media (min-height: 791px) {
+  .chat-list{
+    max-height: 518px;
+    min-height: 518px;
+  }
+  }
 
 @media (max-width: 768px) {
 .chat-list{
