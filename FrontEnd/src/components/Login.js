@@ -47,6 +47,24 @@ class Login extends Component {
     }
   };
 
+  handleGuestLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/auth/guest');
+
+      const { user, token } = response.data;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      // Redirect to chat page
+      window.location.href = '/chat';
+    } catch (error) {
+      this.setState({
+        errorMessage: error.response?.data?.error || 'Failed to login as guest. Please try again.'
+      });
+    }
+  };
+
   render() {
     const { username, password, showPassword, errorMessage } = this.state;
     return (
@@ -91,6 +109,7 @@ class Login extends Component {
             </div>
             <button className='btn-login' type="submit">Sign In <i className="bi bi-send"></i></button>
           </form>
+          <button className='btn-login-guest' onClick={this.handleGuestLogin}>Login as Guest <i className="bi bi-person"></i></button>
           {errorMessage && <div className="error-message" role="alert">{errorMessage}</div>}
           <footer className="footer">
             <div className="footer-content">
