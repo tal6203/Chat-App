@@ -95,7 +95,7 @@ We welcome contributions to improve the Chat-App. To contribute, follow these st
 5. Open a pull request.
 
 ## Deployment
-The application is deployed and can be accessed using the following link: [Chat-App](https://chat-app-tal.netlify.app/){:target="_blank" rel="noopener"}
+The application is deployed and can be accessed using the following link: [Chat-App](https://chat-app-tal.netlify.app/)
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
