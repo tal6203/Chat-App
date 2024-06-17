@@ -140,4 +140,21 @@ input[type="text"], input[type="password"] {
   padding-left: 35px; /* Adjust based on icon size */
 }
 
+.btn-login-guest {
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745; 
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-login-guest i {
+  margin-left: 5px;
+}
 
