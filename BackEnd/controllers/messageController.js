@@ -3,9 +3,73 @@ const Message = require('../models/message');
 const Chat = require('../models/chat');
 const User = require('../models/user');
 
-
+/**
+ * @swagger
+ * tags:
+ *   name: Messages
+ *   description: Message management and retrieval
+ */
 
 const messageController = {
+  /**
+  * @swagger
+  * /message/sendMessage:
+  *   post:
+  *     summary: Send a new message
+  *     tags: [Messages]
+  *     requestBody:
+  *       required: true
+  *       content:
+  *         application/json:
+  *           schema:
+  *             type: object
+  *             properties:
+  *               chatId:
+  *                 type: string
+  *               content:
+  *                 type: string
+  *               senderUsername:
+  *                 type: string
+  *               fileUrl:
+  *                 type: string
+  *               fileType:
+  *                 type: string
+  *     responses:
+  *       201:
+  *         description: The created message
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                 _id:
+  *                   type: string
+  *                 chatId:
+  *                   type: string
+  *                 senderUsername:
+  *                   type: string
+  *                 content:
+  *                   type: string
+  *                 fileUrl:
+  *                   type: string
+  *                 fileType:
+  *                   type: string
+  *                 timestamp:
+  *                   type: string
+  *                 readBy:
+  *                   type: array
+  *                   items:
+  *                     type: object
+  *                     properties:
+  *                       readerId:
+  *                         type: string
+  *                       readAt:
+  *                         type: string
+  *       400:
+  *         description: Invalid or empty message content passed into request
+  *       403:
+  *         description: Chat not found or sender not a member
+  */
   sendMessage: async (req, res) => {
     try {
       const { chatId, content, senderUsername, fileUrl, fileType } = req.body;
@@ -37,7 +101,7 @@ const messageController = {
         sender: sender,
         senderUsername: senderUsername,
         content: content,
-        fileUrl: fileUrl, 
+        fileUrl: fileUrl,
         fileType: fileType,
         readBy: []
       };
@@ -61,7 +125,6 @@ const messageController = {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   },
-
 
   // getMessagesByChatId: async (req, res) => {
   //   try {
@@ -183,6 +246,70 @@ const messageController = {
   //   }
   // },
 
+
+  /**
+  * @swagger
+  * /message/getMessageByChatId/{chatId}:
+  *   get:
+  *     summary: Get messages by chat ID
+  *     tags: [Messages]
+  *     parameters:
+  *       - in: path
+  *         name: chatId
+  *         schema:
+  *           type: string
+  *         required: true
+  *         description: The chat ID
+  *       - in: query
+  *         name: limit
+  *         schema:
+  *           type: integer
+  *         required: false
+  *         description: The number of messages to retrieve
+  *       - in: query
+  *         name: lastMessageId
+  *         schema:
+  *           type: string
+  *         required: false
+  *         description: The last message ID for pagination
+  *     responses:
+  *       200:
+  *         description: A list of messages
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: array
+  *               items:
+  *                 type: object
+  *                 properties:
+  *                   _id:
+  *                     type: string
+  *                   chatId:
+  *                     type: string
+  *                   sender:
+  *                     type: string
+  *                   senderUsername:
+  *                     type: string
+  *                   content:
+  *                     type: string
+  *                   fileUrl:
+  *                     type: string
+  *                   fileType:
+  *                     type: string
+  *                   timestamp:
+  *                     type: string
+  *                   readBy:
+  *                     type: array
+  *                     items:
+  *                       type: object
+  *                       properties:
+  *                         readerId:
+  *                           type: string
+  *                         readAt:
+  *                           type: string
+  *       404:
+  *         description: Chat not found or messages not found
+  */
   getMessagesByChatId: async (req, res) => {
     try {
       const { chatId } = req.params;
@@ -259,6 +386,57 @@ const messageController = {
     }
   },
 
+  /**
+  * @swagger
+  * /message/editMessage/{messageId}:
+  *   put:
+  *     summary: Edit a message
+  *     tags: [Messages]
+  *     parameters:
+  *       - in: path
+  *         name: messageId
+  *         schema:
+  *           type: string
+  *         required: true
+  *         description: The message ID
+  *     requestBody:
+  *       required: true
+  *       content:
+  *         application/json:
+  *           schema:
+  *             type: object
+  *             properties:
+  *               content:
+  *                 type: string
+  *     responses:
+  *       200:
+  *         description: The updated message
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                 _id:
+  *                   type: string
+  *                 chatId:
+  *                   type: string
+  *                 sender:
+  *                   type: string
+  *                 senderUsername:
+  *                   type: string
+  *                 content:
+  *                   type: string
+  *                 fileUrl:
+  *                   type: string
+  *                 fileType:
+  *                   type: string
+  *                 timestamp:
+  *                   type: string
+  *       404:
+  *         description: Message not found
+  *       403:
+  *         description: Unauthorized - You are not the sender of this message
+  */
   editMessage: async (req, res) => {
     try {
       const { messageId } = req.params;
@@ -291,6 +469,31 @@ const messageController = {
     }
   },
 
+  /**
+ * @swagger
+ * /message/deleteMessage:
+ *   post:
+ *     summary: Delete a message
+ *     tags: [Messages]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               messageId:
+ *                 type: string
+ *               deleteForEveryone:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Message deleted successfully
+ *       404:
+ *         description: Message not found
+ *       403:
+ *         description: Unauthorized - You are not the sender of this message
+ */
   deleteMessage: async (req, res) => {
     try {
       const { messageId, deleteForEveryone } = req.body;
