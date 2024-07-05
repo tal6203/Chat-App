@@ -1,8 +1,72 @@
 const Chat = require('../models/chat');
 const User = require('../models/user');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Chats
+ *   description: Chat management and retrieval
+ */
 
 const chatController = {
+  /**
+  * @swagger
+  * /chats/createChat:
+  *   post:
+  *     summary: Create a one-on-one chat
+  *     tags: [Chats]
+  *     requestBody:
+  *       required: true
+  *       content:
+  *         application/json:
+  *           schema:
+  *             type: object
+  *             properties:
+  *               recipientId:
+  *                 type: string
+  *                 description: The recipient's user ID
+  *     responses:
+  *       201:
+  *         description: Chat created or reactivated
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                 chat:
+  *                   type: object
+  *                   properties:
+  *                     _id:
+  *                       type: string
+  *                     chatName:
+  *                       type: string
+  *                     users:
+  *                       type: array
+  *                       items:
+  *                         type: object
+  *                         properties:
+  *                           _id:
+  *                             type: string
+  *                           username:
+  *                             type: string
+  *                           profilePicture:
+  *                             type: string
+  *                     isGroupChat:
+  *                       type: boolean
+  *                     unreadCount:
+  *                       type: array
+  *                       items:
+  *                         type: object
+  *                         properties:
+  *                           userId:
+  *                             type: string
+  *                           count:
+  *                             type: number
+  *       400:
+  *         description: Chat already exists between these users
+  *       404:
+  *         description: User not found
+  */
   createOneOnOneChat: async (req, res) => {
     try {
       const { recipientId } = req.body;
@@ -74,6 +138,77 @@ const chatController = {
     }
   },
 
+  /**
+  * @swagger
+  * /chats/createGroup:
+  *   post:
+  *     summary: Create a group chat
+  *     tags: [Chats]
+  *     requestBody:
+  *       required: true
+  *       content:
+  *         application/json:
+  *           schema:
+  *             type: object
+  *             properties:
+  *               members:
+  *                 type: array
+  *                 items:
+  *                   type: string
+  *                 description: Array of user IDs to be included in the group
+  *               chatName:
+  *                 type: string
+  *                 description: Name of the group chat
+  *               groupPicture:
+  *                 type: string
+  *                 description: URL of the group picture
+  *     responses:
+  *       201:
+  *         description: Group chat created
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                 chat:
+  *                   type: object
+  *                   properties:
+  *                     _id:
+  *                       type: string
+  *                     chatName:
+  *                       type: string
+  *                     users:
+  *                       type: array
+  *                       items:
+  *                         type: object
+  *                         properties:
+  *                           _id:
+  *                             type: string
+  *                           username:
+  *                             type: string
+  *                           profilePicture:
+  *                             type: string
+  *                     isGroupChat:
+  *                       type: boolean
+  *                     unreadCount:
+  *                       type: array
+  *                       items:
+  *                         type: object
+  *                         properties:
+  *                           userId:
+  *                             type: string
+  *                           count:
+  *                             type: number
+  *                     groupAdmin:
+  *                       type: object
+  *                       properties:
+  *                         _id:
+  *                           type: string
+  *                         username:
+  *                           type: string
+  *       400:
+  *         description: You must be part of the group
+  */
   createGroupChat: async (req, res) => {
     try {
       const { members, chatName, groupPicture } = req.body;
@@ -128,6 +263,27 @@ const chatController = {
     }
   },
 
+  /**
+  * @swagger
+  * /chats/resetUnreadCount:
+  *   post:
+  *     summary: Reset unread count for a user in a chat
+  *     tags: [Chats]
+  *     requestBody:
+  *       required: true
+  *       content:
+  *         application/json:
+  *           schema:
+  *             type: object
+  *             properties:
+  *               chatId:
+  *                 type: string
+  *               userId:
+  *                 type: string
+  *     responses:
+  *       200:
+  *         description: Unread count reset
+  */
   resetUnreadCount: async (req, res) => {
     try {
       const { chatId, userId } = req.body;
@@ -142,6 +298,51 @@ const chatController = {
   },
 
 
+  /**
+  * @swagger
+  * /chats/{userId}:
+  *   get:
+  *     summary: Get chats by user ID
+  *     tags: [Chats]
+  *     responses:
+  *       200:
+  *         description: List of chats for the user
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: array
+  *               items:
+  *                 type: object
+  *                 properties:
+  *                   _id:
+  *                     type: string
+  *                   chatName:
+  *                     type: string
+  *                   users:
+  *                     type: array
+  *                     items:
+  *                       type: object
+  *                       properties:
+  *                         _id:
+  *                           type: string
+  *                         username:
+  *                           type: string
+  *                         profilePicture:
+  *                           type: string
+  *                   isGroupChat:
+  *                     type: boolean
+  *                   unreadCount:
+  *                     type: array
+  *                     items:
+  *                       type: object
+  *                       properties:
+  *                         userId:
+  *                           type: string
+  *                         count:
+  *                           type: number
+  *                   lastMessage:
+  *                     type: string
+  */
   getChatsByUserId: async (req, res) => {
     try {
       const userId = req.userId;
@@ -170,7 +371,41 @@ const chatController = {
     }
   },
 
-
+  /**
+   * @swagger
+   * /chats/renameGroup:
+   *   put:
+   *     summary: Update group chat name
+   *     tags: [Chats]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               chatId:
+   *                 type: string
+   *               newGroupName:
+   *                 type: string
+   *     responses:
+   *       200:
+   *         description: Group name updated successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                 chat:
+   *                   type: object
+   *                   properties:
+   *                     _id:
+   *                       type: string
+   *                     chatName:
+   *                       type: string
+   */
   updateGroupName: async (req, res) => {
     try {
       const { chatId, newGroupName } = req.body;
@@ -194,6 +429,41 @@ const chatController = {
     }
   },
 
+  /**
+   * @swagger
+   * /chats/updateGroupPicture:
+   *   put:
+   *     summary: Update group chat picture
+   *     tags: [Chats]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               chatId:
+   *                 type: string
+   *               newGroupPicture:
+   *                 type: string
+   *     responses:
+   *       200:
+   *         description: Group picture updated successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                 chat:
+   *                   type: object
+   *                   properties:
+   *                     _id:
+   *                       type: string
+   *                     groupPicture:
+   *                       type: string
+   */
   updateGroupPicture: async (req, res) => {
     try {
       const { chatId, newGroupPicture } = req.body;
@@ -242,6 +512,52 @@ const chatController = {
   //   }
   // },
 
+  /**
+  * @swagger
+  * /chats/group/delete-users:
+  *   delete:
+  *     summary: Delete users from a group chat
+  *     tags: [Chats]
+  *     requestBody:
+  *       required: true
+  *       content:
+  *         application/json:
+  *           schema:
+  *             type: object
+  *             properties:
+  *               chatId:
+  *                 type: string
+  *               usersToDelete:
+  *                 type: array
+  *                 items:
+  *                   type: string
+  *     responses:
+  *       200:
+  *         description: Users removed from the group successfully
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                 message:
+  *                   type: string
+  *                 chat:
+  *                   type: object
+  *                   properties:
+  *                     _id:
+  *                       type: string
+  *                     users:
+  *                       type: array
+  *                       items:
+  *                         type: object
+  *                         properties:
+  *                           _id:
+  *                             type: string
+  *                           username:
+  *                             type: string
+  *                           profilePicture:
+  *                             type: string
+  */
   deleteUsersFromGroup: async (req, res) => {
     try {
       const { chatId, usersToDelete } = req.body;
@@ -307,6 +623,52 @@ const chatController = {
   //   }
   // },
 
+  /**
+   * @swagger
+   * /chats/group/add-users:
+   *   put:
+   *     summary: Add users to a group chat
+   *     tags: [Chats]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               chatId:
+   *                 type: string
+   *               usersToAdd:
+   *                 type: array
+   *                 items:
+   *                   type: string
+   *     responses:
+   *       200:
+   *         description: Users added to the group successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                 chat:
+   *                   type: object
+   *                   properties:
+   *                     _id:
+   *                       type: string
+   *                     users:
+   *                       type: array
+   *                       items:
+   *                         type: object
+   *                         properties:
+   *                           _id:
+   *                             type: string
+   *                           username:
+   *                             type: string
+   *                           profilePicture:
+   *                             type: string
+   */
   addUsersToGroup: async (req, res) => {
     try {
       const { chatId, usersToAdd } = req.body;
@@ -346,6 +708,43 @@ const chatController = {
     }
   },
 
+  /**
+  * @swagger
+  * /chats/group/shared-chat-groups:
+  *   get:
+  *     summary: Get shared chat groups between two users
+  *     tags: [Chats]
+  *     parameters:
+  *       - in: query
+  *         name: partnerId
+  *         schema:
+  *           type: string
+  *         required: true
+  *         description: The partner's user ID
+  *     responses:
+  *       200:
+  *         description: List of shared groups
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: array
+  *               items:
+  *                 type: object
+  *                 properties:
+  *                   _id:
+  *                     type: string
+  *                   chatName:
+  *                     type: string
+  *                   users:
+  *                     type: array
+  *                     items:
+  *                       type: object
+  *                       properties:
+  *                         _id:
+  *                           type: string
+  *                         username:
+  *                           type: string
+  */
   getSharedChatGroups: async (req, res) => {
     try {
       const currentUserId = req.userId;
@@ -368,6 +767,48 @@ const chatController = {
     }
   },
 
+  /**
+   * @swagger
+   * /chats/deleteChat:
+   *   post:
+   *     summary: Delete a chat
+   *     tags: [Chats]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               chatId:
+   *                 type: string
+   *     responses:
+   *       200:
+   *         description: Chat deleted successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                 chat:
+   *                   type: object
+   *                   properties:
+   *                     _id:
+   *                       type: string
+   *                     users:
+   *                       type: array
+   *                       items:
+   *                         type: object
+   *                         properties:
+   *                           _id:
+   *                             type: string
+   *                           username:
+   *                             type: string
+   *                           profilePicture:
+   *                             type: string
+   */
   deleteChat: async (req, res) => {
     try {
       const { chatId } = req.body;
@@ -420,7 +861,7 @@ const chatController = {
         .populate([{
           path: 'users',
           select: 'username profilePicture',
-        },{ path: 'groupAdmin', select: 'username' }]);
+        }, { path: 'groupAdmin', select: 'username' }]);
       res.status(200).json({ message: 'Chat deleted successfully', chat: updatedChat });
     } catch (error) {
       console.error('Error deleting chat:', error);
