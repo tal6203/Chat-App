@@ -1,8 +1,40 @@
 const User = require('../models/user');
 const mongoose = require('mongoose');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management and retrieval
+ */
 const userController = {
-
+ /**
+   * @swagger
+   * /users:
+   *   get:
+   *     summary: Retrieve a list of users
+   *     tags: [Users]
+   *     responses:
+   *       200:
+   *         description: A list of users
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: object
+   *                 properties:
+   *                   _id:
+   *                     type: string
+   *                   username:
+   *                     type: string
+   *                   password:
+   *                     type: string
+   *                   profilePicture:
+   *                     type: string
+   *                   status:
+   *                     type: string
+   */
   getAllUsers: async (req, res) => {
     try {
       const users = await User.find();
@@ -15,6 +47,40 @@ const userController = {
     }
   },
 
+  /**
+   * @swagger
+   * /users/{userId}:
+   *   get:
+   *     summary: Retrieve a user by ID
+   *     tags: [Users]
+   *     parameters:
+   *       - in: path
+   *         name: userId
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The user ID
+   *     responses:
+   *       200:
+   *         description: A single user
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 _id:
+   *                   type: string
+   *                 username:
+   *                   type: string
+   *                 password:
+   *                   type: string
+   *                 profilePicture:
+   *                   type: string
+   *                 status:
+   *                   type: string
+   *       404:
+   *         description: User not found
+   */
   getUserById: async (req, res) => {
     try {
       const { userId } = req.params;
@@ -38,6 +104,39 @@ const userController = {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   },
+
+  /**
+   * @swagger
+   * /users/search/{username}:
+   *   get:
+   *     summary: Search for users by username
+   *     tags: [Users]
+   *     parameters:
+   *       - in: path
+   *         name: username
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The username to search for
+   *     responses:
+   *       200:
+   *         description: A list of matching users
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: object
+   *                 properties:
+   *                   _id:
+   *                     type: string
+   *                   username:
+   *                     type: string
+   *                   profilePicture:
+   *                     type: string
+   *                   status:
+   *                     type: string
+   */
   searchUsers: async (req, res) => {
     try {
       const { username } = req.params;
@@ -54,6 +153,47 @@ const userController = {
     }
   },
 
+   /**
+   * @swagger
+   * /users/{userId}:
+   *   put:
+   *     summary: Update a user's profile
+   *     tags: [Users]
+   *     parameters:
+   *       - in: path
+   *         name: userId
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The user ID
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               profilePicture:
+   *                 type: string
+   *               status:
+   *                 type: string
+   *     responses:
+   *       200:
+   *         description: The updated user profile
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 _id:
+   *                   type: string
+   *                 username:
+   *                   type: string
+   *                 profilePicture:
+   *                   type: string
+   *                 status:
+   *                   type: string
+   */
   updateProfile: async (req, res) => {
     try {
       const { userId } = req.params;
@@ -75,6 +215,38 @@ const userController = {
     }
   },
 
+   /**
+   * @swagger
+   * /users/{userId}:
+   *   delete:
+   *     summary: Delete a user's account
+   *     tags: [Users]
+   *     parameters:
+   *       - in: path
+   *         name: userId
+   *         schema:
+   *           type: string
+   *         required: true
+   *         description: The user ID
+   *     responses:
+   *       200:
+   *         description: Information about the deleted user
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 _id:
+   *                   type: string
+   *                 username:
+   *                   type: string
+   *                 profilePicture:
+   *                   type: string
+   *                 status:
+   *                   type: string
+   *       404:
+   *         description: User not found
+   */
   deleteOwnAccount: async (req, res) => {
     try {
       const userId = req.params.userId;
