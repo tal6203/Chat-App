@@ -39,25 +39,25 @@ app.use('/users', userRoutes);
 app.use('/chats', chatRoutes);
 app.use('/message', messageRoutes);
 
-const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Chat API',
-      version: '1.0.0',
-      description: 'API Documentation for Chat Application',
-    },
-    servers: [
-      {
-        url: `http://localhost:${process.env.PORT || 8080}`, // Change to your server URL
-      },
-    ],
-  },
-  apis: ['./routes/*.js', './controllers/*.js'], // Paths to your API files
-};
+// const swaggerOptions = {
+//   swaggerDefinition: {
+//     openapi: '3.0.0',
+//     info: {
+//       title: 'Chat API',
+//       version: '1.0.0',
+//       description: 'API Documentation for Chat Application',
+//     },
+//     servers: [
+//       {
+//         url: `http://localhost:${process.env.PORT || 8080}`, // Change to your server URL
+//       },
+//     ],
+//   },
+//   apis: ['./routes/*.js', './controllers/*.js'], // Paths to your API files
+// };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+// const swaggerDocs = swaggerJsDoc(swaggerOptions);
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 
 
