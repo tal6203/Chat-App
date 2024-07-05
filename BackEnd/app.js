@@ -49,7 +49,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `https://chat-app-tal.netlify.app`, // Change to your server URL
+        url: `http://localhost:${process.env.PORT || 8080}`, // Change to your server URL
       },
     ],
   },
