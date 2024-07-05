@@ -8,6 +8,8 @@ const chatRoutes = require('./routes/chatRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const Chat = require('./models/chat');
 const Message = require('./models/message');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 require('dotenv').config();
 
@@ -36,6 +38,26 @@ app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/chats', chatRoutes);
 app.use('/message', messageRoutes);
+
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Chat API',
+      version: '1.0.0',
+      description: 'API Documentation for Chat Application',
+    },
+    servers: [
+      {
+        url: `https://chat-app-tal.netlify.app`, // Change to your server URL
+      },
+    ],
+  },
+  apis: ['./routes/*.js', './controllers/*.js'], // Paths to your API files
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 
 
