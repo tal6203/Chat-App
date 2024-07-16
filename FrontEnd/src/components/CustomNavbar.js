@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, Modal, Form, Button } from 'react-bootstrap';
-import { BsFillSunFill, BsFillMoonFill, BsDoorOpenFill } from 'react-icons/bs';
+import { BsFillSunFill, BsFillMoonFill, BsDoorOpenFill, BsX, BsList } from 'react-icons/bs';
 import { Navigate } from 'react-router-dom';
 import Switch from 'react-switch';
 import axios from 'axios';
@@ -22,6 +22,7 @@ class CustomNavbar extends Component {
       isImageZoomed: false,
       isUploading: false,
       fileName: '',
+      isNavbarOpen: false,
     };
   }
 
@@ -156,10 +157,14 @@ class CustomNavbar extends Component {
     }));
   };
 
+  handleNavbarToggle = () => {
+    this.setState((prevState) => ({ isNavbarOpen: !prevState.isNavbarOpen }));
+  };
+
   render() {
     const currentUser = JSON.parse(localStorage.getItem("user"));
     const { isDarkMode, navigateTo, showProfileModal, newProfilePicture, newStatus, showEmojiPicker,
-      isImageZoomed, isUploading, fileName } = this.state;
+      isImageZoomed, isUploading, fileName, isNavbarOpen } = this.state;
 
     if (navigateTo) {
       return <Navigate to={navigateTo} replace />;
@@ -185,7 +190,9 @@ class CustomNavbar extends Component {
               <span className="username-nav">{currentUser.username}</span>
             </div>
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" onClick={this.handleNavbarToggle}>
+            {isNavbarOpen ? <BsX style={{ height: '30px', width: '30px' }} /> : <BsList style={{ height: '30px', width: '30px' }} />}
+          </Navbar.Toggle>
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="ms-auto d-flex align-items-center flex-row">
               <div className='switch-nav-responsive'>
