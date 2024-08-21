@@ -101,5 +101,5 @@ The application is deployed and can be accessed using the following link: [Chat-
 ## 📜 License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
+https://github.com/user-attachments/assets/b6e20028-78e3-476f-be1b-76b7e2663557
 
-[https://github.com/tal6203/Chat-App/assets/112417918/50a5eb39-dcbc-42b1-9892-3fb094f23373](https://github.com/tal6203/Chat-App/assets/112417918/50a5eb39-dcbc-42b1-9892-3fb094f23373)
