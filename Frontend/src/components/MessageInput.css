@@ -1,0 +1,152 @@
+.message-input-area {
+    padding: 10px;
+    background-color: #e9ecef;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+    border-top: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    bottom:0;
+    z-index: 1;
+  }
+
+  .message-input-area textarea {
+    border-radius: 10px;
+    resize: none;
+    color: var(--text-dark);
+    border: 1px solid #ccc;
+    flex-grow: 1;
+    padding: 8px;
+    margin-right: 10px;
+  }
+  
+  .message-input-area textarea:focus {
+    outline: none;
+    border-color: #25D366; /* WhatsApp green */
+  }
+
+  .emoji-picker {
+    position: absolute;
+    bottom: 60px; /* Height of the message-input-area */
+    left: 10px; /* Adjust as needed */
+    z-index: 1000; /* Ensure it's above other content */
+  }
+
+  .emoji-text-area {
+    background-color: #fff;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    margin-right: 10px; /* Spacing between button and input */
+    border: none;
+    width: 30px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .emoji-text-area:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+
+  .send-btn {
+    background-color: #128C7E; /* WhatsApp green */
+    transition: background-color 0.3s ease;
+    border-radius: 8px; /* Slightly less rounded */
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .send-btn i {
+    margin-right: 5px;
+    transition: transform 0.3s ease;
+  }
+  
+  .send-btn:hover {  
+    background-color: #25D366; /* Slightly darker green on hover */
+    opacity: 0.8; /* Slightly less emphasis on hover */
+    transform: scale(1.02);
+  }
+  
+  .send-btn:hover i {
+    transform: rotate(45deg); /* Less pronounced rotation */
+  }
+
+  .send-btn:disabled{
+    background-color: #ccc;
+      cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    .message-input-area textarea {
+        font-size: 1em; /* Ensure textarea font size is readable */
+      }
+
+      .emoji-text-area {
+        display: none;
+      }
+
+      .send-btn i {
+        transform: rotate(45deg);
+        
+      }
+    
+      .send-btn {
+        background-color: #25D366; /* Slightly darker green on hover */
+      }
+    
+      .send-btn:hover {
+        transform:none; /* Slightly darker green on hover */
+      }
+    
+      .send-btn{
+        border-radius: 50%;
+        padding: 10px 15px; /* Larger touch targets for buttons */
+      }
+    
+      .send-btn i{
+        font-size: 1.5em; /* Larger icons for better visibility and touch */
+      }
+
+      .text-for-phone{
+        display:none;
+      }
+  }
+
+  .dark-mode .message-input-area{
+    background-color: #333;
+  }
+
+  .dark-mode .emoji-text-area{
+    border: 2px solid #1f1f1f;
+    background-color: #333;
+      color: white;
+  }
+  
+  .dark-mode .emoji-text-area:hover{
+    background-color: #d3d4d5;
+  }
+
+  .dark-mode .send-btn{
+    background-color: #25D366;
+    font-weight:bolder;
+    color: #333;
+  }
+
+  .dark-mode .epr_-blo395{
+    background-color: #333;
+  }
+  
+  .dark-mode .epr_6daqyu{
+    background-color: #333;
+  }

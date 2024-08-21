@@ -1,0 +1,179 @@
+.custom-navbar {
+  background-color: #07a040; /* WhatsApp green */
+  color: white;
+  width: 100%; /* Ensure the navbar spans the full width */
+  padding: 10px 20px;
+  border-radius:20px 20px 0px 0px; 
+ }
+
+ .username-section {
+   display: flex;
+   align-items: center;
+ }
+ 
+ .username-nav {
+   font-weight: bold; /* Bold font for emphasis */
+   color: #fff; /* White text for contrast */
+   font-size: 18px; 
+ }
+
+ .navbar-toggler {
+   margin-right: 10px;
+ }
+ 
+ .custom-navbar .navbar-brand {
+   display: flex;
+   align-items: center;
+   margin-left: 10px;
+ }
+
+ .profile-preview{
+   display: flex;
+   justify-content: center;
+   margin-top: 10px;
+ }
+
+ .profile-preview-img:hover{
+   cursor: zoom-in;
+ }
+ 
+ .custom-navbar .profile-picture {
+   border-radius: 50%;
+   height: 40px;
+   width: 40px;
+   margin-right: 10px;
+ }
+ 
+ 
+ .custom-navbar .nav {
+   margin-left: auto;
+ }
+
+ @keyframes spin {
+   0% { transform: rotate(0deg); }
+   100% { transform: rotate(360deg); }
+ }
+
+.spin-icon {
+ animation: spin 1s linear infinite; 
+}
+
+ 
+
+ .profile-section {
+   display: flex;
+   align-items: center;
+ }
+ 
+ .image-container {
+   position: relative;
+ }
+ 
+ .profile-image {
+   width: 50px;
+   height: 50px;
+   border-radius: 50%;
+ }
+ 
+ .overlay {
+   position: absolute;
+   bottom: 0;  /* Align to the bottom edge */
+   left: 0;  /* Align to the left edge */
+   border-radius: 0 0 25px 25px;  /* Ensure rounded bottom corners */
+   width: 50px;  /* Match the width of the profile image */
+   height: 25px;  /* Height should be half the profile image's height */
+   padding: 0;  /* Remove padding for better alignment */
+   background: rgba(0, 0, 0, 0.5);  /* Semi-transparent black */
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   color: white;
+   opacity: 0;  /* Initially hidden */
+   transition: opacity 0.3s;  /* Smooth transition */
+ }
+ 
+ .image-container:hover .overlay {
+   opacity: 1;
+ }
+
+ .image-container:hover {
+   cursor: pointer;
+ }
+ 
+ .label-upload-new-pic {
+   color: #333; 
+   font-weight: bold;
+ }
+ 
+ .label-change-status {
+   color: #333; 
+   font-weight: bold;
+ }
+
+ @media (max-width: 999px) {
+   .navbar-nav {
+     flex-direction: column; /* Stack items vertically */
+     justify-content:space-between;
+     align-items: flex-start; /* Align items to the left for smaller screens */
+     padding: 10px;
+   }
+   .switch-nav-responsive{
+     margin-left: 10px;
+   }
+ }
+
+ .dark-mode .custom-navbar {
+  background-color: #1f1f1f; /* Dark mode background color */
+   color: white;
+ }
+ 
+ .dark-mode .custom-navbar .navbar-brand,
+ .dark-mode .custom-navbar{
+   color: white;
+ }
+
+
+ .dark-mode .model-footer-edit-pic-status{
+  background-color: #333;
+ }
+
+ .dark-mode .title-model-edit-pic-status{
+  color: white;
+ }
+ 
+ 
+ 
+
+ 
+ 
+
+ .dark-mode .navbar-toggler {
+   background-color: white; /* Ensure there's no unwanted background */
+   border-color: white; /* Use fill to change the color of SVG elements */
+ }
+
+ .dark-mode .overlay {
+   background: rgba(255, 255, 255, 0.5); /* Semi-transparent white for dark backgrounds */
+   color: black; /* Black text to contrast with white background */
+   opacity: 0; /* Initially hidden */
+   transition: opacity 0.3s ease-in-out; /* Smooth transition for better UX */
+ }
+ 
+ .dark-mode .image-container:hover .overlay {
+   opacity: 1; /* The overlay becomes visible on hover */
+ }
+
+ .dark-mode .model-edit-pic-status-body{
+   background-color: #333;
+ }
+ 
+ .dark-mode .image-container:hover {
+   cursor: pointer; /* Retains the same behavior in dark mode */
+ }
+
+ .dark-mode .label-upload-new-pic , .dark-mode .label-change-status {
+   color: white;
+ }
+
+ 
+ 

@@ -1,0 +1,74 @@
+.modal-readBy-header {
+    background-color: #25D366; /* WhatsApp green */
+    color: white; /* White text color */
+  }
+
+  .reader-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .reader-info img {
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    width: 40px;
+    height: 40px
+  }
+
+  .reader-info .username {
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  
+  .username-readBy{
+    color: black;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  
+  .modal-body {
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .reader-info .read-time {
+    font-size: 14px;
+    color: #666;
+    margin-left: auto;
+  }
+
+  .btn-close-modal-readBy {
+    background-color: #25D366; /* WhatsApp green */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+  }
+
+  .dark-mode .modal-readBy-header {
+    background-color: #333;
+    color: white;
+  }
+
+  .dark-mode .modal-readBy-body{
+    background-color: white;
+  }
+
+  .dark-mode .username-readBy{
+    color: black;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+
+  .dark-mode .modal-readBy-footer {
+    background-color: white;
+  }
+
+  .dark-mode .btn-close-modal-readBy{
+    background-color: #333;
+    color: white;
+  }
+  
+  
+  

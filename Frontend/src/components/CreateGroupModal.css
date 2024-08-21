@@ -1,0 +1,93 @@
+ .model-create-group .title-create-group {
+    color: #07a040;
+    font-weight: bold;
+  }
+
+  .create-group-name {
+    color: #333; 
+    font-weight: bold;
+  }
+
+  .container-update-chat-group-name-emoji{
+    display: flex;
+    align-items: center; /* Ensures vertical alignment */
+    margin-bottom: 10px;
+  }
+
+
+  .emoji-picker-button {
+    background-color: #fff;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    margin-right: 10px; /* Spacing between button and input */
+  }
+  
+  
+  .emoji-picker-button:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  
+  .emoji-picker-for-create-group {
+    position: absolute;
+    bottom: -50px; /* Height of the message-input-area */
+    left: 10px; /* Adjust as needed */
+    z-index: 1000; /* Ensure it's above other content */
+  }
+
+  .create-group-groupChatPicture{
+    color: #333; 
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .create-group-search-users{
+    color: #333; 
+    font-weight: bold;
+  }
+
+  .checkbox-user{
+    color: black;
+  }
+  
+  @media (max-width: 768px) {
+    .emoji-picker-button {
+        display: none;
+    }
+  
+  }
+
+ .dark-mode .title-create-group {
+    color: white;
+    font-weight: bold;
+  }
+
+
+  .dark-mode .model-create-group .modal-body{
+    background-color: #333;
+  }
+
+
+  .dark-mode .create-group-footer{
+    background-color: #333;
+  }
+
+
+  .dark-mode .emoji-picker-button{
+    background-color: #333;
+      color: white;
+      border: none;
+  }
+  
+  .dark-mode .emoji-picker-button:hover{
+    background-color: #d3d4d5;
+  }
+
+  .dark-mode .checkbox-user{
+    color: white;
+  }
+  

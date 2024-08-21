@@ -1,0 +1,283 @@
+.modal-chat-details .modal-header .title-chat-details {
+    color: #07a040; 
+    font-weight: bold; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    width: 100%;
+  }
+
+  .container-update-chat-group-name-emoji{
+    display: flex;
+    align-items: center; /* Ensures vertical alignment */
+    margin-bottom: 10px;
+  }
+
+  .emoji-picker-button {
+    background-color: #fff;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    margin-right: 10px; /* Spacing between button and input */
+  }
+
+  
+.emoji-picker-button:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .modal-chat-details .modal-body .form-label {
+    color: #333; 
+    font-weight: bold; 
+  }
+
+  .modal-chat-details .modal-body .selected-users {
+    font-weight: bold; 
+    color: #333; 
+    margin-bottom: 10px;
+  }
+
+  .modal-chat-details .modal-body {
+    background-color: '#fff'; 
+    color: '#333';
+    max-height: '550px';
+    overflow-y: 'auto';
+  }
+
+  .emoji-picker-for-modal-details {
+    position: absolute;
+    bottom: 345px; /* Height of the message-input-area */
+    left: 10px; /* Adjust as needed */
+    z-index: 1000; /* Ensure it's above other content */
+  }
+
+  .scrollable-container {
+    max-height: 150px;
+    overflow-y: auto;
+    /* Ensure scroll bar styling here if needed */
+  }
+
+  .chat-container-modal-user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 400px;
+    margin: auto;
+  }
+
+  .chat-header-modal-user {
+    background-color: #25d366;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    width: 100%;
+    padding: 10px 15px;
+    box-sizing: border-box;
+  }
+
+  .chat-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  
+.user-status-modal-user {
+    font-size: 14px;
+    margin: 5px 0 0;
+  }
+
+  .status-text-modal-user {
+    font-weight: normal;
+  }
+
+  .shared-groups-container {
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .shared-groups-title {
+    color: #128C7E;
+    font-weight: bold;
+    font-size: 1.2em; /* Larger font size */
+    letter-spacing: 0.05em; /* Letter spacing for elegance */
+    margin: 0 0 20px;
+    position: relative; /* For pseudo-elements */
+    padding-bottom: 5px; /* Space for the underline */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
+  }
+  
+  .shared-groups-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px; /* Height of the underline */
+    width: 30%; /* Width of the underline */
+    background-color: #128C7E; /* Same as text color */
+    border-radius: 2px; /* Rounded corners */
+    transition: width 0.3s ease-in-out; /* Smooth transition for hover effect */
+  }
+  
+  .shared-groups-title:hover::after {
+    width: 100%; /* Full width on hover */
+  }
+
+  .groups-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .group-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    transition: background-color 0.2s;
+  }
+  
+  .group-item:hover {
+    background-color: #f0f0f0;
+  }
+
+  .group-image {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    border-radius: 50%;
+  }
+
+  .group-name {
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .no-groups {
+    font-style: italic;
+    color: #999;
+    margin: 10px 0;
+  }
+
+
+  @media (max-width: 768px) {
+    .emoji-picker-button {
+        display: none;
+    }
+}
+
+
+
+.dark-mode .modal-body {
+    background-color: #333;
+    color: white;
+}
+
+.dark-mode .modal-header{
+  background-color: #333;
+}
+ 
+.dark-mode .modal-chat-details .modal-body .form-label{
+    color: white;
+  }
+
+.dark-mode .title-chat-details span {
+    color: white; 
+  }
+  
+  .dark-mode .modal-chat-details .modal-body .form-label{
+    color: white; 
+  }
+
+  .dark-mode .modal-body .selected-users {
+    color: white; 
+  }
+
+  .dark-mode .emoji-picker-button{
+    background-color: #333;
+      color: white;
+      border: none;
+  }
+  
+  .dark-mode .emoji-picker-button:hover{
+    background-color: #d3d4d5;
+  }
+
+  .dark-mode .chat-container-modal-user {
+    background-color: #2e2e2e; /* Dark background */
+    color: white; /* Light text for contrast */
+  }
+
+  .dark-mode .chat-header-modal-user {
+    background-color: #333; /* Darker header background */
+    color: white; /* Light text */
+  }
+
+  .dark-mode .chat-name {
+    color: white; /* Ensure text is readable in dark mode */
+  }
+  
+  .dark-mode .status-text-modal-user {
+    color: white; /* Lighter text for user status */
+  }
+
+
+  .dark-mode .shared-groups-container {
+    background-color: #444; /* Darker container background */
+    color: white; /* Light text */
+  }
+
+  .dark-mode .shared-groups-title {
+    color: #25d366;
+  }
+  
+  .dark-mode .shared-groups-title::after {
+    background-color: #25d366;
+  }
+
+  .dark-mode .groups-list {
+    background-color: #333; /* Darker background for group list */
+    color: white; /* Light text */
+  }
+
+  .dark-mode .group-item {
+    background-color: #555; /* Background for individual group item */
+    color: white; /* Light text */
+  }
+
+  .dark-mode .group-image {
+    border: 1px solid #777; /* Border for group image */
+  }
+  
+  .dark-mode .group-name {
+    color: white; /* Light text for group names */
+  }
+
+  .dark-mode .no-groups {
+    color: #bbb; /* Light text for 'no groups' message */
+  }
+  
+  .dark-mode .search-members-result{
+    color: black;
+  }
+
+  .dark-mode .no-result-search-add-group{
+    color: white;
+  }
+
+  .dark-mode  .group-members{
+    color: black;
+  }
+
+
+  

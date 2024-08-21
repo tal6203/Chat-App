@@ -1,0 +1,30 @@
+.context-menu {
+    position: absolute;
+    z-index: 1000;
+    background-color: white; /* Light background */
+    border: 1px solid #E0E0E0; /* Subtle border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Simplified shadow */
+    padding: 8px;
+    border-radius: 8px; /* Rounded corners */
+    color: #333333; /* Darker text color for readability */
+  }
+  
+  .context-menu div {
+    padding: 8px 12px; /* Maintain padding for touch targets */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+    border-bottom: 1px solid gray;
+  }
+  
+  .context-menu div:hover {
+    background-color: #e9ecef; /* Subtle change on hover */
+    color: #333;
+    box-shadow: none; /* Removed for a cleaner look */
+  }
+
+
+
+  .dark-mode .context-menu{
+    background-color: #333;
+    color: white;
+  }

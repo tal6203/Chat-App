@@ -1,0 +1,301 @@
+.register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: auto;
+    margin-top: 5%;
+    width: 90%;
+  }
+
+  .register-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Ensures the form takes up the container width */
+  }
+  
+  
+  .input-group {
+    margin-bottom: 15px;
+    width: 100%;
+    position: relative;
+  }
+  
+  .input-group file-input label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+
+  input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+  }
+
+
+  input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    outline: none;  
+  }
+  
+  .popover {
+    position: absolute;
+    top: 100%;
+    left: 105%; /* Push it to the right of the input field */
+    transform: translateY(-50%); /* Center it vertically relative to the input field */
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 200px; /* Adjust width as necessary */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+    display: none; /* Initially hidden */
+  }
+  
+  .input-group:focus-within .popover {
+    display: block; /* Show the popover when the input group is focused */
+  }
+  
+  .password-criteria li {
+    list-style: none;
+    margin-bottom: 4px;
+  }
+  
+  .password-criteria li.valid {
+    color: green;
+  }
+  
+  .password-criteria li.invalid {
+    color: red;
+  }
+  
+  .image-preview img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .image-preview button {
+    margin-top: 10px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .btn-register{
+    width: 100%;
+    max-width: 300px;
+    padding: 12px 20px;
+    background-color: #25D366;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-register:hover {
+    background-color: #1da351;
+  }
+  
+  .input-group.file-input label {
+    display: block;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+  
+  
+  .btn-register:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  .upload-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #25D366;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 16px;
+  }
+
+  .reload-button {
+    width: 20%;
+    padding: 10px;
+    background-color: #ccc;
+    cursor: not-allowed;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 16px;
+  }
+  
+  .upload-button:hover {
+    background-color: #1da351;
+  }
+  
+  .reload-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .image-preview img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .image-preview button {
+    display: block;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+  
+  .input-group.file-input {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+
+
+  
+  
+  .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+  }
+
+  
+  .toggle-password:focus {
+    outline: none;
+  }
+
+
+  
+  .input-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+
+
+  input[type="text"], input[type="password"] {
+    padding-left: 35px; /* Adjust based on icon size */
+  }
+
+  .input-valid {
+    border: 2px solid green;
+  }
+  
+  .input-invalid {
+    border: 2px solid red;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .spin-icon {
+    animation: spin 1s linear infinite;
+  }
+  
+  
+ 
+  
+  @media (max-width: 600px) {
+    .register-container {
+        width: 95%;
+        padding: 15px;
+        margin-top: 10%;
+    }
+
+    .input-group input[type="text"],
+    .input-group input[type="password"]{
+      padding-left: 30px;
+    }
+
+    .input-group input[type="file"] {
+        padding: 15px; /* larger touch targets */
+    }
+
+    .toggle-password {
+        right: 5px; /* Adjust for smaller screens */
+    }
+}
+
+@media (max-width: 768px) {
+  .popover {
+      left: 50%; /* Center horizontally */
+      top:195%;
+      transform: translate(-50%, 20px); /* Center horizontally and move slightly down */
+      width: 90%; /* Make it wider to fit smaller screens better */
+  }
+}
+
+.footer-register {
+  padding: 10px;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.9em;
+  color: #666;
+}
+  
+
+ 

@@ -1,0 +1,383 @@
+/* ChatList.css */
+.chat-list-header {
+    position: sticky;
+    top: 0;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    background-color: #25d366;
+    color: white;
+    z-index: 1;
+}
+
+.chat-list-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    justify-content: space-between;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding-right: 50px;
+    background-color: #fff;
+    border-radius: 10px;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.chat-list-item:hover {
+    background-color: #e9ecef; /* Slightly grey on hover */
+    color: var(--text-dark);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transform: translateY(-2px);
+  }
+  
+  .chat-list-item, .send-btn, .close-button {
+    transition: all 0.3s ease;
+  }
+
+  .status-indicator {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); /* More subtle shadow */
+    transition: transform 0.3s ease;
+    margin-left: auto;
+    align-self: center;
+  }
+
+  
+.connect{
+    background-color: #25D366;
+  }
+
+
+  .disconnect{
+    background-color: #e84118;
+  }
+
+  .chat-list-item:hover .status-indicator {
+    transform: scale(1.1); /* Keep the subtle scaling effect */
+  }
+
+.search-bar input[type='search'] {
+    border: 1px solid #ced4da; /* Subtle border */
+    padding: 8px;
+    border-radius: 20px;
+    transition: border-color 0.3s ease;
+  }
+  
+  
+  .no-matching-contacts,.other-users,.no-new-users-found{
+    padding: 5px;
+    color: black; /* Default color */
+  }
+  
+  .search-bar input[type='search']:focus {
+    outline: none;
+    border-color: #25D366; /* WhatsApp green for focus */
+  }
+  
+  .search-bar input[type='search']::placeholder {
+    color: #6c757d; /* Grey placeholder text */
+  }
+
+  .Existing-Contacts  {
+    padding: 5px;
+    color: black; /* Default color */
+  }
+
+  .create-group-btn {
+    background-color: #25D366; /* WhatsApp green */
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    border-radius: 20px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    width: auto; /* Adjusted for proper alignment */
+    margin: 10px auto;
+  }
+  
+  .create-group-btn:hover {
+    background-color: #106a63; /* Slightly darker green */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .create-group-btn i { /* Assuming you add an icon */
+    margin-right: 10px;
+  }
+  
+  .create-group-btn:hover {
+    background-color: #075E54; /* Darker shade of green for hover */
+  }
+
+  .chat-list {
+    padding-top: 10px;
+    min-height: 468px;
+  }
+
+
+  .profile-image {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+
+  .user-info {
+    flex-grow: 1;
+    margin-left: 5px;
+  }
+
+  .username-container {
+    display: flex;
+    flex-direction: row; /* Forces elements to stay in a row */
+    white-space: nowrap; /* Prevents wrapping */
+    align-items: center; /* Ensures vertical alignment */
+  }
+
+  .username {
+    display: block; /* Make the username take the full width */
+    font-weight: bold;
+  }
+
+  .unread-badge {
+    font-weight: bold;
+    box-shadow: none; /* Removed for a cleaner look */
+    background-color: #007bff; /* WhatsApp green */
+    color: white;
+    border-radius: 50%;
+    padding: 4px 8px;
+    font-size: 0.9em; /* Slightly larger for readability */
+    margin-left: 10px;
+    --bs-badge-padding-x: 0.65em;
+      --bs-badge-padding-y: 0.35em;
+      --bs-badge-font-size: 0.75em;
+      --bs-badge-font-weight: 700;
+      --bs-badge-color: #fff;
+      --bs-badge-border-radius: var(--bs-border-radius);
+      display: inline-block;
+      padding: var(--bs-badge-padding-y) var(--bs-badge-padding-x);
+      font-size: var(--bs-badge-font-size);
+      font-weight: var(--bs-badge-font-weight);
+      line-height: 1;
+      color: var(--bs-badge-color);
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: baseline;
+  }
+  
+  .last-message-preview {
+    font-size: 0.85rem; /* Slightly larger for readability */
+    color: #757575; /* More neutral color */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+  }
+
+  .notification {
+    font-size: 0.8em; /* Adjust font size */
+    margin-top: 2px; /* Adjust margin for spacing */
+    margin-right: 10px; /* Adjust right margin for spacing */
+    display: inline-block; /* Ensure the time element aligns properly with other inline elements */
+    font-weight: bold;
+    color: #25D366; /* WhatsApp green */
+  }
+
+
+  .last-message-time {
+    font-size: 0.8em; /* Adjust font size */
+    color: #888; /* WhatsApp-like gray color */
+    margin-top: 2px; /* Adjust margin for spacing */
+    margin-right: 10px; /* Adjust right margin for spacing */
+    display: inline-block; /* Ensure the time element aligns properly with other inline elements */
+    font-weight: bold;
+  }
+
+  .loading-indicator{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+
+
+  .loader-contacts {
+    font-size: 10px;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    position: relative;
+    top: 20px;
+    text-indent: -9999em;
+    animation: mulShdSpin 1.1s infinite ease;
+    transform: translateZ(0);
+  }
+  @keyframes mulShdSpin {
+    0%,
+    100% {
+      box-shadow: 0em -2.6em 0em 0em #25D366, 1.8em -1.8em 0 0em rgba(37, 211, 102, 0.2), 2.5em 0em 0 0em rgba(37, 211, 102, 0.2), 1.75em 1.75em 0 0em rgba(37, 211, 102, 0.2), 0em 2.5em 0 0em rgba(37, 211, 102, 0.2), -1.8em 1.8em 0 0em rgba(37, 211, 102, 0.2), -2.6em 0em 0 0em rgba(37, 211, 102, 0.5), -1.8em -1.8em 0 0em rgba(37, 211, 102, 0.7);
+    }
+    12.5% {
+      box-shadow: 0em -2.6em 0em 0em rgba(37, 211, 102, 0.7), 1.8em -1.8em 0 0em #25D366, 2.5em 0em 0 0em rgba(37, 211, 102, 0.2), 1.75em 1.75em 0 0em rgba(37, 211, 102, 0.2), 0em 2.5em 0 0em rgba(37, 211, 102, 0.2), -1.8em 1.8em 0 0em rgba(37, 211, 102, 0.2), -2.6em 0em 0 0em rgba(37, 211, 102, 0.2), -1.8em -1.8em 0 0em rgba(37, 211, 102, 0.5);
+    }
+    25% {
+      box-shadow: 0em -2.6em 0em 0em rgba(37, 211, 102, 0.5), 1.8em -1.8em 0 0em rgba(37, 211, 102, 0.7), 2.5em 0em 0 0em #25D366, 1.75em 1.75em 0 0em rgba(37, 211, 102, 0.2), 0em 2.5em 0 0em rgba(37, 211, 102, 0.2), -1.8em 1.8em 0 0em rgba(37, 211, 102, 0.2), -2.6em 0em 0 0em rgba(37, 211, 102, 0.2), -1.8em -1.8em 0 0em rgba(37, 211, 102, 0.2);
+    }
+    37.5% {
+      box-shadow: 0em -2.6em 0em 0em rgba(37, 211, 102, 0.2), 1.8em -1.8em 0 0em rgba(37, 211, 102, 0.5), 2.5em 0em 0 0em rgba(37, 211, 102, 0.7), 1.75em 1.75em 0 0em #25D366, 0em 2.5em 0 0em rgba(37, 211, 102, 0.2), -1.8em 1.8em 0 0em rgba(37, 211, 102, 0.2), -2.6em 0em 0 0em rgba(37, 211, 102, 0.2), -1.8em -1.8em 0 0em rgba(37, 211, 102, 0.2);
+    }
+    50% {
+      box-shadow: 0em -2.6em 0em 0em rgba(37, 211, 102, 0.2), 1.8em -1.8em 0 0em rgba(37, 211, 102, 0.2), 2.5em 0em 0 0em rgba(37, 211, 102, 0.5), 1.75em 1.75em 0 0em rgba(37, 211, 102, 0.7), 0em 2.5em 0 0em #25D366, -1.8em 1.8em 0 0em rgba(37, 211, 102, 0.2), -2.6em 0em 0 0em rgba(37, 211, 102, 0.2), -1.8em -1.8em 0 0em rgba(37, 211, 102, 0.2);
+    }
+    62.5% {
+      box-shadow: 0em -2.6em 0em 0em rgba(37, 211, 102, 0.2), 1.8em -1.8em 0 0em rgba(37, 211, 102, 0.2), 2.5em 0em 0 0em rgba(37, 211, 102, 0.2), 1.75em 1.75em 0 0em rgba(37, 211, 102, 0.5), 0em 2.5em 0 0em rgba(37, 211, 102, 0.7), -1.8em 1.8em 0 0em #25D366, -2.6em 0em 0 0em rgba(37, 211, 102, 0.2), -1.8em -1.8em 0 0em rgba(37, 211, 102, 0.2);
+    }
+    75% {
+      box-shadow: 0em -2.6em 0em 0em rgba(37, 211, 102, 0.2), 1.8em -1.8em 0 0em rgba(37, 211, 102, 0.2), 2.5em 0em 0 0em rgba(37, 211, 102, 0.2), 1.75em 1.75em 0 0em rgba(37, 211, 102, 0.5), 0em 2.5em 0 0em rgba(37, 211, 102, 0.5), -1.8em 1.8em 0 0em rgba(37, 211, 102, 0.7), -2.6em 0em 0 0em rgba(37, 211, 102, 0.2), -1.8em -1.8em 0 0em rgba(37, 211, 102, 0.2);
+    }
+    87.5% {
+      box-shadow: 0em -2.6em 0em 0em rgba(37, 211, 102, 0.2), 1.8em -1.8em 0 0em rgba(37, 211, 102, 0.2), 2.5em 0em 0 0em rgba(37, 211, 102, 0.2), 1.75em 1.75em 0 0em rgba(37, 211, 102, 0.2), 0em 2.5em 0 0em rgba(37, 211, 102, 0.2), -1.8em 1.8em 0 0em rgba(37, 211, 102, 0.5), -2.6em 0em 0 0em rgba(37, 211, 102, 0.7), -1.8em -1.8em 0 0em #25D366;
+    }
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    transition: all 0.3s ease;
+    background-color: transparent;
+    box-shadow: none; /* Removed neon effect */
+    transform: rotate(0deg);
+  }
+  
+  .close-button i {
+    color: #fff;
+    font-size: 20px;
+  }
+
+  .close-button:hover {
+    opacity: 0.8; /* Slightly less emphasis on hover */
+    transform: scale(1.02); /* Subtle scaling */
+  }
+
+  .close-button i {
+    transition: transform 0.3s ease;
+  }
+
+  .delete-chat-button {
+    position: absolute;
+    right: 7px; /* Consistent right positioning */
+    top: 50%; /* Middle of the container vertically */
+    transform: translateY(-50%); /* Center vertically */
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px; /* Slightly increased padding for a better touch target */
+    transition: transform 0.3s ease, color 0.3s ease;
+    color: #757575; /* Subtle grey color */
+  }
+  
+  .delete-chat-button i {
+    font-size: 24px; /* Slightly larger icon for better visibility */
+  }
+  
+  .delete-chat-button:hover {
+    transform: translateY(-50%) scale(1.1); /* Scale up while maintaining vertical centering */
+    color: #d9534f; /* Bootstrap 'danger' color for immediate visual feedback */
+  }
+
+  .no-contacts{
+    padding: 5px;
+    color: black; /* Default color */
+    text-align: center;
+    font-weight: bolder;
+    font-size: 18px;
+  }
+
+  @media (max-width: 768px) {
+    .chat-header, .chat-list-item {
+        padding: 10px; /* Adjust padding for header and list items */
+      }
+
+      .profile-image {
+        height: 35px; /* Adjust image size for smaller screens */
+        width: 35px;
+      }
+
+      .delete-chat-button {
+        right: 100px; /* Increased space from the right in smaller screens for better accessibility */
+      }
+
+
+      .close-button {
+        border-radius: 50%;
+        padding: 10px 15px; /* Larger touch targets for buttons */
+      }
+
+      .close-button i {
+        font-size: 1.5em; /* Larger icons for better visibility and touch */
+      }
+  }
+  
+  @media (min-height: 791px) {
+    .chat-list{
+      max-height: 518px;
+      min-height: 518px;
+    }
+    }
+  
+  @media (max-width: 768px) {
+  .chat-list{
+    min-height: 464px;
+  }
+  }
+
+
+.dark-mode .chat-list-item {
+    background-color: #444;;
+    color: white;
+}
+
+
+.dark-mode .chat-list-header{
+    background-color: #333;
+  }
+  
+  .dark-mode .create-group-btn {
+    background-color: #333;
+  
+  }
+
+  .dark-mode .last-message-preview {
+    color: white;
+  }
+
+  .dark-mode .last-message-time{
+    color: white;
+  }
+
+  .dark-mode .delete-chat-button  {
+    color: white;
+  }
+  
+  .dark-mode .delete-chat-button:hover{
+    color: #d9534f;
+  }
+
+  .dark-mode .no-contacts{
+    color: white;
+  }
+
+  .dark-mode .Existing-Contacts, .dark-mode .no-matching-contacts, .dark-mode .other-users, .dark-mode .no-new-users-found {
+    color: white; /* Dark mode color */
+  }
