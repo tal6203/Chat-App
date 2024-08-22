@@ -255,7 +255,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
     }, []);
 
     const linkDecorator = useCallback((href, text, key) => (
-        <a href={href} key={key} target="_blank" rel="noopener noreferrer">
+        <a href={href} key={key} onClick={(e) => e.stopPropagation()} style={{ fontWeight: 'bold' }} target="_blank" rel="noopener noreferrer">
             {text}
         </a>
     ), []);
