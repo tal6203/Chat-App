@@ -227,9 +227,9 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
 
         switch (message.fileType) {
             case 'image':
-                return <img loading="lazy" src={message && message.fileUrl} alt="Uploaded-img" onClick={(event) => handleImageClick(event, message.fileUrl)} className="message-image" />;
+                return <img src={message && message.fileUrl} alt="Uploaded-img" onClick={(event) => handleImageClick(event, message.fileUrl)} className="message-image" />;
             case 'video':
-                return <video loading="lazy" preload="none" src={message.fileUrl} controls className="message-video" />;
+                return <video preload="none" src={message.fileUrl} controls className="message-video" />;
             default:
                 return <iframe title="Other File" src={message.fileUrl} className="message-file-link" > </iframe>;
         }
