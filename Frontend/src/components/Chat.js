@@ -41,8 +41,10 @@ function Chat() {
     const fileInputRef = useRef();
     const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
     const [userTyping, setUserTyping] = useState(null);
+    const [counterMessageUpScroll, setCounterMessageUpScroll] = useState(0);
 
     const messagesListRef = useRef(null);
+    const typingTimeoutRef = useRef(null);
 
     const userData = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
@@ -141,6 +143,10 @@ function Chat() {
             if (selectedChat && selectedChat._id === result.chatId && userData._id !== result.userId) {
                 setUserTyping(result.username);
             }
+            clearTimeout(typingTimeoutRef.current);
+            typingTimeoutRef.current = setTimeout(() => {
+                setUserTyping(null); // Clear typing status after a delay
+            }, 2000);
         }
 
         const handleStop_Typing = (result) => {
@@ -164,6 +170,7 @@ function Chat() {
             socket.current.off('new message notification', handleNewMessageNotification);
             socket.current.off('message deleted for everyone', handleMessageDeletedForEveryone);
             socket.current.off('connect', connectHandler);
+            clearTimeout(typingTimeoutRef.current);
         };
     }, [userData, userTyping, searchList, selectedChat, messages, handleConnectedUsers]);
 
@@ -315,6 +322,8 @@ function Chat() {
                                     previousHeight={previousHeight}
                                     setPreviousHeight={setPreviousHeight}
                                     unreadCount={unreadCount}
+                                    setCounterMessageUpScroll={setCounterMessageUpScroll}
+                                    counterMessageUpScroll = {counterMessageUpScroll}
                                 />
                                 {userTyping && (
                                     <div className="typing-indicator">
@@ -345,6 +354,7 @@ function Chat() {
                                     setUploadedFileType={setUploadedFileType}
                                     setUploading={setUploading}
                                     setSearchList={setSearchList}
+                                    setCounterMessageUpScroll={setCounterMessageUpScroll}
                                 />
                             </>
                         )
