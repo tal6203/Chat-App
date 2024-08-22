@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import EmojiPicker, { EmojiStyle } from 'emoji-picker-react';
 import config from './config/default.json';
 import FileUploadComponent from "./FileUploadComponent";
@@ -9,13 +9,14 @@ import './MessageInput.css';
 
 
 function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditing, setIsEditing, uploading,
-    setUploading, selectedChat, setSelectedChat, setContacts, userTyping, setUserTyping,
-    setUploadedFileUrl, setUploadedFileType, uploadedFileUrl, uploadedFileType,
-    setSearchList, editingMessageId, fileInputRef, setEditingMessageId, messagesListRef }) {
+    setUploading, selectedChat, setSelectedChat, setContacts, userTyping, setUserTyping, setUploadedFileUrl,
+    setUploadedFileType, uploadedFileUrl, uploadedFileType, setSearchList, editingMessageId, fileInputRef,
+    setEditingMessageId, messagesListRef }) {
 
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
+    const textInputRef = useRef(null);
 
 
     useEffect(() => {
@@ -31,37 +32,34 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
 
         const handleNewMessage = (message) => {
             if (selectedChat && selectedChat._id === message.chatId) {
-                setMessages(prevMessages => [...prevMessages, message]);
-            }
+                setMessages(prevMessages => {
+                    const updatedMessages = [...prevMessages, message];
 
-            if (messagesListRef.current) {
-                const { scrollTop, scrollHeight, clientHeight } = messagesListRef.current;
-                const bottom = (scrollHeight - scrollTop - clientHeight) > 400;
+                    // Scroll only after messages are updated
+                    if (messagesListRef.current) {
+                        const { scrollTop, scrollHeight, clientHeight } = messagesListRef.current;
+                        const isAtBottom = (scrollHeight - scrollTop - clientHeight) <= 400;
 
-                if (message.senderUsername === user.username && !message.systemMessage) {
-                    setTimeout(() => {
-                        if (messagesListRef.current) {
-                            messagesListRef.current.scrollTo({
-                                top: scrollHeight,
-                                behavior: 'smooth',
+                        // Check conditions to scroll
+                        const shouldScroll =
+                            (message.senderUsername === user.username && !message.systemMessage) ||
+                            (message.senderUsername !== user.username && !message.systemMessage && isAtBottom);
+
+                        // Use requestAnimationFrame to ensure smooth scrolling without delay
+                        if (shouldScroll) {
+                            requestAnimationFrame(() => {
+                                messagesListRef.current.scrollTo({
+                                    top: messagesListRef.current.scrollHeight,
+                                    behavior: 'smooth',
+                                });
                             });
                         }
-                    }, 0);
-                }
-                else if (message.senderUsername !== user.username && !message.systemMessage && !bottom) {
-                    setTimeout(() => {
-                        if (messagesListRef.current) {
-                            messagesListRef.current.scrollTo({
-                                top: scrollHeight,
-                                behavior: 'smooth',
-                            });
-                        }
-                    }, 0)
-                }
-            }
+                    }
 
+                    return updatedMessages;
+                });
+            }
         };
-
 
         socket.on("message edited", handleMessageEdited);
         socket.on('new message', handleNewMessage);
@@ -77,6 +75,9 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
         setShowEmojiPicker(false);
         setIsEditing(false);
         setEditingMessageId(null);
+        if (textInputRef.current) {
+            textInputRef.current.focus();
+        }
     }, [selectedChat, setNewMessage, setEditingMessageId, setIsEditing, setUploadedFileUrl, setUploadedFileType]);
 
 
@@ -87,13 +88,12 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
     const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey && !uploading) {
             e.preventDefault();  // Prevent the default action to avoid a new line in input
-            handleSendMessage();  // Call your send message function
+            handleSendMessage(e);  // Call your send message function
         }
     };
 
-    const handleSendMessage = async () => {
-
-
+    const handleSendMessage = async (e) => {
+        e.preventDefault();
         if (!newMessage.trim() && !uploadedFileUrl) {
             return; // Exit if message is empty
         }
@@ -168,9 +168,12 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                 setNewMessage('');
                 setUploadedFileUrl('');
                 setUploadedFileType('');
-
                 if (fileInputRef.current) {
                     fileInputRef.current.value = "";
+                }
+
+                if (textInputRef.current) {
+                    textInputRef.current.focus();
                 }
 
             }
@@ -239,16 +242,17 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
             <textarea
                 className="form-control"
                 placeholder={isEditing ? "Editing message..." : "Type a message..."}
+                ref={textInputRef}
                 value={newMessage}
                 onInput={() => handleTyping()}
                 onBlur={() => handleStopTyping()}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
+                onKeyPress={(e) => handleKeyPress(e)}
             ></textarea>
             <button
                 disabled={uploading}
                 className="send-btn"
-                onClick={handleSendMessage}>
+                onPointerDown={(e) => handleSendMessage(e)}>
                 {isEditing ? <><i className="bi bi-pencil"></i><span className="text-for-phone"> Edit</span></> : <><i className="bi bi-send"></i>
                     <span className="text-for-phone">Send</span> </>
                 }
