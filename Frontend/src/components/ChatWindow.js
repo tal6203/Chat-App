@@ -8,7 +8,8 @@ import './ChatWindow.css'
 
 const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, fetchChatMessages,
     handleContextMenu, unreadCount, loadingOlderMessages, setLoadingOlderMessages, lastMessage,
-    hasMoreMessages, previousHeight, setPreviousHeight, firstUnreadMessageIndex, messagesListRef }) => {
+    hasMoreMessages, previousHeight, setPreviousHeight, firstUnreadMessageIndex, messagesListRef,
+    setCounterMessageUpScroll, counterMessageUpScroll }) => {
 
     const [showScrollToBottomButton, setShowScrollToBottomButton] = useState(false);
     const [showUnreadTitle, setShowUnreadTitle] = useState(false);
@@ -32,20 +33,27 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
     }, [setMessages]);
 
     useEffect(() => {
-        const hanleCloseTitleUnread = () => {
+        const hanleCloseTitleUnreadAndCounterMessageUpScroll = (message) => {
             if (showUnreadTitle) {
                 setShowUnreadTitle(false);
+            }
+            if (messagesListRef.current) {
+                const { scrollTop, scrollHeight, clientHeight } = messagesListRef.current;
+                const isAtBottom = (scrollHeight - scrollTop - clientHeight) <= 400;
+                if (message.senderUsername !== currentUser.username && !message.systemMessage && !isAtBottom) {
+                    setCounterMessageUpScroll(prevCounter => prevCounter + 1);
+                }
             }
         }
 
         socket.on('read messsages', handleReadMessages);
-        socket.on('new message', hanleCloseTitleUnread);
+        socket.on('new message', hanleCloseTitleUnreadAndCounterMessageUpScroll);
 
         return () => {
             socket.off('read messsages', handleReadMessages);
-            socket.off('new message', hanleCloseTitleUnread);
+            socket.off('new message', hanleCloseTitleUnreadAndCounterMessageUpScroll);
         };
-    }, [socket, setMessages, showUnreadTitle, handleReadMessages]);
+    }, [socket, currentUser, messagesListRef, setCounterMessageUpScroll, setMessages, showUnreadTitle, handleReadMessages]);
 
     useEffect(() => {
         if (selectedChat._id) {
@@ -57,7 +65,12 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
                 });
             }
         }
-    }, [selectedChat._id, lastMessage, messagesListRef, unreadCount, setPreviousHeight])
+    }, [selectedChat._id, setCounterMessageUpScroll, lastMessage, messagesListRef, unreadCount, setPreviousHeight])
+
+    useEffect(() => {
+        if (selectedChat)
+            setCounterMessageUpScroll(0);
+    }, [selectedChat, setCounterMessageUpScroll]);
 
 
     useLayoutEffect(() => {
@@ -75,7 +88,6 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
     }, [lastMessage, messagesListRef, previousHeight]);
 
 
-
     useLayoutEffect(() => {
         if (messagesListRef.current) {
             if (unreadCount > 0) {
@@ -88,7 +100,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
         }
     }, [messagesListRef, firstUnreadMessageIndex, unreadCount]);
 
-    const handleScroll = () => {
+    const handleScroll = useCallback(async () => {
         if (messagesListRef.current) {
             const { scrollTop, scrollHeight, clientHeight } = messagesListRef.current;
 
@@ -97,7 +109,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
                 if (oldestMessage) {
                     setPreviousHeight(scrollHeight);
                     setLoadingOlderMessages(true);
-                    fetchChatMessages(selectedChat._id, oldestMessage._id);
+                    await fetchChatMessages(selectedChat._id, oldestMessage._id);
                 }
             }
 
@@ -110,8 +122,33 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
 
             const bottom = scrollHeight - scrollTop - clientHeight;
             setShowScrollToBottomButton(bottom > 400);
+
+            if (counterMessageUpScroll > 0 && bottom <= 400) {
+                setCounterMessageUpScroll(0);
+            }
         }
-    };
+    }, [messages, hasMoreMessages, loadingOlderMessages, selectedChat, fetchChatMessages,
+        firstUnreadMessageIndex, messagesListRef, setLoadingOlderMessages, setPreviousHeight,
+        setCounterMessageUpScroll, counterMessageUpScroll
+    ]);
+
+
+    useEffect(() => {
+        const scrollHandler = () => {
+            requestAnimationFrame(handleScroll);
+        };
+
+        const messagesRefCurrent = messagesListRef.current;
+        if (messagesRefCurrent) {
+            messagesRefCurrent.addEventListener('scroll', scrollHandler);
+        }
+
+        return () => {
+            if (messagesRefCurrent) {
+                messagesRefCurrent.removeEventListener('scroll', scrollHandler);
+            }
+        };
+    }, [handleScroll, messagesListRef]);
 
     const handleMessageClick = (message) => {
         setSelectedMessageId(message._id);
@@ -244,7 +281,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
     const selectedMessage = messages?.find(message => message._id === selectedMessageId);
 
     return (
-        <div key={selectedChat._id} className="chat-window" ref={messagesListRef} onScroll={handleScroll}>
+        <div key={selectedChat._id} className="chat-window" ref={messagesListRef}>
             {loadingOlderMessages && (
                 <div className="loader-container">
                     <div className="loader-message"></div>
@@ -323,9 +360,14 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
                 );
             })}
             {showScrollToBottomButton && (
-                <button className="scroll-to-bottom-btn" onClick={scrollToBottom}>
-                    <i className="bi bi-arrow-down-circle"></i>
-                </button>
+                <div className="scroll-to-bottom-container">
+                    {counterMessageUpScroll > 0 && (
+                        <span className="message-counter">{counterMessageUpScroll}</span>
+                    )}
+                    <button className="scroll-to-bottom-btn" onClick={scrollToBottom}>
+                        <i className="bi bi-arrow-down-circle"></i>
+                    </button>
+                </div>
             )}
 
 
