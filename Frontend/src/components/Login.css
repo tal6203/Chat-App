@@ -22,7 +22,6 @@
   }
 
   .input-group {
-    margin-bottom: 15px;
     width: 100%;
     position: relative;
   }
@@ -69,6 +68,30 @@
     text-align: center;
     font-size: 0.9em;
     color: #666;
+  }
+
+  .forget-pass{
+    text-align: center;
+    font-size: 0.9em;
+  }
+
+  .forget-pass:hover{
+    text-decoration: underline;
+  }
+
+  .forget-pass::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 2px;
+    background-color: #25D366;
+    transition: width 0.3s ease;
+  }
+
+  .forget-pass:hover::after {
+    width: 100%;
   }
 
   .signup-link:hover {
