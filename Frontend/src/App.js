@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
+import VerificationEmail from './components/verificationEmail';
+import RestPassword from './components/resetPassword'; 
 import Chat from './components/Chat';
 import PrivateRoute from './components/PrivateRoute';
 import { useDarkMode } from './DarkModeContext';
@@ -28,6 +30,8 @@ const App = () => {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verification-email" element={<VerificationEmail />} />
+          <Route path="/reset-password" element={<RestPassword />} /> 
           <Route path="/chat" element={<PrivateRoute element={Chat} />} />
         </Routes>
       </div>
