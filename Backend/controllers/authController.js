@@ -1,12 +1,13 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const authController = {
   register: async (req, res) => {
     try {
-      const { username, password, profilePicture } = req.body;
+      const { username, password, email, profilePicture } = req.body;
       let errors = [];
 
       // Check password criteria
@@ -26,23 +27,29 @@ const authController = {
         errors.push("Password must contain at least one number.");
       }
 
+      // Check email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !emailRegex.test(email)) {
+        errors.push("A valid email is required.");
+      }
+
       // If there are any errors, return them
       if (errors.length > 0) {
         return res.status(400).json({ error: errors.join(" ") });
       }
 
-      // Check if the username is already taken
-      const existingUser = await User.findOne({ username });
+      // Check if the username or email is already taken
+      const existingUser = await User.findOne({ $or: [{ username }, { email }] });
       if (existingUser) {
-        return res.status(400).json({ error: 'Username already exists' });
+        return res.status(400).json({ error: 'Username or email already exists' });
       }
-
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // Create a new user with or without a custom profile picture
       const newUser = new User({
         username,
+        email,
         password: hashedPassword,
         profilePicture: profilePicture || "https://res.cloudinary.com/dfa7zee9i/image/upload/v1715111941/anonymous-avatar_wcrklv_u0kzbb.png" // Default if not provided
       });
@@ -55,6 +62,54 @@ const authController = {
     } catch (error) {
       console.error('Error registering user:', error);
       res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+
+  sendEmailToRest: async (req, res) => {
+    try {
+      const { email } = req.body;
+
+
+      if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
+      }
+
+      const existingUser = await User.findOne({ email });
+      if (!existingUser) {
+        return res.status(400).json({ error: 'The email is not registered in the system' });
+      }
+
+      // Create a transporter
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER, // Your email address
+          pass: process.env.EMAIL_PASS, // Your email password
+        },
+      });
+
+      // Generate a password reset token (for example purposes, using a JWT here)
+      const resetToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+      // Define email options
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Chat-App, Password Reset Request',
+        html: `
+          <p>You requested a password reset.</p>
+          <p>Click <a href="${process.env.FrontEnd}/reset-password?token=${resetToken}">here</a> to reset your password.</p>
+          <p>This link will expire in 1 hour.</p>
+        `,
+      };
+
+      // Send the email
+      await transporter.sendMail(mailOptions);
+
+      res.status(200).json({ message: 'Password reset email sent' });
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      res.status(500).json({ error: 'Error sending password reset email' });
     }
   },
 
