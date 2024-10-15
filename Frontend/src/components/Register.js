@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 
 const Register = () => {
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [profilePicture, setProfilePicture] = useState('');
@@ -36,6 +37,7 @@ const Register = () => {
         let modifiedValue = value.replace(/\s/g, '');
 
         if (name === 'username') setUsername(modifiedValue);
+        if (name === 'email') setEmail(modifiedValue);
         if (name === 'password') {
             setPassword(modifiedValue);
             validatePassword(modifiedValue);
@@ -115,6 +117,7 @@ const Register = () => {
 
     const handleRegister = async (event) => {
         event.preventDefault();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (password !== confirmPassword) {
             setErrorMessage('Passwords do not match.');
@@ -126,9 +129,15 @@ const Register = () => {
             return;
         }
 
+        if (!email || !emailRegex.test(email)) {
+            setErrorMessage("A valid email is required.");
+            return;
+        }
+
         try {
             const response = await axios.post(`${config.URL_CONNECT}/auth/register`, {
                 username,
+                email,
                 password,
                 profilePicture,
             });
@@ -166,8 +175,8 @@ const Register = () => {
             <form onSubmit={handleRegister}>
                 <div className="logo">Chat</div>
                 <h2>Register</h2>
-                {errorMessage && <p className="error-message">{errorMessage}</p>}
-                <div className="input-group">
+                {errorMessage && !passwordsMatch ? ( <p className="error-message">{errorMessage}</p> ) : (<></>)}
+                <div className="input-group-register">
                     <i className="bi bi-person-fill input-icon"></i>
                     <input
                         type="text"
@@ -179,7 +188,19 @@ const Register = () => {
                         onChange={handleInputChange}
                     />
                 </div>
-                <div className="input-group">
+                <div className="input-group-register">
+                    <i className="bi bi-envelope-fill input-icon"></i>
+                    <input
+                        type="text"
+                        autoComplete="email"
+                        className='register-email'
+                        name="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={handleInputChange}
+                    />
+                </div>
+                <div className="input-group-register">
                     <i className="bi bi-lock-fill input-icon"></i>
                     <input
                         type={showPassword ? "text" : "password"}
@@ -204,7 +225,7 @@ const Register = () => {
                     {showPopover && renderPasswordCriteriaPopover()}
                 </div>
 
-                <div className="input-group" >
+                <div className="input-group-register" >
                     <i className="bi bi-lock-fill input-icon"></i>
                     <input
                         className={`register-password ${confirmPasswordTouched ? (passwordsMatch ? 'input-valid' : 'input-invalid') : ''}`}
@@ -227,7 +248,7 @@ const Register = () => {
                         {showConfirmPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye"></i>}
                     </button>
                 </div>
-                <div className="input-group file-input">
+                <div className="input-group-register file-input">
                     {imagePreviewUrl ? (
                         <div className="image-preview" style={{ position: 'relative', display: 'block', marginBottom: '10px', width: '100px' }}>
                             <img src={imagePreviewUrl} alt="Profile Preview" onClick={() => window.open(imagePreviewUrl, '_blank')} />
