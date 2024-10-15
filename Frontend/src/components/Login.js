@@ -54,7 +54,7 @@ const Login = () => {
         <div className="logo">Chat</div>
         <h2>Welcome Back</h2>
         <form className="form" onSubmit={handleLogin}>
-          <div className="input-group">
+          <div className="input-group" style={{ marginBottom: '15px' }}>
             <input
               type="text"
               name="username"
@@ -86,6 +86,9 @@ const Login = () => {
             >
               {showPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye"></i>}
             </button>
+          </div>
+          <div style={{ marginBottom: '6px' }}>
+            <a href="/verification-email" className="forget-pass">Forget Password</a>
           </div>
           <button className='btn-login' type="submit">Sign In <i className="bi bi-send"></i></button>
         </form>
