@@ -12,6 +12,9 @@ router.get('/:userId', authMiddleware.authenticate, userController.getUserById);
 // Search for users by username
 router.get('/search/:username', authMiddleware.authenticate, userController.searchUsers);
 
+// Rest Password
+router.put('/reset-password', userController.resetPassword);
+
 // Update user profile with image upload
 router.put('/updateProfile/:userId', authMiddleware.authenticate, userController.updateProfile);
 
