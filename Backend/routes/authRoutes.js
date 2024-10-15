@@ -8,6 +8,9 @@ router.post('/register', authController.register);
 // Login
 router.post('/login', authController.login);
 
+// Send to email rest password
+router.post('/verification-email', authController.sendEmailToRest);
+
 // Login-Guest
 router.post('/guest', authController.loginGuest);
 
