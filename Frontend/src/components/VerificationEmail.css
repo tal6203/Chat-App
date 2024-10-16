@@ -1,0 +1,76 @@
+.forget-pass-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 20px); /* Adjust 20px based on expected extra pixels */
+    position: relative;
+    overflow: hidden;
+}
+
+.forget-pass-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Ensures the form takes up the container width */
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    margin: 5% auto;
+    width: 90%;
+    max-width: 350px;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+
+  .logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+
+  .input-group-forget-pass {
+    margin-bottom: 15px;
+    width: 100%;
+    position: relative;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .btn-forget-pass{
+    width: 100%;
+    padding: 10px;
+    background-color: #25D366;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center
+  }
+
+  .btn-forget-pass:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
