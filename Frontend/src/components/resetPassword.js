@@ -53,7 +53,6 @@ const RestPassword = () => {
 
     const handlePasswordReset = async (event) => {
         event.preventDefault();
-        setLoading(true);
         const allCriteriaMet = Object.values(passwordCriteria).every((criterion) => criterion);
 
         if (!allCriteriaMet) {
@@ -72,6 +71,7 @@ const RestPassword = () => {
             return;
         }
 
+        setLoading(true);
         try {
             const response = await axios.put(`${config.URL_CONNECT}/users/reset-password`, {
                 token,
