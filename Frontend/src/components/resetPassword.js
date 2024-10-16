@@ -118,7 +118,7 @@ const RestPassword = () => {
             <form onSubmit={handlePasswordReset}>
                 <div className="logo">Chat</div>
                 <h2>Forget Password</h2>
-                {errorMessage && !passwordsMatch ? (<p className="error-message">{errorMessage}</p>) : (<></>)}
+                {errorMessage &&  <p className="error-message">{errorMessage}</p> }
                 <div className="input-group-register">
                     <i className="bi bi-lock-fill input-icon"></i>
                     <input
