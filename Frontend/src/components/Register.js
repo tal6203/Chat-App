@@ -149,7 +149,7 @@ const Register = () => {
             }).then(() => {
                 window.location.href = '/login';
             });
-            window.location.href = '/login';
+            
         } catch (error) {
             setErrorMessage(error.response?.data?.error || 'Internal Server Error');
         }
