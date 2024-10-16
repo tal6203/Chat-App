@@ -58,6 +58,30 @@ const authController = {
       console.log('Saving user to the database...');
       await newUser.save();
 
+      // Create a transporter
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER, // Your email address
+          pass: process.env.EMAIL_PASS, // Your email password
+        },
+      });
+
+      // Define email options
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Welcome to Chat-App!',
+        html: `
+          <h1>Welcome to Chat-App, ${username}!</h1>
+          <p>Thank you for registering. We're excited to have you on board!</p>
+          <p>Enjoy chatting!</p>
+        `,
+      };
+
+      // Send the email
+      await transporter.sendMail(mailOptions);
+
       res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
       console.error('Error registering user:', error);
