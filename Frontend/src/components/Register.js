@@ -175,7 +175,7 @@ const Register = () => {
             <form onSubmit={handleRegister}>
                 <div className="logo">Chat</div>
                 <h2>Register</h2>
-                {errorMessage && !passwordsMatch ? ( <p className="error-message">{errorMessage}</p> ) : (<></>)}
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
                 <div className="input-group-register">
                     <i className="bi bi-person-fill input-icon"></i>
                     <input
