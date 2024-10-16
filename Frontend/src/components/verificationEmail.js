@@ -12,13 +12,13 @@ const VerificationEmail = () => {
 
     const handleSendEmailRestPass = async (event) => {
         event.preventDefault();
-        setLoading(true);
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!email || !emailRegex.test(email)) {
             setErrorMessage("A valid email is required.");
             return;
         }
+        setLoading(true);
 
         try {
             const response = await axios.post(`${config.URL_CONNECT}/auth/verification-email`, {
