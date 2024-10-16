@@ -138,6 +138,7 @@ const RestPassword = () => {
                     <button
                         onClick={() => setShowPassword(!showPassword)}
                         className="toggle-password"
+                        type="button"
                     >
                         {showPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye"></i>}
                     </button>
@@ -163,6 +164,7 @@ const RestPassword = () => {
                     <button
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         className="toggle-password"
+                        type="button"
                     >
                         {showConfirmPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye"></i>}
                     </button>
