@@ -38,11 +38,18 @@ const authController = {
         return res.status(400).json({ error: errors.join(" ") });
       }
 
-      // Check if the username or email is already taken
-      const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-      if (existingUser) {
-        return res.status(400).json({ error: 'Username or email already exists' });
+      // Check if the username is already taken
+      const existingUsername = await User.findOne({ username });
+      if (existingUsername) {
+        return res.status(400).json({ error: 'Username already exists' });
       }
+
+       // Check if the email is already taken
+       const existingEmail = await User.findOne({ email });
+       if (existingEmail) {
+         return res.status(400).json({ error: 'Email already exists' });
+       }
+
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
 
