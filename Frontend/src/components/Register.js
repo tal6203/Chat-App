@@ -14,6 +14,7 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [profilePicture, setProfilePicture] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
     const [imagePreviewUrl, setImagePreviewUrl] = useState('');
     const [uploadedPublicId, setUploadedPublicId] = useState('');
     const [uploading, setUploading] = useState(false);
@@ -134,6 +135,7 @@ const Register = () => {
             return;
         }
 
+        setLoading(true);
         try {
             const response = await axios.post(`${config.URL_CONNECT}/auth/register`, {
                 username,
@@ -142,15 +144,19 @@ const Register = () => {
                 profilePicture,
             });
 
-            Swal.fire({
-                title: "User registered successfully!",
-                text: "Welcome to Chat-App, registered successfully!",
-                icon: "success"
-            }).then(() => {
-                window.location.href = '/login';
-            });
-            
+            if (response.status === 201) {
+                setLoading(false);
+                Swal.fire({
+                    title: "User registered successfully!",
+                    text: "Welcome to Chat-App, registered successfully!",
+                    icon: "success"
+                }).then(() => {
+                    window.location.href = '/login';
+                });
+            }
+
         } catch (error) {
+            setLoading(false);
             setErrorMessage(error.response?.data?.error || 'Internal Server Error');
         }
     };
@@ -301,7 +307,15 @@ const Register = () => {
                         </>
                     )}
                 </div>
-                <button type="submit" className='btn-register' disabled={uploading}>Register</button>
+                <button type="submit" className='btn-register' disabled={uploading || loading}>
+                    {!loading ?
+                        (<>
+                            Register
+                        </>
+                        ) : (<>
+                            <i className="bi bi-arrow-clockwise spin-icon"></i>
+                        </>)}
+                </button>
             </form>
             <footer className="footer-register">
                 <span style={{ fontSize: '16px' }}>
