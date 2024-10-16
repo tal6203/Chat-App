@@ -142,7 +142,13 @@ const Register = () => {
                 profilePicture,
             });
 
-            console.log('Registration successful:', response.data);
+            Swal.fire({
+                title: "User registered successfully!",
+                text: "Welcome to Chat-App, registered successfully!",
+                icon: "success"
+            }).then(() => {
+                window.location.href = '/login';
+            });
             window.location.href = '/login';
         } catch (error) {
             setErrorMessage(error.response?.data?.error || 'Internal Server Error');
