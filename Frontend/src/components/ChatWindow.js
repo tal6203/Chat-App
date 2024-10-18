@@ -68,8 +68,10 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
     }, [selectedChat._id, setCounterMessageUpScroll, lastMessage, messagesListRef, unreadCount, setPreviousHeight])
 
     useEffect(() => {
-        if (selectedChat)
+        if (selectedChat) {
+            setShowScrollToBottomButton(false);
             setCounterMessageUpScroll(0);
+        }
     }, [selectedChat, setCounterMessageUpScroll]);
 
 
