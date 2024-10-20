@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import config from './config/default.json';
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import './ResetPassword.css';
 
@@ -23,6 +23,14 @@ const RestPassword = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const token = searchParams.get("token");
+
+    // If no token, redirect to login
+        if (!token) {
+            return <Navigate to="/login" replace />;
+        }
+
 
     const validatePassword = (password) => {
         setPasswordCriteria({
@@ -117,8 +125,8 @@ const RestPassword = () => {
         <div className="reset-password-container">
             <form onSubmit={handlePasswordReset}>
                 <div className="logo">Chat</div>
-                <h2>Forget Password</h2>
-                {errorMessage &&  <p className="error-message">{errorMessage}</p> }
+                <h2>Change Password</h2>
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
                 <div className="input-group-register">
                     <i className="bi bi-lock-fill input-icon"></i>
                     <input
@@ -172,7 +180,7 @@ const RestPassword = () => {
                 <button type="submit" disabled={loading} className="btn-reset-password">
                     {!loading ?
                         (<>
-                            Reset Password
+                            Change Password
                         </>
                         ) : (<>
                             <i className="bi bi-arrow-clockwise spin-icon"></i>
