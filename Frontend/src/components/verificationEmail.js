@@ -49,7 +49,7 @@ const VerificationEmail = () => {
             <form onSubmit={handleSendEmailRestPass}>
                 <div className="card">
                     <div className="logo">Chat</div>
-                    <h2>Forget Password</h2>
+                    <h2>Verify your email</h2>
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
                     <div className="input-group-forget-pass">
                         <i className="bi bi-envelope-fill input-icon"></i>
@@ -58,7 +58,7 @@ const VerificationEmail = () => {
                             autoComplete="email"
                             className='register-email'
                             name="email"
-                            placeholder="Email"
+                            placeholder="Email Verification"
                             value={email}
                             onChange={(e) => setEmail(e.target.value.replace(/\s/g, ''))}
                         />
