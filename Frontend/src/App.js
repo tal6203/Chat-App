@@ -6,6 +6,7 @@ import VerificationEmail from './components/verificationEmail';
 import RestPassword from './components/resetPassword'; 
 import Chat from './components/Chat';
 import PrivateRoute from './components/PrivateRoute';
+import NotFound from './components/NotFound';
 import { useDarkMode } from './DarkModeContext';
 import './App.css';
 
@@ -33,6 +34,8 @@ const App = () => {
           <Route path="/verification-email" element={<VerificationEmail />} />
           <Route path="/reset-password" element={<RestPassword />} /> 
           <Route path="/chat" element={<PrivateRoute element={Chat} />} />
+
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>
