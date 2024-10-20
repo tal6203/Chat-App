@@ -277,7 +277,7 @@ const CustomNavbar = () => {
       )}
 
       {isImageZoomed && (
-        <Modal show={isImageZoomed} onHide={handleCloseZoom} centered>
+        <Modal show={isImageZoomed} size="lg" onHide={handleCloseZoom} centered>
           <img
             src={newProfilePicture}
             alt="Zoomed Profile"
