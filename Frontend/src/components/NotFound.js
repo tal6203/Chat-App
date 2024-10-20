@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import './NotFound.css'; // Custom CSS for the NotFound component
 
 const NotFound = () => {
+    const isAuthenticated = Boolean(localStorage.getItem('token'));
     return (
         <div className="not-found-container">
             <div className="logo">404</div>
             <h1 className="header-not-found">Page Not Found</h1>
             <p className='body-not-found'>Sorry, the page you're looking for doesn't exist.</p>
-            <Link to="/" className="btn-back-home">Go back to Home</Link>
+            <Link to={isAuthenticated ? '/chat' : '/login'} className="btn-back-home">Go back to Home</Link>
         </div>
     );
 };
