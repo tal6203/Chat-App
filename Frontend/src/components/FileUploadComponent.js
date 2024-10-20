@@ -196,7 +196,7 @@ const FileUploadComponent = ({ setUploading, onFileUpload, onCancelUpload, fileI
                 style={{
                     width: '30px',
                     height: '40px',
-                    marginRight: '5px',
+                    marginRight: '8px',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center'
