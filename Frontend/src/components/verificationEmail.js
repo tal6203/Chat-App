@@ -65,9 +65,9 @@ const VerificationEmail = () => {
                     </div>
                     <button disabled={loading} className='btn-forget-pass' type="submit">
                         {!loading ?
-                            (<>
+                            (<span>
                                 Send <i className="bi bi-send"></i>
-                            </>
+                            </span>
                             ) : (<>
                                 <i className="bi bi-arrow-clockwise spin-icon"></i>
                             </>)}
