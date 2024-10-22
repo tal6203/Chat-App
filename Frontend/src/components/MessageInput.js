@@ -118,6 +118,8 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                 setIsEditing(false);
                 setEditingMessageId(null);
                 setShowEmojiPicker(false);
+                setUploadedFileUrl('');  
+                setUploadedFileType('');
 
             } catch (error) {
                 console.error('Error editing message:', error);
