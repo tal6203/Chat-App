@@ -101,6 +101,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    color: black;
   }
 
   .record-btn:hover { 
@@ -122,6 +123,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    color: black;
   }
 
   .stop-record-btn:hover { 
@@ -208,6 +210,7 @@
   font-size: 18px;
   margin-right: 10px;
 }
+
 
 .bottom-section {
   display: flex;
@@ -329,8 +332,6 @@
     background-color: #333;
     color: white;
   }
-
-
 
   .dark-mode .stop-record-btn:hover{
     background-color: #d3d4d5;
