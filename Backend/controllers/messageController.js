@@ -34,6 +34,8 @@ const messageController = {
   *                 type: string
   *               fileType:
   *                 type: string
+  *         recordingDuration:
+  *                 type: string
   *     responses:
   *       201:
   *         description: The created message
@@ -72,7 +74,7 @@ const messageController = {
   */
   sendMessage: async (req, res) => {
     try {
-      const { chatId, content, senderUsername, fileUrl, fileType } = req.body;
+      const { chatId, content, senderUsername, fileUrl, fileType, recordingDuration } = req.body;
       const sender = req.userId;
 
       if ((!content || !chatId || content.trim().length === 0) && !fileUrl) {
@@ -103,6 +105,7 @@ const messageController = {
         content: content,
         fileUrl: fileUrl,
         fileType: fileType,
+        recordingDuration : recordingDuration,
         readBy: []
       };
 
