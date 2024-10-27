@@ -114,7 +114,7 @@ const WaveformPlayer = ({ audioUrl, duration }) => {
                     </button>
                 </div>
                 <button
-                    className="play-pause-button"
+                    className="play-pause-button-wave"
                     onClick={(e) => {
                         e.stopPropagation();
                         onPlayPause();
@@ -135,7 +135,7 @@ const WaveformPlayer = ({ audioUrl, duration }) => {
                     }}>
                     <WavesurferPlayer
                         width={'200px'}
-                        height={'30'}
+                        height={'20'}
                         barWidth={3}
                         barHeight={1}
                         barRadius={10}
