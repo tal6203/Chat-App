@@ -5,12 +5,15 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { DarkModeProvider } from './DarkModeContext';
+import { AudioPlayerProvider } from './AudioPlayerContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <DarkModeProvider>
     <React.StrictMode>
-      <App />
+      <AudioPlayerProvider>
+        <App />
+      </AudioPlayerProvider>
     </React.StrictMode>
   </DarkModeProvider>
 );
