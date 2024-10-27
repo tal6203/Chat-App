@@ -323,7 +323,7 @@ function Chat() {
                                     setPreviousHeight={setPreviousHeight}
                                     unreadCount={unreadCount}
                                     setCounterMessageUpScroll={setCounterMessageUpScroll}
-                                    counterMessageUpScroll = {counterMessageUpScroll}
+                                    counterMessageUpScroll={counterMessageUpScroll}
                                 />
                                 {userTyping && (
                                     <div className="typing-indicator">
