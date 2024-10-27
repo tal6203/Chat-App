@@ -5,8 +5,9 @@ const messageSchema = new mongoose.Schema({
   sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   senderUsername: { type: String, ref: 'User', required: true },
   content: { type: String, required: false },
-  fileUrl: { type: String , default: null},
+  fileUrl: { type: String, default: null },
   fileType: { type: String, default: null },
+  recordingDuration: { type: String, default: null },
   timestamp: { type: Date, default: Date.now },
   readBy: [{
     readerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
