@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, memo } from 'react';
 import WavesurferPlayer from '@wavesurfer/react';
 import { useAudioPlayer } from '../AudioPlayerContext';
 import { useDarkMode } from '../DarkModeContext';
 import './WaveformPlayer.css';
 
-const WaveformPlayer = ({ audioUrl, duration }) => {
+const WaveformPlayer = memo(({ audioUrl, duration }) => {
     const [wavesurfer, setWavesurfer] = useState(null);
     const [currentTime, setCurrentTime] = useState(0);
     const [playbackSpeed, setPlaybackSpeed] = useState(1);
@@ -130,7 +130,6 @@ const WaveformPlayer = ({ audioUrl, duration }) => {
                         <i className="bi bi-play-circle"></i>
                     )}
                 </button>
-                {/* Wrapper for the waveform with click-to-seek functionality */}
                 <div
                     className="waveform-container"
                     onClick={(e) => {
@@ -139,7 +138,7 @@ const WaveformPlayer = ({ audioUrl, duration }) => {
                     }}>
                     <WavesurferPlayer
                         width={'200px'}
-                        height={'20'}
+                        height={'30'}
                         barWidth={3}
                         barHeight={1}
                         barRadius={10}
@@ -161,6 +160,6 @@ const WaveformPlayer = ({ audioUrl, duration }) => {
             </div>
         </>
     );
-};
+});
 
 export default WaveformPlayer;
