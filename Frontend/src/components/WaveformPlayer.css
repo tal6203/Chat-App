@@ -1,0 +1,49 @@
+.audio-player-container {
+    display: flex;
+    align-items: center; /* Center vertically */
+    gap: 5px; /* Gap between play button, waveform, and duration */
+    width: 100%;
+  }
+
+  .waveform-container {
+    cursor: pointer; /* Indicate that it's clickable */
+    display: inline-block;
+}
+  
+   
+  .play-pause-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: #4a90e2;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center; /* Center icon vertically */
+  }
+  
+  .play-pause-button:hover {
+    color: #357abd;
+  }
+  
+  .recording-duration {
+    font-size: 14px;
+    white-space: nowrap; 
+  }
+
+  .current-time {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .playback-speed-control button {
+    padding: 3px 10px; /* Reduced padding for smaller size */
+    font-size: 12px;   /* Smaller font size */
+    border: none;
+    background-color: hsla(120, 14%, 10%, 0.8);
+    color: white;
+    cursor: pointer;
+    border-radius: 15px; /* Slightly smaller border radius */
+}
+
+  
