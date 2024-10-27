@@ -3,6 +3,8 @@ import EmojiPicker, { EmojiStyle } from 'emoji-picker-react';
 import config from './config/default.json';
 import FileUploadComponent from "./FileUploadComponent";
 import axios from "axios";
+import Swal from 'sweetalert2';
+import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { sha1 } from 'crypto-hash';
 import './MessageInput.css';
 
@@ -14,13 +16,19 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
     setEditingMessageId, messagesListRef }) {
 
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [isRecording, setIsRecording] = useState(false);
+    const [audioPublicId, setAudioPublicId] = useState('');
+    const [audioBlob, setAudioBlob] = useState(null);
+    const [isPaused, setIsPaused] = useState(false);
+    const [savedRecordingTime, setSavedRecordingTime] = useState(null);
+    const [recordingDuration, setRecordingDuration] = useState(0);
+    const [mediaRecorder, setMediaRecorder] = useState(null);
+    const [timerInterval, setTimerInterval] = useState(null);
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
     const textInputRef = useRef(null);
 
-
     useEffect(() => {
-
         const handleMessageEdited = (data) => {
             setMessages((prevMessages) => {
                 const updatedMessages = prevMessages.map((message) =>
@@ -118,7 +126,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                 setIsEditing(false);
                 setEditingMessageId(null);
                 setShowEmojiPicker(false);
-                setUploadedFileUrl('');  
+                setUploadedFileUrl('');
                 setUploadedFileType('');
 
             } catch (error) {
@@ -159,7 +167,10 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
             // Send the message
             try {
                 const response = await axios.post(`${config.URL_CONNECT}/message/sendMessage`,
-                    { chatId, content: newMessage, fileUrl: uploadedFileUrl || null, fileType: uploadedFileType || null, senderUsername: user.username },
+                    {
+                        chatId, content: newMessage, fileUrl: uploadedFileUrl || null, fileType: uploadedFileType || null,
+                        recordingDuration: recordingDuration || null, senderUsername: user.username
+                    },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
 
@@ -170,6 +181,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                 setNewMessage('');
                 setUploadedFileUrl('');
                 setUploadedFileType('');
+                setAudioBlob(null);  // Reset after uploading
                 if (fileInputRef.current) {
                     fileInputRef.current.value = "";
                 }
@@ -218,48 +230,270 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
         await axios.post(`https://api.cloudinary.com/v1_1/${config.cloudName}/${fileType}/destroy`, formData);
         setUploadedFileUrl('');
         setUploadedFileType('');
+        setAudioPublicId('');
     };
+
+    const startRecording = async () => {
+        setIsRecording(true);
+        setAudioBlob(null);
+        setRecordingDuration(0);
+
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const recorder = new MediaRecorder(stream);
+
+        setMediaRecorder(recorder);
+
+        recorder.ondataavailable = (e) => {
+            setAudioBlob(e.data);
+        };
+
+        recorder.start();
+
+        const interval = setInterval(() => {
+            setRecordingDuration((prev) => prev + 1);
+        }, 1000);
+        setTimerInterval(interval);
+    };
+
+    const stopRecording = async () => {
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            mediaRecorder.ondataavailable = async (e) => {
+                const recordedBlob = e.data;
+                setAudioBlob(recordedBlob);
+                await uploadAudio(recordedBlob);
+            };
+
+            mediaRecorder.onstop = async () => {
+                setSavedRecordingTime(formatTime(recordingDuration));
+            };
+
+            mediaRecorder.stop();
+        }
+
+        clearInterval(timerInterval);
+        setIsRecording(false);
+    };
+
+
+
+
+
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`;
+    };
+
+    const formatTimeFromCloudinary = (num) => {
+        // Round the number to the nearest integer
+        const roundedSeconds = Math.floor(num);
+
+        // Calculate minutes and seconds
+        const minutes = Math.floor(roundedSeconds / 60);
+        const seconds = roundedSeconds % 60;
+
+        // Format as MM:SS with leading zero for seconds if needed
+        return `${minutes}:${String(seconds).padStart(2, '0')}`;
+    };
+
+
+
+
+    const deleteRecording = () => {
+        onCancelUpload(audioPublicId, 'video');
+        setAudioBlob(null);
+    };
+
+    const stopAndDeleteRecording = () => {
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            // Set a handler to clear the state once the recording has fully stopped
+            mediaRecorder.onstop = () => {
+                // Reset state and stop the timer
+                setAudioBlob(null);
+                setIsRecording(false);
+                clearInterval(timerInterval);
+            };
+            // Stop the recording
+            mediaRecorder.stop();
+        }
+    };
+
+
+    const uploadAudio = async (blob) => {
+        if (!blob) return;
+
+        const maxSizeInBytes = 10485760; // 10MB limit, adjust as needed
+
+        if (blob.size > maxSizeInBytes) {
+            Swal.fire({
+                icon: 'error',
+                title: 'File Too Large',
+                text: 'The audio recording exceeds the maximum allowed size of 10MB. Please try a shorter recording.',
+            });
+            setAudioBlob(null);
+            setIsRecording(false);
+            setUploadedFileUrl('');
+            setUploadedFileType('');
+            setRecordingDuration(0);
+            setAudioPublicId(null);
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', blob);
+        formData.append('upload_preset', config.uploadPreset);
+
+        try {
+            const response = await axios.post(`https://api.cloudinary.com/v1_1/${config.cloudName}/auto/upload`, formData);
+            const { secure_url, public_id, duration } = response.data;
+            setUploadedFileUrl(secure_url);
+            setUploadedFileType('audio');
+            setRecordingDuration(formatTimeFromCloudinary(duration));
+            setAudioPublicId(public_id);
+        } catch (error) {
+            setUploadedFileUrl('');
+            setUploadedFileType('');
+            setRecordingDuration(0);
+            setAudioBlob(null);
+            setIsRecording(false);
+            setAudioPublicId(null);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Upload Failed',
+                text: 'There was an error uploading the audio recording. Please try again later.',
+            });
+        }
+    };
+
+    const pauseRecording = () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            mediaRecorder.pause();
+            setIsPaused(true);
+            clearInterval(timerInterval);  // Stop the timer when paused
+        }
+    };
+
+    const resumeRecording = () => {
+        if (mediaRecorder && mediaRecorder.state === 'paused') {
+            mediaRecorder.resume();
+            setIsPaused(false);
+
+            // Restart the timer when resumed
+            const interval = setInterval(() => {
+                setRecordingDuration((prev) => prev + 1);
+            }, 1000);
+            setTimerInterval(interval);
+        }
+    };
+
 
 
     return (
         <div className="message-input-area">
-            {showEmojiPicker && (
-                <div className="emoji-picker">
-                    <EmojiPicker height={400} width={300} previewConfig={{ showPreview: false }} emojiStyle={EmojiStyle.APPLE} onEmojiClick={onEmojiClick} />
-                </div>
-            )}
-            <button className="emoji-text-area"
-                onClick={() => setShowEmojiPicker(prv => !prv)}>😊</button>
+            {!isRecording && !audioBlob ? (
+                <>
+                    {showEmojiPicker && (
+                        <div className="emoji-picker">
+                            <EmojiPicker height={400} width={300} previewConfig={{ showPreview: false }} emojiStyle={EmojiStyle.APPLE} onEmojiClick={onEmojiClick} />
+                        </div>
+                    )}
+                    <button className="emoji-text-area"
+                        onClick={() => setShowEmojiPicker(prv => !prv)}>😊</button>
 
-            {!isEditing && (
-                <FileUploadComponent
-                    socket={socket}
-                    selectedChat={selectedChat}
-                    fileInputRef={fileInputRef}
-                    onFileUpload={onFileUpload}
-                    onCancelUpload={onCancelUpload}
-                    setUploading={setUploading}
-                />
+                    {!isEditing && (
+                        <FileUploadComponent
+                            socket={socket}
+                            selectedChat={selectedChat}
+                            fileInputRef={fileInputRef}
+                            onFileUpload={onFileUpload}
+                            onCancelUpload={onCancelUpload}
+                            setUploading={setUploading}
+                        />
+                    )}
+                    <button onClick={startRecording} className="record-btn">
+                        <i className="bi bi-mic-fill"></i>
+                    </button>
+                    <textarea
+                        className="form-control"
+                        placeholder={isEditing ? "Editing message..." : "Type a message..."}
+                        ref={textInputRef}
+                        value={newMessage}
+                        onInput={() => handleTyping()}
+                        onBlur={() => handleStopTyping()}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyPress={(e) => handleKeyPress(e)}
+                    ></textarea>
+                    <button
+                        disabled={uploading}
+                        className="send-btn"
+                        onPointerDown={(e) => handleSendMessage(e)}>
+                        {isEditing ? <><i className="bi bi-pencil"></i><span className="text-for-phone"> Edit</span></> : <><i className="bi bi-send"></i>
+                            <span className="text-for-phone">Send</span> </>
+                        }
+                    </button>
+                </>
+            ) : (
+                <>
+                    {!audioBlob && (
+                        <div className="recording-area">
+                            <div className={`${!isPaused ? 'top-section' : 'top-section-center-hidden'}`}>
+                                <div className="timer">{formatTime(recordingDuration)}</div>
+                                {mediaRecorder && !isPaused && (
+                                    <div style={{ width: '100%' }}>
+                                        <LiveAudioVisualizer
+                                            mediaRecorder={mediaRecorder}
+                                            barWidth={6}
+                                            gap={6}
+                                            width={790}
+                                            height={40}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="bottom-section">
+                                <button onClick={stopAndDeleteRecording} className="delete-record-btn">
+                                    <i className="bi bi-trash"></i>
+                                </button>
+
+                                {isPaused ? (
+                                    <button onClick={resumeRecording} className="resume-record-btn">
+                                        <i className="bi bi-play-fill"></i>
+                                    </button>
+                                ) : (
+                                    <button onClick={pauseRecording} className="pause-record-btn">
+                                        <i className="bi bi-pause-fill"></i>
+                                    </button>
+                                )}
+
+                                <button onClick={stopRecording} className="stop-record-btn">
+                                    <i className="bi bi-mic-mute-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    {audioBlob && (
+                        <div className="countiner-audio">
+                            <div className="countiner-audio-main">
+                                <button onClick={deleteRecording} className="delete-audio-btn"><i className="bi bi-trash"></i></button>
+                                <audio style={{ width: '100%' }} controls>
+                                    <source src={URL.createObjectURL(audioBlob)} type="audio/wav" />
+                                </audio>
+                                <span className="recording-time">{savedRecordingTime}</span>
+                            </div>
+                            <button disabled={!uploadedFileUrl} onPointerDown={(e) => handleSendMessage(e)} className="send-btn">
+                                {uploadedFileUrl ? (
+                                    <>
+                                        <i className="bi bi-send"></i>
+                                        <span className="text-for-phone">Send</span>
+                                    </>) : (<i className="bi bi-arrow-clockwise spin-icon"></i>)}
+                            </button>
+                        </div>
+                    )}
+                </>
             )}
-            <textarea
-                className="form-control"
-                placeholder={isEditing ? "Editing message..." : "Type a message..."}
-                ref={textInputRef}
-                value={newMessage}
-                onInput={() => handleTyping()}
-                onBlur={() => handleStopTyping()}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={(e) => handleKeyPress(e)}
-            ></textarea>
-            <button
-                disabled={uploading}
-                className="send-btn"
-                onPointerDown={(e) => handleSendMessage(e)}>
-                {isEditing ? <><i className="bi bi-pencil"></i><span className="text-for-phone"> Edit</span></> : <><i className="bi bi-send"></i>
-                    <span className="text-for-phone">Send</span> </>
-                }
-            </button>
-        </div >
+        </div>
     )
 }
 
