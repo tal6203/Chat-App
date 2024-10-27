@@ -2,6 +2,7 @@ import React, { useEffect, useState, useLayoutEffect, useCallback } from 'react'
 import Linkify from 'react-linkify';
 import { Modal } from 'react-bootstrap';
 import ModalReadBy from './ModalReadBy';
+import WaveformPlayer from './WaveformPlayer';
 import './ChatWindow.css'
 
 
@@ -232,6 +233,13 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
                 return <img src={message && message.fileUrl} alt="Uploaded-img" onClick={(event) => handleImageClick(event, message.fileUrl)} className="message-image" />;
             case 'video':
                 return <video preload="none" src={message.fileUrl} controls className="message-video" />;
+            case 'audio':
+                return <WaveformPlayer
+                    key={message._id}
+                    audioUrl={message.fileUrl}
+                    duration={message.recordingDuration}
+                />
+
             default:
                 return <iframe title="Other File" src={message.fileUrl} className="message-file-link" > </iframe>;
         }
