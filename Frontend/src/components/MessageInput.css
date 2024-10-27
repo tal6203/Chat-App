@@ -87,6 +87,163 @@
       cursor: not-allowed;
   }
 
+  .record-btn {
+    background-color: #fff;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    margin-right: 10px; /* Spacing between button and input */
+    border: none;
+    width: 30px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .record-btn:hover { 
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .stop-record-btn {
+    background-color: #fff;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    margin-right: 10px; /* Spacing between button and input */
+    border: none;
+    width: 30px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .stop-record-btn:hover { 
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .pause-record-btn:hover { 
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+ .delete-record-btn:hover { 
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .resume-record-btn:hover { 
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .recording-time{
+    color: black;
+  }
+  
+  .delete-audio-btn{
+    background-color: red; /* Or any color you prefer */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px; /* Adjust as needed */
+    height: 40px; /* Adjust as needed */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    cursor: pointer;
+  }
+
+  .delete-audio-btn:hover {
+    background-color: darkred;
+  }
+
+  .countiner-audio {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Ensures vertical alignment */
+    width: 100%; /* Make sure it takes full width */
+    gap: 10px; /* Add some spacing between elements */
+}
+
+.countiner-audio-main{
+  display: flex;
+    justify-content: start;
+    align-items: center; /* Ensures vertical alignment */
+    width: 100%; /* Make sure it takes full width */
+    gap: 10px; /* Add some spacing between elements */
+}
+
+.recording-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.top-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+}
+
+.top-section-center-hidden {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+}
+
+.timer {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.bottom-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.delete-record-btn, .pause-record-btn, .resume-record-btn {
+  background-color: #fff;
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  margin-right: 10px; /* Spacing between button and input */
+  border: none;
+  width: 30px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+}
+
+.bottom-section .pause-record-btn, .resume-record-btn {
+  margin: 0 auto; /* Center the pause/resume button */
+}
+
+
+.timer {
+  margin-top: 5px;
+  font-size: 18px;
+}
+
   @media (max-width: 768px) {
     .message-input-area textarea {
         font-size: 1em; /* Ensure textarea font size is readable */
@@ -126,15 +283,77 @@
   .dark-mode .message-input-area{
     background-color: #333;
   }
+  
+
+  .dark-mode .record-btn{
+    border: 2px solid #1f1f1f;
+    background-color: #333;
+    color: white;
+  }
+
+   .dark-mode .timer {
+    color: white;
+    font-size: 18px;
+    margin-right: 10px;
+  }
 
   .dark-mode .emoji-text-area{
     border: 2px solid #1f1f1f;
     background-color: #333;
-      color: white;
+    color: white;
   }
   
   .dark-mode .emoji-text-area:hover{
     background-color: #d3d4d5;
+  }
+
+  .dark-mode .stop-record-btn {
+    border: 2px solid #1f1f1f;
+    background-color: #333;
+    color: white;
+  }
+  .dark-mode .pause-record-btn{
+    border: 2px solid #1f1f1f;
+    background-color: #333;
+    color: white;
+  }
+
+  .dark-mode .resume-record-btn{
+    border: 2px solid #1f1f1f;
+    background-color: #333;
+    color: white;
+  }
+
+  .dark-mode .delete-record-btn{
+    border: 2px solid #1f1f1f;
+    background-color: #333;
+    color: white;
+  }
+
+
+
+  .dark-mode .stop-record-btn:hover{
+    background-color: #d3d4d5;
+    color: black;
+  }
+
+  .dark-mode .pause-record-btn:hover{
+    background-color: #d3d4d5;
+    color: black;
+  }
+
+  .dark-mode .resume-record-btn:hover{
+    background-color: #d3d4d5;
+    color: black;
+  }
+
+  .dark-mode .delete-record-btn:hover{
+    background-color: #d3d4d5;
+    color: black;
+  }
+
+  .dark-mode .recording-time{
+    color: white;
   }
 
   .dark-mode .send-btn{
