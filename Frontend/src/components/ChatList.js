@@ -570,6 +570,12 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
                                               {contact.lastMessage.content || 'video'}
                                             </>
                                           )}
+                                          {contact.lastMessage.fileType === 'audio' && (
+                                            <>
+                                              <i className="bi bi-mic-fill"></i>
+                                              <span> {contact.lastMessage.recordingDuration}</span>
+                                            </>
+                                          )}
                                           {contact.lastMessage.fileType === 'raw' && (
                                             <>
                                               <i className="bi bi-file-earmark"></i>&nbsp;
@@ -613,6 +619,12 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
                                         <>
                                           <i className="bi bi-camera-video"></i>&nbsp;
                                           {contact.lastMessage.content || 'video'}
+                                        </>
+                                      )}
+                                      {contact.lastMessage.fileType === 'audio' && (
+                                        <>
+                                          <i className="bi bi-mic-fill"></i>
+                                          <span> {contact.lastMessage.recordingDuration}</span>
                                         </>
                                       )}
                                       {contact.lastMessage.fileType === 'raw' && (
@@ -735,6 +747,12 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
                                       {contact.lastMessage.content || 'video'}
                                     </>
                                   )}
+                                  {contact.lastMessage.fileType === 'audio' && (
+                                    <>
+                                      <i className="bi bi-mic-fill"></i>
+                                      <span> {contact.lastMessage.recordingDuration}</span>
+                                    </>
+                                  )}
                                   {contact.lastMessage.fileType === 'raw' && (
                                     <>
                                       <i className="bi bi-file-earmark"></i>&nbsp;
@@ -810,6 +828,12 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
                                       <>
                                         <i className="bi bi-camera-video"></i>&nbsp;
                                         {contact.lastMessage.content || 'video'}
+                                      </>
+                                    )}
+                                    {contact.lastMessage.fileType === 'audio' && (
+                                      <>
+                                        <i className="bi bi-mic-fill"></i>
+                                        <span> {contact.lastMessage.recordingDuration}</span>
                                       </>
                                     )}
                                     {contact.lastMessage.fileType === 'raw' && (
