@@ -478,7 +478,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                             <div className="countiner-audio-main">
                                 <button onClick={deleteRecording} className="delete-audio-btn"><i className="bi bi-trash"></i></button>
                                 <audio style={{ width: '100%' }} controls>
-                                    <source src={URL.createObjectURL(audioBlob)} type="audio/wav" />
+                                    <source src={URL.createObjectURL(audioBlob)} type="audio/mp3" />
                                 </audio>
                                 <span className="recording-time">{savedRecordingTime}</span>
                             </div>
