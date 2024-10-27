@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import WavesurferPlayer from '@wavesurfer/react';
 import { useAudioPlayer } from '../AudioPlayerContext';
+import { useDarkMode } from '../DarkModeContext';
 import './WaveformPlayer.css';
 
 const WaveformPlayer = ({ audioUrl, duration }) => {
@@ -8,6 +9,9 @@ const WaveformPlayer = ({ audioUrl, duration }) => {
     const [currentTime, setCurrentTime] = useState(0);
     const [playbackSpeed, setPlaybackSpeed] = useState(1);
     const { playingUrl, setPlayingUrl } = useAudioPlayer();
+
+    const { isDarkMode } = useDarkMode();
+
     const isPlaying = playingUrl === audioUrl;
 
     const onReady = (ws) => {
@@ -142,7 +146,7 @@ const WaveformPlayer = ({ audioUrl, duration }) => {
                         barGap={2}
                         progressColor={'#2D5BFF'}
                         responsive={true}
-                        waveColor={'#777777'}
+                        waveColor={isDarkMode ? '#FFFFFF' : '#777777'}
                         cursorColor={'transparent'}
                         cursorWidth={1}
                         url={audioUrl}
