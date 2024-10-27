@@ -182,6 +182,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
     }
 
     const renderFileContent = (message) => {
+        if (!message.fileUrl) return null;
         const isDocx = message.fileUrl.endsWith('.docx');
         const isPdf = message.fileUrl.endsWith('.pdf');
         const isTxt = message.fileUrl.endsWith('.txt');
@@ -234,12 +235,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
             case 'video':
                 return <video preload="none" src={message.fileUrl} controls className="message-video" />;
             case 'audio':
-                return <WaveformPlayer
-                    key={message._id}
-                    audioUrl={message.fileUrl}
-                    duration={message.recordingDuration}
-                />
-
+                return <WaveformPlayer key={message._id} audioUrl={message.fileUrl} duration={message.recordingDuration} />;
             default:
                 return <iframe title="Other File" src={message.fileUrl} className="message-file-link" > </iframe>;
         }
