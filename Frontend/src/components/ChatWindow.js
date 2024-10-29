@@ -329,31 +329,33 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
                                             : <>
                                                 {message.fileUrl && renderFileContent(message)}
 
-                                                {(message.content && message.content.length > 100 && !expandedMessages[message._id])
-                                                    ? <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}>
-
-                                                        <Linkify componentDecorator={linkDecorator}>{`${message.content.substring(0, 100)}... `}</Linkify>
-
-                                                        <span className="read-more" onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleExpandMessage(message._id);
-                                                        }}>
-                                                            Read More
-                                                        </span>
-                                                    </div>
-                                                    : (message.content.length > 100 && expandedMessages[message._id])
+                                                {message.fileType === 'audio' ? (<></>) :
+                                                    (
+                                                        message.content && message.content.length > 100 && !expandedMessages[message._id])
                                                         ? <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}>
 
-                                                            <Linkify componentDecorator={linkDecorator}>{message.content}</Linkify> {/* Show full message */}
+                                                            <Linkify componentDecorator={linkDecorator}>{`${message.content.substring(0, 100)}... `}</Linkify>
 
                                                             <span className="read-more" onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 handleExpandMessage(message._id);
                                                             }}>
-                                                                Read Less
+                                                                Read More
                                                             </span>
                                                         </div>
-                                                        : <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}><Linkify componentDecorator={linkDecorator}>{message.content}</Linkify></div>
+                                                        : (message.content.length > 100 && expandedMessages[message._id])
+                                                            ? <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}>
+
+                                                                <Linkify componentDecorator={linkDecorator}>{message.content}</Linkify> {/* Show full message */}
+
+                                                                <span className="read-more" onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleExpandMessage(message._id);
+                                                                }}>
+                                                                    Read Less
+                                                                </span>
+                                                            </div>
+                                                            : <div className={`${message?.fileUrl && message.fileUrl !== null ? 'message-content-with-media' : ''}`}><Linkify componentDecorator={linkDecorator}>{message.content}</Linkify></div>
                                                 }
                                             </>
                                 }</div>
