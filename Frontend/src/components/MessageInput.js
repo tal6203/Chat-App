@@ -263,17 +263,22 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                 setIsPaused(false);
                 await uploadAudio(recordedBlob);
             };
-
+    
             mediaRecorder.onstop = async () => {
+                // Stop the audio stream
+                if (mediaRecorder.stream) {
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
                 setSavedRecordingTime(formatTime(recordingDuration));
             };
-
+    
             mediaRecorder.stop();
         }
-
+    
         clearInterval(timerInterval);
         setIsRecording(false);
     };
+    
 
 
 
@@ -307,18 +312,20 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
 
     const stopAndDeleteRecording = () => {
         if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-            // Set a handler to clear the state once the recording has fully stopped
             mediaRecorder.onstop = () => {
-                // Reset state and stop the timer
+                // Stop the audio stream
+                if (mediaRecorder.stream) {
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
                 setAudioBlob(null);
                 setIsRecording(false);
                 setIsPaused(false);
                 clearInterval(timerInterval);
             };
-            // Stop the recording
             mediaRecorder.stop();
         }
     };
+    
 
 
     const uploadAudio = async (blob) => {
