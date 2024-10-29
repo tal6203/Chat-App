@@ -286,6 +286,8 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
 
     const selectedMessage = messages?.find(message => message._id === selectedMessageId);
 
+    console.log(messages)
+
     return (
         <div key={selectedChat._id} className="chat-window" ref={messagesListRef}>
             {loadingOlderMessages && (
@@ -361,6 +363,16 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
                                 }</div>
                                 <div className="message-time">
                                     {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    {message.senderUsername === currentUser.username && (
+                                        <span
+                                            className="message-read-icon"
+                                            style={{
+                                                color: message.readBy?.filter(user => user !== currentUser._id).length === selectedChat.users.length - 1 ? '#2a82d7' : 'gray',
+                                                marginLeft: '4px',
+                                            }}
+                                        >
+                                            <i className="bi bi-check-all"></i>
+                                        </span>)}
                                 </div>
                             </div>
                         )}
