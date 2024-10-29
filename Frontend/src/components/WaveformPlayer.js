@@ -6,6 +6,7 @@ import './WaveformPlayer.css';
 
 const WaveformPlayer = memo(({ audioUrl, duration }) => {
     const [wavesurfer, setWavesurfer] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [currentTime, setCurrentTime] = useState(0);
     const [playbackSpeed, setPlaybackSpeed] = useState(1);
     const { playingUrl, setPlayingUrl } = useAudioPlayer();
@@ -16,6 +17,7 @@ const WaveformPlayer = memo(({ audioUrl, duration }) => {
 
     const onReady = (ws) => {
         setWavesurfer(ws);
+        setLoading(false);
         if (isPlaying) {
             ws.play();
         }
@@ -109,6 +111,11 @@ const WaveformPlayer = memo(({ audioUrl, duration }) => {
     return (
         <>
             <div className="audio-player-container">
+                {loading && (
+                    <div className="loader"> 
+                        Loading...
+                    </div>
+                )}
                 <div className="playback-speed-control">
                     <button onClick={(e) => {
                         e.stopPropagation();
