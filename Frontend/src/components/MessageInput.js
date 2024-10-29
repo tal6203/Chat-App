@@ -28,6 +28,8 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
     const user = JSON.parse(localStorage.getItem("user"));
     const textInputRef = useRef(null);
 
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
     useEffect(() => {
         const handleMessageEdited = (data) => {
             setMessages((prevMessages) => {
@@ -55,12 +57,14 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
 
                         // Use requestAnimationFrame to ensure smooth scrolling without delay
                         if (shouldScroll) {
-                            requestAnimationFrame(() => {
-                                messagesListRef.current.scrollTo({
-                                    top: messagesListRef.current.scrollHeight,
-                                    behavior: 'smooth',
+                            setTimeout(() => {
+                                requestAnimationFrame(() => {
+                                    messagesListRef.current.scrollTo({
+                                        top: messagesListRef.current.scrollHeight,
+                                        behavior: 'smooth',
+                                    });
                                 });
-                            });
+                            }, isMobile ? 150 : 0);
                         }
                     }
 
@@ -76,7 +80,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
             socket.off('new message', handleNewMessage);
             socket.off("message edited", handleMessageEdited);
         }
-    }, [messagesListRef, selectedChat, userTyping, setUserTyping, user, setMessages, socket]);
+    }, [messagesListRef, selectedChat, userTyping, setUserTyping, user, isMobile, setMessages, socket]);
 
     useEffect(() => {
         setNewMessage('');
@@ -263,7 +267,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                 setIsPaused(false);
                 await uploadAudio(recordedBlob);
             };
-    
+
             mediaRecorder.onstop = async () => {
                 // Stop the audio stream
                 if (mediaRecorder.stream) {
@@ -271,14 +275,14 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                 }
                 setSavedRecordingTime(formatTime(recordingDuration));
             };
-    
+
             mediaRecorder.stop();
         }
-    
+
         clearInterval(timerInterval);
         setIsRecording(false);
     };
-    
+
 
 
 
@@ -325,7 +329,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
             mediaRecorder.stop();
         }
     };
-    
+
 
 
     const uploadAudio = async (blob) => {
