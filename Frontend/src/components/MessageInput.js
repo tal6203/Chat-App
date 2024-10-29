@@ -311,6 +311,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                 // Reset state and stop the timer
                 setAudioBlob(null);
                 setIsRecording(false);
+                setIsPaused(false);
                 clearInterval(timerInterval);
             };
             // Stop the recording
