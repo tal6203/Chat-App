@@ -260,6 +260,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
             mediaRecorder.ondataavailable = async (e) => {
                 const recordedBlob = e.data;
                 setAudioBlob(recordedBlob);
+                setIsPaused(false);
                 await uploadAudio(recordedBlob);
             };
 
