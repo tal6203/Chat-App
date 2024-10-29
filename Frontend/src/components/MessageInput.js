@@ -260,6 +260,17 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
     };
 
     const stopRecording = async () => {
+
+        if (recordingDuration <= 0) {
+            setIsRecording(false);
+            setIsPaused(false);
+            setAudioBlob(null);
+            clearInterval(timerInterval);
+            setRecordingDuration(0);
+
+            return;
+        }
+
         if (mediaRecorder && mediaRecorder.state !== 'inactive') {
             mediaRecorder.ondataavailable = async (e) => {
                 const recordedBlob = e.data;
