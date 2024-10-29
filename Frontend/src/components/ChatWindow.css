@@ -176,6 +176,10 @@
     color: var(--text-dark); /* Darker text color for readability */
   }
 
+  .message-read-icon {
+    font-size: 15px;
+  }
+
   .scroll-to-bottom-container {
     position: sticky;
     bottom: 50px; /* Adjusted for better placement */
