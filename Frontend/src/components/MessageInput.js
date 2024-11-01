@@ -414,6 +414,18 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
     };
 
     useEffect(() => {
+        if (selectedChat && mediaRecorder && mediaRecorder.state !== 'inactive') {
+            mediaRecorder.onstop = () => {
+                if (mediaRecorder.stream) {
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
+                setAudioBlob(null);
+            };
+            return () => mediaRecorder.stop();
+        }
+    }, [selectedChat, setAudioBlob, mediaRecorder]);
+
+    useEffect(() => {
         if (selectedChat) {
             setUploadedFileUrl('');
             setUploadedFileType('');
@@ -424,17 +436,6 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
             setIsPaused(false);
         }
 
-        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-            mediaRecorder.onstop = () => {
-                // Stop the audio stream
-                if (mediaRecorder.stream) {
-                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
-                }
-                setAudioBlob(null);
-            };
-            mediaRecorder.stop();
-        }
-
         return () => {
             if (previousChatId.current) {
                 socket.emit('stop recording', { chatId: previousChatId.current, userId: user._id });
@@ -442,7 +443,6 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
             previousChatId.current = selectedChat ? selectedChat._id : null;
             clearInterval(timerInterval.current);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedChat, setUploadedFileUrl, setUploadedFileType, socket, user._id, setAudioBlob]);
 
 
