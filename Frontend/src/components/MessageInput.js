@@ -13,16 +13,14 @@ import './MessageInput.css';
 function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditing, setIsEditing, uploading,
     setUploading, selectedChat, setSelectedChat, setContacts, userTyping, setUserTyping, setUploadedFileUrl,
     setUploadedFileType, uploadedFileUrl, uploadedFileType, setSearchList, editingMessageId, fileInputRef,
-    setEditingMessageId, messagesListRef }) {
+    setEditingMessageId, messagesListRef, mediaRecorder, setMediaRecorder, audioBlob, setAudioBlob }) {
 
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
     const [audioPublicId, setAudioPublicId] = useState('');
-    const [audioBlob, setAudioBlob] = useState(null);
     const [isPaused, setIsPaused] = useState(false);
     const [savedRecordingTime, setSavedRecordingTime] = useState(null);
     const [recordingDuration, setRecordingDuration] = useState(0);
-    const [mediaRecorder, setMediaRecorder] = useState(null);
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
     const timerInterval = useRef(null);
@@ -420,20 +418,32 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
             setUploadedFileUrl('');
             setUploadedFileType('');
             setRecordingDuration(0);
-            setAudioBlob(null);
             setIsRecording(false);
             setAudioPublicId(null);
+            setAudioBlob(null);
             setIsPaused(false);
+        }
+
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            mediaRecorder.onstop = () => {
+                // Stop the audio stream
+                if (mediaRecorder.stream) {
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
+                setAudioBlob(null);
+            };
+            mediaRecorder.stop();
         }
 
         return () => {
             if (previousChatId.current) {
                 socket.emit('stop recording', { chatId: previousChatId.current, userId: user._id });
             }
-            previousChatId.current = selectedChat ? selectedChat._id : null; 
+            previousChatId.current = selectedChat ? selectedChat._id : null;
             clearInterval(timerInterval.current);
         };
-    }, [selectedChat, setUploadedFileUrl, setUploadedFileType, socket, user._id]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedChat, setUploadedFileUrl, setUploadedFileType, socket, user._id, setAudioBlob]);
 
 
 
