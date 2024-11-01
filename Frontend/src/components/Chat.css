@@ -54,6 +54,15 @@ input[type='search']::-webkit-search-cancel-button {
   text-align: center;
 }
 
+.recording-indicator {
+  background-color: white;
+  color: #25D366; /* WhatsApp green */
+  font-style: italic;
+  animation: pulse 1.5s infinite;
+  padding: 8px;
+  text-align: center;
+}
+
 @keyframes pulse {
   0%, 100% { opacity: 0.9; }
   50% { opacity: 0.75; }
@@ -147,6 +156,11 @@ input[type='search']::-webkit-search-cancel-button {
 }
 
 .dark-mode .typing-indicator {
+  background-color: #333;
+  color: white;
+}
+
+.dark-mode .recording-indicator {
   background-color: #333;
   color: white;
 }
