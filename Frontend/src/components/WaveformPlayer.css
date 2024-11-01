@@ -82,24 +82,54 @@
   100% { height: 0; }
 }
 
-/* Responsive adjustments */
+.playback-speed-control button {
+  padding: 3px 10px; /* Reduced padding for smaller size */
+  font-size: 12px;   /* Smaller font size */
+  border: none;
+  background-color: hsla(120, 14%, 10%, 0.8);
+  color: white;
+  cursor: pointer;
+  border-radius: 15px; /* Slightly smaller border radius */
+}
+
+
+.playback-speed-control button {
+  padding: 3px 10px; /* Reduced padding for smaller size */
+  font-size: 12px;   /* Smaller font size */
+  border: none;
+  background-color: hsla(120, 14%, 10%, 0.8);
+  color: white;
+  cursor: pointer;
+  border-radius: 15px; /* Slightly smaller border radius */
+}
+
+
 @media (min-width: 768px) {
   .playback-speed-control button {
-      padding: 5px 15px;
-      font-size: 14px;
-      border-radius: 20px;
+      padding: 5px 15px; /* Increase padding */
+      font-size: 14px;    /* Slightly larger font size */
+      border-radius: 20px; /* Increase border radius */
   }
 }
 
+/* Smaller screens (like phones) */
 @media (max-width: 480px) {
-
-  .play-pause-button-wave {
-      font-size: 18px;
+  .playback-speed-control button {
+      padding: 2px 8px;  /* Decrease padding */
+      font-size: 10px;    /* Smaller font size */
+      border-radius: 12px; /* Smaller border radius */
   }
+}
 
-  .loader-container-waveform span {
-      height: 20px;
-      width: 4px;
-      margin-right: 5px;
-  }
+
+@media (max-width: 768px) {
+.play-pause-button-wave {
+  font-size: 20px; /* Reduce size on smaller screens */
+}
+}
+
+@media (max-width: 480px) {
+.play-pause-button-wave {
+  font-size: 18px; /* Further reduce size on very small screens */
+}
 }
