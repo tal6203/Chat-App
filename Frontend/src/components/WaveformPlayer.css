@@ -93,16 +93,6 @@
 }
 
 
-.playback-speed-control button {
-  padding: 3px 10px; /* Reduced padding for smaller size */
-  font-size: 12px;   /* Smaller font size */
-  border: none;
-  background-color: hsla(120, 14%, 10%, 0.8);
-  color: white;
-  cursor: pointer;
-  border-radius: 15px; /* Slightly smaller border radius */
-}
-
 
 @media (min-width: 768px) {
   .playback-speed-control button {
