@@ -41,6 +41,7 @@ function Chat() {
     const fileInputRef = useRef();
     const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
     const [userTyping, setUserTyping] = useState(null);
+    const [userRecording, setUserRecording] = useState(null);
     const [counterMessageUpScroll, setCounterMessageUpScroll] = useState(0);
 
     const messagesListRef = useRef(null);
@@ -66,6 +67,11 @@ function Chat() {
         const removeYourSelf = users.filter(id => id !== userData._id);
         setOnlineUsers(removeYourSelf);
     }, [userData]);
+
+    useEffect(() => {
+        setUserTyping(null);
+        setUserRecording(null);
+    }, [selectedChat]);
 
     useEffect(() => {
         if (!userData) return;
@@ -155,6 +161,31 @@ function Chat() {
             }
         }
 
+        const handleStartRecording = (data) => {
+            if (selectedChat && selectedChat._id === data.chatId && userData._id !== data.userId) {
+                setUserRecording(data.username);
+            }
+        }
+
+        const handleStopRecording = (data) => {
+            if (selectedChat && selectedChat._id === data.chatId && userData._id !== data.userId) {
+                setUserRecording(null);
+            }
+        }
+
+        const handlePauseRecording = (data) => {
+            if (selectedChat && selectedChat._id === data.chatId && userData._id !== data.userId) {
+                setUserRecording(`${userRecording} (paused)`);
+            }
+        }
+
+        const handleResumeRecording = (data) => {
+            if (selectedChat && selectedChat._id === data.chatId && userData._id !== data.userId) {
+                setUserRecording(userRecording?.replace(' (paused)', ''));
+            }
+        }
+
+
         socket.current.on('typing', handle_Typing);
         socket.current.on('stop typing', handleStop_Typing);
         socket.current.on('alert message removed from group', messageAlertForGroup);
@@ -162,6 +193,10 @@ function Chat() {
         socket.current.on('connectedUsers', handleConnectedUsers);
         socket.current.on('new message notification', handleNewMessageNotification);
         socket.current.on('message deleted for everyone', handleMessageDeletedForEveryone);
+        socket.current.on('start recording', handleStartRecording);
+        socket.current.on('stop recording', handleStopRecording);
+        socket.current.on('pause recording', handlePauseRecording);
+        socket.current.on('resume recording', handleResumeRecording);
         return () => {
             socket.current.off('typing', handle_Typing);
             socket.current.off('stop typing', handleStop_Typing);
@@ -170,9 +205,13 @@ function Chat() {
             socket.current.off('new message notification', handleNewMessageNotification);
             socket.current.off('message deleted for everyone', handleMessageDeletedForEveryone);
             socket.current.off('connect', connectHandler);
+            socket.current.off('start recording');
+            socket.current.off('stop recording');
+            socket.current.off('pause recording');
+            socket.current.off('resume recording');
             clearTimeout(typingTimeoutRef.current);
         };
-    }, [userData, userTyping, searchList, selectedChat, messages, handleConnectedUsers]);
+    }, [userData, userTyping, searchList, selectedChat, userRecording, messages, handleConnectedUsers]);
 
 
 
@@ -325,6 +364,11 @@ function Chat() {
                                     setCounterMessageUpScroll={setCounterMessageUpScroll}
                                     counterMessageUpScroll={counterMessageUpScroll}
                                 />
+                                {userRecording && (
+                                    <div className="recording-indicator">
+                                        {userRecording} is recording...
+                                    </div>
+                                )}
                                 {userTyping && (
                                     <div className="typing-indicator">
                                         {userTyping} is typing...
