@@ -111,11 +111,6 @@ const WaveformPlayer = memo(({ audioUrl, duration }) => {
     return (
         <>
             <div className="audio-player-container">
-                {loading && (
-                    <div className="loader"> 
-                        Loading...
-                    </div>
-                )}
                 <div className="playback-speed-control">
                     <button onClick={(e) => {
                         e.stopPropagation();
@@ -137,6 +132,15 @@ const WaveformPlayer = memo(({ audioUrl, duration }) => {
                         <i className="bi bi-play-circle"></i>
                     )}
                 </button>
+                {loading && (
+                    <div className="loader-container-waveform">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                )}
                 <div
                     className="waveform-container"
                     onClick={(e) => {
