@@ -23,10 +23,11 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
     const [savedRecordingTime, setSavedRecordingTime] = useState(null);
     const [recordingDuration, setRecordingDuration] = useState(0);
     const [mediaRecorder, setMediaRecorder] = useState(null);
-    const [timerInterval, setTimerInterval] = useState(null);
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
+    const timerInterval = useRef(null);
     const textInputRef = useRef(null);
+    const previousChatId = useRef(selectedChat ? selectedChat._id : null);
 
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
@@ -252,11 +253,11 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
         };
 
         recorder.start();
+        socket.emit('start recording', { chatId: selectedChat._id, userId: user._id, username: user.username });
 
-        const interval = setInterval(() => {
+        timerInterval.current = setInterval(() => {
             setRecordingDuration((prev) => prev + 1);
         }, 1000);
-        setTimerInterval(interval);
     };
 
     const stopRecording = async () => {
@@ -265,7 +266,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
             setIsRecording(false);
             setIsPaused(false);
             setAudioBlob(null);
-            clearInterval(timerInterval);
+            clearInterval(timerInterval.current);
             setRecordingDuration(0);
 
             return;
@@ -288,9 +289,10 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
             };
 
             mediaRecorder.stop();
+            socket.emit('stop recording', { chatId: selectedChat._id, userId: user._id });
         }
 
-        clearInterval(timerInterval);
+        clearInterval(timerInterval.current);
         setIsRecording(false);
     };
 
@@ -335,9 +337,11 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                 setAudioBlob(null);
                 setIsRecording(false);
                 setIsPaused(false);
-                clearInterval(timerInterval);
+                clearInterval(timerInterval.current);
+
             };
             mediaRecorder.stop();
+            socket.emit('stop recording', { chatId: selectedChat._id, userId: user._id });
         }
     };
 
@@ -394,7 +398,8 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
         if (mediaRecorder && mediaRecorder.state === 'recording') {
             mediaRecorder.pause();
             setIsPaused(true);
-            clearInterval(timerInterval);  // Stop the timer when paused
+            socket.emit('pause recording', { chatId: selectedChat._id, userId: user._id });
+            clearInterval(timerInterval.current);  // Stop the timer when paused
         }
     };
 
@@ -402,14 +407,33 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
         if (mediaRecorder && mediaRecorder.state === 'paused') {
             mediaRecorder.resume();
             setIsPaused(false);
+            socket.emit('resume recording', { chatId: selectedChat._id, userId: user._id });
 
-            // Restart the timer when resumed
-            const interval = setInterval(() => {
+            timerInterval.current = setInterval(() => {
                 setRecordingDuration((prev) => prev + 1);
             }, 1000);
-            setTimerInterval(interval);
         }
     };
+
+    useEffect(() => {
+        if (selectedChat) {
+            setUploadedFileUrl('');
+            setUploadedFileType('');
+            setRecordingDuration(0);
+            setAudioBlob(null);
+            setIsRecording(false);
+            setAudioPublicId(null);
+            setIsPaused(false);
+        }
+
+        return () => {
+            if (previousChatId.current) {
+                socket.emit('stop recording', { chatId: previousChatId.current, userId: user._id });
+            }
+            previousChatId.current = selectedChat ? selectedChat._id : null; 
+            clearInterval(timerInterval.current);
+        };
+    }, [selectedChat, setUploadedFileUrl, setUploadedFileType, socket, user._id]);
 
 
 
