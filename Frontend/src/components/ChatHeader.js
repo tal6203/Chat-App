@@ -14,6 +14,7 @@ function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, resetU
 
     const handleCloseChat = () => {
         if (selectedChat) {
+            socket.emit('stop recording', { chatId: selectedChat._id, userId: currentUser._id });
             socket.emit('leave chat', selectedChat._id);
         }
         setSelectedChat(null);
