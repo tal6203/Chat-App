@@ -27,6 +27,8 @@ function Chat() {
     const [unreadMessagesCount, setUnreadMessagesCount] = useState({});
     const [uploadedFileUrl, setUploadedFileUrl] = useState("");
     const [uploadedFileType, setUploadedFileType] = useState("");
+    const [mediaRecorder, setMediaRecorder] = useState(null);
+    const [audioBlob, setAudioBlob] = useState(null);
     const [loadingOlderMessages, setLoadingOlderMessages] = useState(false);
     const [hasMoreMessages, setHasMoreMessages] = useState(false);
     const [firstUnreadMessageIndex, setFirstUnreadMessageIndex] = useState(null);
@@ -168,7 +170,7 @@ function Chat() {
         }
 
         const handleStopRecording = (data) => {
-            if (selectedChat && selectedChat._id === data.chatId && userData._id !== data.userId) {
+            if (selectedChat && selectedChat._id === data.chatId && userData._id === data.userId) {
                 setUserRecording(null);
             }
         }
@@ -340,6 +342,8 @@ function Chat() {
                                     setMessages={setMessages}
                                     onlineUsers={onlineUsers}
                                     setSelectedChat={setSelectedChat}
+                                    mediaRecorder={mediaRecorder}
+                                    setAudioBlob={setAudioBlob}
                                     socket={socket.current}
                                     unreadMessagesCount={unreadMessagesCount}
                                     resetUnreadCount={resetUnreadCount}
@@ -385,6 +389,10 @@ function Chat() {
                                     userTyping={userTyping}
                                     setUserTyping={setUserTyping}
                                     messages={messages}
+                                    mediaRecorder={mediaRecorder}
+                                    setMediaRecorder={setMediaRecorder}
+                                    audioBlob={audioBlob}
+                                    setAudioBlob={setAudioBlob}
                                     setMessages={setMessages}
                                     newMessage={newMessage}
                                     fileInputRef={fileInputRef}
