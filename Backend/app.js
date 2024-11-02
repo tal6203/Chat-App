@@ -134,6 +134,27 @@ io.on('connection', async (socket) => {
     io.to(chatId).emit('stop typing', { chatId, userId, username });
   });
 
+  // Notify other users in the chat when recording starts
+  socket.on('start recording', ({ chatId, userId, username }) => {
+    io.to(chatId).emit('start recording', { chatId, userId, username });
+  });
+
+  // Notify other users in the chat when recording stops
+  socket.on('stop recording', ({ chatId, userId }) => {
+    io.to(chatId).emit('stop recording', { chatId, userId });
+  });
+
+  // Notify other users in the chat when recording is paused
+  socket.on('pause recording', ({ chatId, userId }) => {
+    io.to(chatId).emit('pause recording', { chatId, userId });
+  });
+
+  // Notify other users in the chat when recording resumes
+  socket.on('resume recording', ({ chatId, userId }) => {
+    io.to(chatId).emit('resume recording', { chatId, userId });
+  });
+
+
   socket.on('read messsages', async (chatId, data) => {
     io.to(chatId).emit('read messsages', data.messages);
   });
@@ -391,7 +412,6 @@ io.on('connection', async (socket) => {
 
 
 
-
   socket.on('new message', async (newMessageReceived) => {
     try {
       const { chatId, sender, content, _id, fileUrl } = newMessageReceived;
@@ -489,6 +509,7 @@ io.on('connection', async (socket) => {
 
     // Find the user ID associated with the disconnected socket
     const disconnectedUserId = connectedUsers.get(socket.id);
+    
 
     // Remove user from connected users map when they disconnect
     if (disconnectedUserId) {
