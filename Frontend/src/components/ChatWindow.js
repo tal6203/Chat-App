@@ -286,7 +286,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
 
     const selectedMessage = messages?.find(message => message._id === selectedMessageId);
 
-    console.log(messages)
+
 
     return (
         <div key={selectedChat._id} className="chat-window" ref={messagesListRef}>
