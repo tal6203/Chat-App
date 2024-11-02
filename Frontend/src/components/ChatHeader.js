@@ -4,8 +4,8 @@ import config from "./config/default.json";
 import './ChatHeader.css';
 import ChatDetailsModal from "./ChatDetailsModal";
 
-function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, resetUnreadCount, setContacts,
-    setMessages, setFilteredContacts, unreadMessagesCount }) {
+function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, setContacts,
+    setMessages, setFilteredContacts, mediaRecorder, setAudioBlob }) {
     const [sharedGroups, setSharedGroups] = useState([]);
     const [showChatDetailsModal, setShowChatDetailsModal] = useState(false);
 
@@ -16,6 +16,16 @@ function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, resetU
         if (selectedChat) {
             socket.emit('stop recording', { chatId: selectedChat._id, userId: currentUser._id });
             socket.emit('leave chat', selectedChat._id);
+        }
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            mediaRecorder.onstop = () => {
+                // Stop the audio stream
+                if (mediaRecorder.stream) {
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
+                setAudioBlob(null);
+            };
+            mediaRecorder.stop();
         }
         setSelectedChat(null);
         setMessages([]);
