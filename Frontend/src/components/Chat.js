@@ -158,7 +158,7 @@ function Chat() {
         }
 
         const handleStop_Typing = (result) => {
-            if (selectedChat && result.chatId === selectedChat._id && userTyping === result.username) {
+            if (selectedChat && result.chatId === selectedChat._id) {
                 setUserTyping(null);
             }
         }
@@ -170,7 +170,7 @@ function Chat() {
         }
 
         const handleStopRecording = (data) => {
-            if (selectedChat && selectedChat._id === data.chatId && userData._id === data.userId) {
+            if (selectedChat && selectedChat._id === data.chatId && userData._id !== data.userId) {
                 setUserRecording(null);
             }
         }
@@ -207,10 +207,10 @@ function Chat() {
             socket.current.off('new message notification', handleNewMessageNotification);
             socket.current.off('message deleted for everyone', handleMessageDeletedForEveryone);
             socket.current.off('connect', connectHandler);
-            socket.current.off('start recording');
-            socket.current.off('stop recording');
-            socket.current.off('pause recording');
-            socket.current.off('resume recording');
+            socket.current.off('start recording', handleStartRecording);
+            socket.current.off('stop recording', handleStopRecording);
+            socket.current.off('pause recording', handlePauseRecording);
+            socket.current.off('resume recording', handleResumeRecording);
             clearTimeout(typingTimeoutRef.current);
         };
     }, [userData, userTyping, searchList, selectedChat, userRecording, messages, handleConnectedUsers]);
@@ -303,6 +303,28 @@ function Chat() {
 
         setIsContextMenuOpen(true);
     };
+
+
+    useEffect(() => {
+        if (!socket.current) return;
+    
+        // Emit stop recording and stop typing when the user closes or reloads the page
+        const handleBeforeUnload = () => {
+            if (selectedChat) {
+                socket.current.emit('stop recording', { chatId: selectedChat._id, userId: userData._id });
+                socket.current.emit('stop typing', { chatId: selectedChat._id, userId: userData._id, username: userData.username });
+            }
+        };
+    
+        // Add the event listener for the beforeunload event
+        window.addEventListener('beforeunload', handleBeforeUnload);
+    
+        // Cleanup the event listener when the component is unmounted
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [selectedChat, userData]);
+    
 
     return (
         <div className={`container ${isDarkMode ? 'dark-mode' : ''}`}>
