@@ -137,8 +137,16 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
 
 
     useEffect(() => {
+        // Throttle the scroll event handler
+        let throttleTimeout = null;
+
         const scrollHandler = () => {
-            requestAnimationFrame(handleScroll);
+            if (!throttleTimeout) {
+                throttleTimeout = setTimeout(() => {
+                    handleScroll();
+                    throttleTimeout = null;
+                }, 100); // Adjust the delay as needed (e.g., 100ms)
+            }
         };
 
         const messagesRefCurrent = messagesListRef.current;
@@ -149,6 +157,9 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
         return () => {
             if (messagesRefCurrent) {
                 messagesRefCurrent.removeEventListener('scroll', scrollHandler);
+            }
+            if (throttleTimeout) {
+                clearTimeout(throttleTimeout);
             }
         };
     }, [handleScroll, messagesListRef]);
