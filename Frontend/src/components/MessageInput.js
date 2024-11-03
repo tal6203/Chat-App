@@ -157,7 +157,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                     });
 
                     setSelectedChat(newChat);
-                    setContacts((prevContacts) => [newChat, ...prevContacts]);
+                    // setContacts((prevContacts) => [newChat, ...prevContacts]);
 
                 }
 
