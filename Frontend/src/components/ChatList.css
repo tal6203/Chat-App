@@ -117,6 +117,145 @@
     background-color: #075E54; /* Darker shade of green for hover */
   }
 
+  .unread-filter-btn {
+    background-color: #25D366; /* Blue to stand out */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    border-radius: 20px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    width: auto;
+}
+
+.unread-filter-btn:hover {
+    background-color: #075E54; /* Slightly darker blue on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.group-filter-btn {
+  background-color: #25D366; /* Blue to stand out */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  border-radius: 20px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  width: auto;
+}
+
+.group-filter-btn:hover{
+  background-color: #075E54; /* Slightly darker blue on hover */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.no-group-chats {
+  color: #333; /* Neutral color for visibility */
+  font-size: 16px;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+.active-unread-filter-btn {
+  background-color: #075E54;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  border-radius: 20px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  width: auto;
+}
+
+.active-group-filter-btn {
+  background-color: #075E54;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  border-radius: 20px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  width: auto;
+}
+
+.unread-filter-btn i {
+    margin-right: 8px;
+}
+
+.group-filter-btn i {
+  margin-right: 8px;
+}
+
+.active-group-filter-btn i {
+  margin-right: 8px;
+}
+
+.active-unread-filter-btn i {
+  margin-right: 8px;
+}
+
+.no-unread-message {
+  color: #333; /* Neutral color for visibility */
+  font-size: 16px;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+.view-all-chats-btn {
+  background: none;
+  border: none;
+  text-decoration: none;
+  color: #007bff; /* Base color matching your application */
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: normal;
+  padding: 0;
+  margin-top: 8px;
+  transition: color 0.3s ease, transform 0.1s ease;
+}
+
+.view-all-chats-btn:hover {
+  color: #0056b3; /* Darker blue on hover */
+  text-decoration: none;
+}
+
+.view-all-chats-btn:active {
+  color: #004494; /* Darker shade on press */
+  transform: scale(0.98); /* Slight scale-down effect for feedback */
+}
+
   .chat-list {
     padding-top: 10px;
     min-height: 468px;
@@ -309,6 +448,30 @@
         padding: 10px; /* Adjust padding for header and list items */
       }
 
+      .group-filter-btn {
+        padding: 8px 16px; 
+        font-size: 14px;
+      }
+
+      .active-group-filter-btn {
+        padding: 8px 16px; 
+        font-size: 14px;
+      }
+
+      .active-unread-filter-btn {
+        padding: 8px 16px; 
+        font-size: 14px;
+      }
+
+      .unread-filter-btn {
+        padding: 8px 16px; /* Adjust padding for smaller screens */
+        font-size: 14px;   /* Smaller font size on mobile */
+    }
+
+    .view-all-chats-btn {
+      font-size: 14px; /* Reduce font size slightly on mobile */
+  }
+
       .profile-image {
         height: 35px; /* Adjust image size for smaller screens */
         width: 35px;
@@ -355,7 +518,6 @@
   
   .dark-mode .create-group-btn {
     background-color: #333;
-  
   }
 
   .dark-mode .last-message-preview {
@@ -381,3 +543,39 @@
   .dark-mode .Existing-Contacts, .dark-mode .no-matching-contacts, .dark-mode .other-users, .dark-mode .no-new-users-found {
     color: white; /* Dark mode color */
   }
+
+  .dark-mode .unread-filter-btn {
+    background-color: #333;
+  }
+
+  .dark-mode .unread-filter-btn{
+    background-color: #333;
+  }
+
+  .dark-mode .group-filter-btn{
+    background-color: #333;
+  }
+
+  .dark-mode .active-group-filter-btn{
+    background-color: #333;
+    color: #25d366;
+  }
+
+  .dark-mode .active-unread-filter-btn{
+    background-color: #333;
+    color: #25d366;
+  }
+  
+  .dark-mode .no-group-chats{
+    background-color: #333;
+    color: white;
+  }
+
+  .dark-mode .no-unread-message {
+    color: white;
+  }
+
+  .dark-mode .view-all-chats-btn {
+    color: #25d366; /* Lighter blue for dark mode */
+}
+
