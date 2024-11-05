@@ -1181,6 +1181,15 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
                   <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
                     {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
                   </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteChat(contact._id);
+                    }}
+                    className="delete-chat-button"
+                  >
+                    <i className="bi bi-trash"></i>
+                  </button>
                 </div>
               )))
           ) :
