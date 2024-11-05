@@ -28,6 +28,11 @@ const CustomNavbar = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     document.body.classList.remove('dark-mode');
+
+    if (isDarkMode) {
+      toggleDarkMode();
+    }
+
     setNavigateTo('/login');
   };
 
