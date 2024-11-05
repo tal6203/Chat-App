@@ -19,6 +19,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
     const [isRecording, setIsRecording] = useState(false);
     const [audioPublicId, setAudioPublicId] = useState('');
     const [isPaused, setIsPaused] = useState(false);
+    const [isSending, setIsSending] = useState(false);
     const [savedRecordingTime, setSavedRecordingTime] = useState(null);
     const [recordingDuration, setRecordingDuration] = useState(0);
     const token = localStorage.getItem("token");
@@ -105,9 +106,10 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
-        if (!newMessage.trim() && !uploadedFileUrl) {
+        if (isSending || (!newMessage.trim() && !uploadedFileUrl)) {
             return; // Exit if message is empty
         }
+        setIsSending(true);
 
         if (isEditing && editingMessageId) {
             // Handle message editing
@@ -196,6 +198,9 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
             }
             catch (error) {
                 console.error('Error sending message:', error);
+            }
+            finally {
+                setIsSending(false); 
             }
         }
     }
@@ -483,7 +488,7 @@ function MessageInput({ socket, newMessage, setNewMessage, setMessages, isEditin
                         onKeyPress={(e) => handleKeyPress(e)}
                     ></textarea>
                     <button
-                        disabled={uploading}
+                        disabled={uploading || isSending}
                         className="send-btn"
                         onPointerDown={(e) => handleSendMessage(e)}>
                         {isEditing ? <><i className="bi bi-pencil"></i><span className="text-for-phone"> Edit</span></> : <><i className="bi bi-send"></i>
