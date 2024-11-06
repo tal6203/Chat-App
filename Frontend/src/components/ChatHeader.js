@@ -13,6 +13,8 @@ function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, setCon
     const regexPattern = new RegExp(`${currentUser.username}\\s*and\\s*|\\s*and\\s*${currentUser.username}`, 'i');
 
     const handleCloseChat = () => {
+        setSelectedChat(null);
+        setMessages([]);
         if (selectedChat) {
             socket.emit('stop recording', { chatId: selectedChat._id, userId: currentUser._id });
             socket.emit('leave chat', selectedChat._id);
@@ -27,8 +29,6 @@ function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, setCon
             };
             mediaRecorder.stop();
         }
-        setSelectedChat(null);
-        setMessages([]);
     }
 
     const fetchSharedChatGroups = async (partnerId) => {
