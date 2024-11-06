@@ -482,6 +482,15 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
   }, [filteredContacts]);
 
 
+  const resetFilters = () => {
+    setShowingUnreadOnly(false);
+    setShowingGroupsOnly(false);
+    setSearchUserName('');
+    setFilteredContacts([]);
+    setSearchList([]);
+  };
+
+
   return (
     <>
       <div className="chat-list-header">
@@ -501,6 +510,12 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
         <CreateGroupModal showGroupCreateModal={showGroupCreateModal} socket={socket} setShowGroupCreateModal={setShowGroupCreateModal} />
       )}
       <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
+        <button
+          className={!showingUnreadOnly && !showingGroupsOnly ? "active-all-filter-btn" : "all-filter-btn"}
+          onClick={resetFilters}
+        >
+          All
+        </button>
         <button
           className={showingUnreadOnly ? "active-unread-filter-btn" : "unread-filter-btn"}
           onClick={() => {
