@@ -10,6 +10,7 @@
     background-image: url('https://res.cloudinary.com/dfa7zee9i/image/upload/s--TB-F7xJo--/f_auto,q_auto/Background_dethfh');
     transition: background-image 0.5s ease-in-out;
     -webkit-overflow-scrolling: touch;
+    will-change: scroll-position;
   }
 
   .loader-container {
@@ -150,6 +151,7 @@
   .message-content {
     word-wrap: break-word;
     max-width: 100%;
+    transform: translateZ(0);
   }
 
   .message-content-with-media{
