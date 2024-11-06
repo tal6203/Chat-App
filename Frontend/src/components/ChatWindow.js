@@ -192,7 +192,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
         setShowImageModal(true);
     }
 
-    const renderFileContent = (message) => {
+    const renderFileContent = useCallback((message) => {
         if (!message.fileUrl) return null;
         const isDocx = message.fileUrl.endsWith('.docx');
         const isPdf = message.fileUrl.endsWith('.pdf');
@@ -242,7 +242,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
 
         switch (message.fileType) {
             case 'image':
-                return <img src={message && message.fileUrl} alt="Uploaded-img" onClick={(event) => handleImageClick(event, message.fileUrl)} className="message-image" />;
+                return <img src={message && message.fileUrl} loading="lazy" alt="Uploaded-img" onClick={(event) => handleImageClick(event, message.fileUrl)} className="message-image" />;
             case 'video':
                 return <video preload="none" src={message.fileUrl} controls className="message-video" />;
             case 'audio':
@@ -250,7 +250,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
             default:
                 return <iframe title="Other File" src={message.fileUrl} className="message-file-link" > </iframe>;
         }
-    };
+    }, []);
 
     const formatDate = useCallback((timestamp) => {
         const messageDate = new Date(timestamp);
