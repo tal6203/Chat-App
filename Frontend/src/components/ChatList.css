@@ -140,6 +140,29 @@
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
+.all-filter-btn {
+  background-color: #25D366; /* Blue to stand out */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  border-radius: 20px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  width: auto;
+}
+
+.all-filter-btn:hover{
+  background-color: #075E54; /* Slightly darker blue on hover */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
 .group-filter-btn {
   background-color: #25D366; /* Blue to stand out */
   color: white;
@@ -173,6 +196,24 @@
 }
 
 .active-unread-filter-btn {
+  background-color: #075E54;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  border-radius: 20px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  width: auto;
+}
+
+.active-all-filter-btn{
   background-color: #075E54;
   color: white;
   border: none;
@@ -453,12 +494,22 @@
         font-size: 14px;
       }
 
+      .all-filter-btn{
+        padding: 8px 16px; 
+        font-size: 14px;
+      }
+
       .active-group-filter-btn {
         padding: 8px 16px; 
         font-size: 14px;
       }
 
       .active-unread-filter-btn {
+        padding: 8px 16px; 
+        font-size: 14px;
+      }
+
+      .active-all-filter-btn{
         padding: 8px 16px; 
         font-size: 14px;
       }
@@ -548,7 +599,7 @@
     background-color: #333;
   }
 
-  .dark-mode .unread-filter-btn{
+  .dark-mode .all-filter-btn{
     background-color: #333;
   }
 
@@ -557,6 +608,11 @@
   }
 
   .dark-mode .active-group-filter-btn{
+    background-color: #333;
+    color: #25d366;
+  }
+
+  .dark-mode .active-all-filter-btn{
     background-color: #333;
     color: #25d366;
   }
