@@ -28,12 +28,28 @@
 }
 
 /* Responsive date header font size */
-.date-header {
+.date-header-media-modal {
     font-weight: bold;
     font-size: 14px;
     color: #666;
     text-align: center;
     margin-bottom: 10px;
+    text-align: center;
+    margin: 10px auto;
+    width: 100px;
+    color: black; /* More neutral color */
+    font-size: 0.85em;
+    position: sticky;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #c5dcff; /* Light grey background */
+    padding: 5px 10px;
+    z-index: 1;
+    border-radius: 10px;
+    border: none; /* Removed for a cleaner look */
+    box-shadow: none; /* Removed for a cleaner look */
+    white-space: nowrap;
 }
 
 .no-more-media {
@@ -200,6 +216,11 @@
 
 .dark-mode .modal-media-message .btn-close {
  background-color: white;   
+}
+
+.dark-mode .date-header-media-modal{
+    background-color: #000;
+    color: white;
 }
 
 
