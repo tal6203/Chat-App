@@ -9,6 +9,9 @@ router.post('/sendMessage', authMiddleware.authenticate, messageController.sendM
 // Get messages By chatId
 router.get('/getMessageByChatId/:chatId', authMiddleware.authenticate, messageController.getMessagesByChatId);
 
+// Get media messages by chatId with pagination
+router.get('/getMediaMessagesByChatId/:chatId', authMiddleware.authenticate, messageController.getMediaMessagesByChatId);
+
 // Edit a messsage
 router.put('/editMessage/:messageId', authMiddleware.authenticate, messageController.editMessage);
 
