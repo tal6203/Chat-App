@@ -374,7 +374,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
                                 }</div>
                                 <div className="message-time">
                                     {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    {message.senderUsername === currentUser.username && (
+                                    {message.senderUsername === currentUser.username && !message.deletedForEveryone && (
                                         <span
                                             className="message-read-icon"
                                             style={{
