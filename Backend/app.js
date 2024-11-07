@@ -478,6 +478,10 @@ io.on('connection', async (socket) => {
       // Emit the new message to the chat room
       io.to(chatId).emit('new message', newMessageReceived);
 
+      if (fileUrl) {
+        io.to(chatId).emit('new media message', newMessageReceived);
+    }
+
       io.to(chatId).emit('reset');
 
       // Emit updates and notifications to users
