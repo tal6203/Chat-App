@@ -105,7 +105,7 @@ const messageController = {
         content: content,
         fileUrl: fileUrl,
         fileType: fileType,
-        recordingDuration : recordingDuration,
+        recordingDuration: recordingDuration,
         readBy: []
       };
 
@@ -379,6 +379,114 @@ const messageController = {
       res.status(200).json({ messages: messages.reverse() });
     } catch (error) {
       console.error('Error fetching chat messages:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+
+  /**
+ * @swagger
+ * /message/getMediaMessagesByChatId/{chatId}:
+ *   get:
+ *     summary: Get media messages by chat ID with pagination
+ *     tags: [Messages]
+ *     parameters:
+ *       - in: path
+ *         name: chatId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the chat
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         required: false
+ *         description: The number of media messages to retrieve per request
+ *       - in: query
+ *         name: lastMessageId
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: The ID of the last message for pagination
+ *     responses:
+ *       200:
+ *         description: A list of media messages
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 messages:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       chatId:
+ *                         type: string
+ *                       sender:
+ *                         type: string
+ *                       senderUsername:
+ *                         type: string
+ *                       fileUrl:
+ *                         type: string
+ *                       fileType:
+ *                         type: string
+ *                       timestamp:
+ *                         type: string
+ *       404:
+ *         description: Chat not found
+ *       500:
+ *         description: Internal Server Error
+ */
+  getMediaMessagesByChatId: async (req, res) => {
+    try {
+      const { chatId } = req.params;
+      const userId = req.userId;
+      const limit = parseInt(req.query.limit) || 20; // Default to 20 messages if not specified
+      const lastMessageId = req.query.lastMessageId; // Cursor for pagination
+
+      // Validate chat existence
+      const chat = await Chat.findById(chatId);
+      if (!chat) {
+        return res.status(404).json({ error: 'Chat not found' });
+      }
+
+      // Build query for media messages only
+      const messageQuery = {
+        chatId: chatId,
+        fileUrl: { $ne: null },
+        deletedForEveryone: { $ne: true },
+        deletedForUsers: { $ne: userId }
+      };
+
+      if (lastMessageId) {
+        // Fetch messages older than the last message ID
+        messageQuery._id = { $lt: lastMessageId };
+      }
+
+      // Get the total count of media messages for pagination info
+      const totalMessages = await Message.countDocuments({
+        chatId: chatId,
+        fileUrl: { $ne: null },
+        deletedForEveryone: { $ne: true },
+        deletedForUsers: { $ne: userId }
+      });
+
+      // Fetch messages, sort by ID descending, and limit results
+      const mediaMessages = await Message.find(messageQuery)
+        .sort({ _id: -1 })
+        .limit(limit)
+        .lean();
+
+      res.status(200).json({
+        messages: mediaMessages.reverse(),
+        totalMessages  // Include total message count in the response
+      });
+    } catch (error) {
+      console.error('Error fetching media messages:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   },
