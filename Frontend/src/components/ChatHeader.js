@@ -3,11 +3,13 @@ import axios from "axios";
 import config from "./config/default.json";
 import './ChatHeader.css';
 import ChatDetailsModal from "./ChatDetailsModal";
+import MediaMessagesModal from "./MediaMessagesModal";
 
 function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, setContacts,
     setMessages, setFilteredContacts, mediaRecorder, setAudioBlob }) {
     const [sharedGroups, setSharedGroups] = useState([]);
     const [showChatDetailsModal, setShowChatDetailsModal] = useState(false);
+    const [showMediaMessagesModal, setShowMediaMessagesModal] = useState(false);
 
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const regexPattern = new RegExp(`${currentUser.username}\\s*and\\s*|\\s*and\\s*${currentUser.username}`, 'i');
@@ -50,6 +52,10 @@ function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, setCon
             fetchSharedChatGroups(partnerId);
         }
         setShowChatDetailsModal(true);
+    };
+
+    const handleShowMediaModal = () => {
+        setShowMediaMessagesModal(true);
     };
 
     return (
@@ -98,13 +104,30 @@ function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, setCon
                     )}
                 </h4>
 
-                <button className="btn close-button" onClick={(e) => {
-                    e.stopPropagation();
-                    handleCloseChat();
-                }}>
-                    <i className="bi bi-x-lg"></i>
-                </button>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <button className="btn-media-button" onClick={(e) => {
+                        e.stopPropagation();
+                        handleShowMediaModal();
+                    }}>
+                        <i className="bi bi-collection"></i>
+                    </button>
+                    <button className="btn close-button" onClick={(e) => {
+                        e.stopPropagation();
+                        handleCloseChat();
+                    }}>
+                        <i className="bi bi-x-lg"></i>
+                    </button>
+                </div>
             </div>
+
+            {showMediaMessagesModal && (
+                <MediaMessagesModal
+                    show={showMediaMessagesModal}
+                    onHide={() => setShowMediaMessagesModal(false)}
+                    chatId={selectedChat._id}
+                    socket={socket}
+                />
+            )}
 
             {showChatDetailsModal && (
                 <ChatDetailsModal
