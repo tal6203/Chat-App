@@ -64,6 +64,7 @@ function MediaMessagesModal({ show, onHide, chatId, socket }) {
         const handleNewMediaMessage = (newMessage) => {
             if (newMessage.chatId === chatId && newMessage.fileUrl) {
                 setMediaMessages((prev) => [...prev, newMessage]);
+                setTotalMessagesMedia((prev) => prev + 1);
             }
         };
 
@@ -146,7 +147,7 @@ function MediaMessagesModal({ show, onHide, chatId, socket }) {
                     {!hasMoreMedia && <p className="no-more-media">No more media messages</p>}
                     {Object.keys(groupedMessages).map(date => (
                         <div key={date} className="date-group">
-                            <p className="date-header">{date}</p>
+                            <p className="date-header-media-modal">{date}</p>
                             <div className="media-grid">
                                 {groupedMessages[date].map((message) => (
                                     <div key={message._id} className="media-message-item">
