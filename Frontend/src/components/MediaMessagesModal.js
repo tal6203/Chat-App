@@ -130,7 +130,7 @@ function MediaMessagesModal({ show, onHide, chatId, socket }) {
     const groupedMessages = groupMessagesByDate(mediaMessages);
 
     return (
-        <Modal className='modal-media-message' show={show} onHide={onHide} size="lg" centered>
+        <Modal className='modal-media-message'  show={show} onHide={onHide} size="lg" centered>
             <Modal.Header closeButton>
                 <Modal.Title className='media-message-header'>Media Messages</Modal.Title>
             </Modal.Header>
