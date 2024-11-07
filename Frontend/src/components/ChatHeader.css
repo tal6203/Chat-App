@@ -13,6 +13,22 @@
     z-index: 1;
   }
 
+  .btn-media-button{
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    transition: all 0.3s ease;
+    background-color: transparent;
+    box-shadow: none; 
+    color: white;
+  }
+
+  .btn-media-button i {
+    color: #fff;
+    font-size: 20px;
+  }
+
 
   .chat-header h4 {
     display: flex;
@@ -44,6 +60,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  @media (min-height: 791px) {
+    .btn-media-button{
+      border-radius: 50%;
+      padding: 10px 15px;
+    }
+
+    .btn-media-button i {
+      font-size: 1.5em; /* Larger icons for better visibility and touch */
+    }
   }
 
 
