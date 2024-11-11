@@ -217,7 +217,8 @@ const ChatDetailsModal = ({ showChatDetailsModal, selectedChat, setShowChatDetai
                     alt={user.username}
                     style={{ width: '30px', height: '30px', marginRight: '10px', borderRadius: '50%' }}
                 />
-                <span style={{ marginRight: '50px', fontSize: '1.1em', color: '#333' }}>{user.username}</span>
+                <span style={{ marginRight: '50px', fontSize: '1.1em', color: '#333' }}>{user.username.length > 30 ?
+                    (`${user.username.substring(0, 25)}...`) : (user.username)}</span>
                 <button style={{
                     backgroundColor: '#FF6347',
                     color: 'white',
@@ -256,7 +257,8 @@ const ChatDetailsModal = ({ showChatDetailsModal, selectedChat, setShowChatDetai
                         borderRadius: '50%'
                     }}
                 />
-                <span className="group-members" style={{ flexGrow: 1 }}>{member.username}</span>
+                <span className="group-members" style={{ flexGrow: 1 }}>{member.username.length > 30 ?
+                    (`${member.username.substring(0, 25)}...`) : (member.username)}</span>
                 {currentUser._id === selectedChat.groupAdmin._id && currentUser._id !== member._id ? (
                     <button
                         onClick={() => removeUserFromGroup(member)}
@@ -304,7 +306,8 @@ const ChatDetailsModal = ({ showChatDetailsModal, selectedChat, setShowChatDetai
                     alt={user.username}
                     style={{ width: '30px', height: '30px', marginRight: '10px', borderRadius: '50%' }}
                 />
-                <span className="search-members-result" onClick={() => toggleUserSelection(user)} style={{ flexGrow: 1 }}>{user.username}</span>
+                <span className="search-members-result" onClick={() => toggleUserSelection(user)} style={{ flexGrow: 1 }}>{user.username.length > 30 ?
+                    (`${user.username.substring(0, 25)}...`) : (user.username)}</span>
                 <input
                     id={`checkbox-${user._id}`}
                     type="checkbox"
@@ -560,7 +563,9 @@ const ChatDetailsModal = ({ showChatDetailsModal, selectedChat, setShowChatDetai
                     ) : (
                         <div className="chat-container-modal-user">
                             <div className="chat-header-modal-user">
-                                <p className="chat-name">{selectedChat.chatName.replace(regexPattern, '')}</p>
+                                <p className="chat-name">{
+                                    selectedChat.chatName.length > 20 ? (
+                                        `${selectedChat.chatName.replace(regexPattern, '').substring(0, 15)}...`) : selectedChat.chatName.replace(regexPattern, '')}</p>
                                 <p className="user-status-modal-user">
                                     <span className="status-text-modal-user">{selectedChat.users.find(user => user._id !== currentUser._id).status}</span>
                                 </p>
@@ -572,7 +577,7 @@ const ChatDetailsModal = ({ showChatDetailsModal, selectedChat, setShowChatDetai
                                         sharedGroups.map(group => (
                                             <div key={group._id} className="group-item">
                                                 <img src={group.groupPicture} alt={group.chatName} className="group-image" />
-                                                <p className="group-name">{group.chatName}</p>
+                                                <p className="group-name">{group.chatName.length > 20 ? (`${group.chatName.substring(0, 15)}...`) : (group.chatName)}</p>
                                             </div>
                                         ))
                                     ) : (
