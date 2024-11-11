@@ -578,7 +578,8 @@ const chatController = {
         {
           $pull: {
             users: { $in: usersToDelete },
-            unreadCount: { userId: { $in: usersToDelete } }
+            unreadCount: { userId: { $in: usersToDelete } },
+            favoriteBy: { $in: usersToDelete }
           },
           $addToSet: { usersLeftOrDeleted: { $each: usersToDelete } },
           $set: usersToDelete.reduce((acc, userId) => {
@@ -598,6 +599,62 @@ const chatController = {
     } catch (error) {
       console.error('Error deleting users from the group:', error);
       res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+
+  /**
+ * @swagger
+ * /chats/toggleFavorite/{chatId}:
+ *   put:
+ *     summary: Toggle the favorite status of a chat for the current user
+ *     tags: [Chats]
+ *     parameters:
+ *       - in: path
+ *         name: chatId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the chat to toggle favorite status
+ *     responses:
+ *       200:
+ *         description: Favorite status toggled successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 chat:
+ *                   type: object
+ *       404:
+ *         description: Chat not found
+ */
+  toggleFavorite: async (req, res) => {
+    try {
+      const { chatId } = req.params;
+      const userId = req.userId;
+
+      const chat = await Chat.findById(chatId);
+      if (!chat) {
+        return res.status(404).json({ message: "Chat not found" });
+      }
+
+      const isFavorite = chat.favoriteBy.includes(userId);
+      const update = isFavorite
+        ? { $pull: { favoriteBy: userId } }
+        : { $addToSet: { favoriteBy: userId } };
+
+      const updatedChat = await Chat.findByIdAndUpdate(chatId, update, { new: true }).populate([
+        { path: 'users', select: 'username profilePicture status' },
+        { path: 'groupAdmin', select: 'username' },
+        'lastMessage'
+      ]).lean();
+
+      return res.status(200).json({ message: "Favorite status toggled", chat: updatedChat });
+    } catch (error) {
+      console.error("Error toggling favorite status:", error);
+      return res.status(500).json({ message: "Server error" });
     }
   },
 
@@ -855,6 +912,9 @@ const chatController = {
           chat.usersLeftOrDeleted.push(userId);
         }
       }
+
+      // Remove from favorites if the chat was favorited
+      chat.favoriteBy = chat.favoriteBy.filter(favUserId => favUserId.toString() !== userId);
 
       chat.unreadCount = chat.unreadCount.map(count => {
         if (count.userId.toString() === userId) {
