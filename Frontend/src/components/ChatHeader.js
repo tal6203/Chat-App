@@ -70,7 +70,9 @@ function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, setCon
                                 className="profile-image"
                             />
                             <div className="chat-details">
-                                {selectedChat.chatName} - Group Chat
+                                {selectedChat.chatName.length > 20 ? (
+                                    `${selectedChat.chatName.substring(0, 15)}...`
+                                    ) : (selectedChat.chatName)} - Group Chat
                             </div>
                         </>
                     ) : selectedChat._id ? (
@@ -79,7 +81,9 @@ function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, setCon
                                 alt={selectedChat.users.find(user => user._id !== currentUser._id).username}
                                 className="profile-image" />
                             <div className="chat-details">
-                                <div>{selectedChat.chatName.replace(regexPattern, '') || 'Chat'}</div>
+                                <div>{
+                                    selectedChat.chatName.length > 20 ? (
+                                `${selectedChat.chatName.replace(regexPattern, '').substring(0, 15)}...`) : selectedChat.chatName.replace(regexPattern, '')}</div>
                                 <span className={
                                     onlineUsers.includes(selectedChat.users.find(user => user._id !== currentUser._id)._id)
                                         ? 'online' : 'offline'
@@ -95,7 +99,9 @@ function ChatHeader({ selectedChat, onlineUsers, setSelectedChat, socket, setCon
                                 alt='anonymousPicture'
                                 className="profile-image" />
                             <div className="chat-details">
-                                {selectedChat.chatName}
+                                {selectedChat.chatName.length > 20 ? (
+                                    `${selectedChat.chatName.substring(0, 15)}...`
+                                    ) : selectedChat.chatName}
                                 <span className={onlineUsers.includes(selectedChat.users[0]._id) ? 'online' : 'offline'}>
                                     {onlineUsers.includes(selectedChat.users[0]._id) ? 'Online' : 'Offline'}
                                 </span>
