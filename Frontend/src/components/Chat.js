@@ -119,7 +119,7 @@ function Chat() {
             );
 
             setFilteredContacts((prevFilteredContacts) =>
-                prevFilteredContacts.map((contact) => {
+                prevFilteredContacts?.map((contact) => {
                     if (contact._id === data.chatId && contact.lastMessage?._id === data.messageId) {
                         return {
                             ...contact,
@@ -307,7 +307,7 @@ function Chat() {
 
     useEffect(() => {
         if (!socket.current) return;
-    
+
         // Emit stop recording and stop typing when the user closes or reloads the page
         const handleBeforeUnload = () => {
             if (selectedChat) {
@@ -315,16 +315,16 @@ function Chat() {
                 socket.current.emit('stop typing', { chatId: selectedChat._id, userId: userData._id, username: userData.username });
             }
         };
-    
+
         // Add the event listener for the beforeunload event
         window.addEventListener('beforeunload', handleBeforeUnload);
-    
+
         // Cleanup the event listener when the component is unmounted
         return () => {
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
     }, [selectedChat, userData]);
-    
+
 
     return (
         <div className={`container ${isDarkMode ? 'dark-mode' : ''}`}>
@@ -458,7 +458,7 @@ function Chat() {
                     )}
                 </div>
             </div>
-        </div >
+        </div>
     );
 }
 
