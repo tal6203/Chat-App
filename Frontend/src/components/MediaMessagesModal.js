@@ -131,7 +131,7 @@ function MediaMessagesModal({ show, onHide, chatId, socket }) {
     const groupedMessages = groupMessagesByDate(mediaMessages);
 
     return (
-        <Modal className='modal-media-message'  show={show} onHide={onHide} size="lg" centered>
+        <Modal className='modal-media-message' show={show} onHide={onHide} size="lg" centered>
             <Modal.Header closeButton>
                 <Modal.Title className='media-message-header'>Media Messages</Modal.Title>
             </Modal.Header>
@@ -158,6 +158,19 @@ function MediaMessagesModal({ show, onHide, chatId, socket }) {
                                                 <img src={RecordImg} alt="Audio Thumbnail" className="audio-thumbnail" />
                                                 <audio src={message.fileUrl} controls className="audio-player" />
                                             </div>}
+                                        {message.fileUrl.endsWith('.pdf') || message.fileUrl.endsWith('.txt') ? (
+                                            <iframe
+                                                title="Document Preview"
+                                                src={message.fileUrl}
+                                                className="media-document-preview"
+                                            ></iframe>
+                                        ) : message.fileUrl.endsWith('.docx') ? (
+                                            <iframe
+                                                title="Document Preview"
+                                                src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(message.fileUrl)}`}
+                                                className="media-document-preview"
+                                            ></iframe>
+                                        ) : null}
                                     </div>
                                 ))}
                             </div>
