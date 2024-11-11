@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Link } from 'react-router-dom';
 import CreateGroupModal from "./CreateGroupModal";
+import ChatListItem from "./ChatListItem";
 import config from './config/default.json';
 import './ChatList.css';
 import axios from "axios";
@@ -613,173 +614,19 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
                 ) :
                   (
                     sortedFilteredContacts.filter(contact => contact.favoriteBy?.includes(currentUser._id)).map(contact => (
-                      <div
+                      <ChatListItem
                         key={contact._id}
-                        onClick={() => handleContactClick(contact)}
-                        className={`chat-list-item ${selectedChat && selectedChat._id === contact._id ? 'active' : ''}`}
-                      >
-                        <img
-                          src={contact.isGroupChat ? contact.groupPicture : contact.users?.find(user => user._id !== currentUser._id).profilePicture}
-                          alt={contact.chatName}
-                          className="profile-image" />
-
-                        <div className="user-info">
-                          <div className="username-container">
-                            <span className="username">
-                              {contact.isGroupChat
-                                ? contact.chatName && contact.chatName.length > 20
-                                  ? `${contact.chatName.substring(0, 20)}...`
-                                  : contact.chatName || 'Unnamed Group'
-                                : contact.chatName
-                                  ? contact.chatName.replace(regexPattern, '').length > 20
-                                    ? `${contact.chatName.replace(regexPattern, '').substring(0, 20)}...`
-                                    : contact.chatName.replace(regexPattern, '')
-                                  : 'Chat'}
-                              {unreadMessagesCount[contact._id] > 0 && (
-                                <span className="unread-badge">
-                                  {unreadMessagesCount[contact._id]}
-                                </span>
-                              )}
-                            </span>
-
-                          </div>
-                          <div className="last-message-preview">
-                            {contact.isGroupChat ?
-                              contact.lastMessage
-                                ? contact.lastMessage.systemMessage && (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                  contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp)
-                                  ? contact.lastMessage.content
-                                  : (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                    contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp)
-                                    ? contact.lastMessage.deletedForEveryone
-                                      ? contact.lastMessage.senderUsername === currentUser.username
-                                        ? "You deleted this message"
-                                        : "This message has been deleted"
-                                      :
-                                      contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
-                                        ? "You deleted this message"
-                                        :
-                                        <>
-                                          {`${contact.lastMessage.senderUsername}: `}
-                                          {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                            (<>
-                                              <i className="bi bi-file-earmark"></i>&nbsp;
-                                              {contact.lastMessage.content || 'document'}
-                                            </>)
-                                            : contact.lastMessage.fileType ? (
-                                              <>
-                                                {contact.lastMessage.fileType === 'image' && (
-                                                  <>
-                                                    <i className="bi bi-image"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'image'}
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'video' && (
-                                                  <>
-                                                    <i className="bi bi-camera-video"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'video'}
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'audio' && (
-                                                  <>
-                                                    <i className="bi bi-mic-fill"></i>
-                                                    <span> {contact.lastMessage.recordingDuration}</span>
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'raw' && (
-                                                  <>
-                                                    <i className="bi bi-file-earmark"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'document'}
-                                                  </>
-                                                )}
-                                              </>
-                                            ) : (
-                                              <> {contact.lastMessage.content} </>
-                                            )}
-                                        </>
-                                    : "No messages yet"
-                                : "No messages yet" :
-
-                              contact.lastMessage ?
-                                contact.lastMessage.deletedForEveryone ?
-                                  contact.lastMessage.senderUsername === currentUser.username ?
-                                    "You deleted this message"
-                                    :
-                                    "This message has been deleted"
-                                  :
-                                  contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
-                                    ? "You deleted this message"
-                                    :
-                                    <>
-                                      {`${contact.lastMessage.senderUsername}: `}
-                                      {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                        (<>
-                                          <i className="bi bi-file-earmark"></i>&nbsp;
-                                          {contact.lastMessage.content || 'document'}
-                                        </>)
-                                        : contact.lastMessage.fileType ? (
-                                          <>
-                                            {contact.lastMessage.fileType === 'image' && (
-                                              <>
-                                                <i className="bi bi-image"></i>&nbsp;
-                                                {contact.lastMessage.content || 'image'}
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'video' && (
-                                              <>
-                                                <i className="bi bi-camera-video"></i>&nbsp;
-                                                {contact.lastMessage.content || 'video'}
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'audio' && (
-                                              <>
-                                                <i className="bi bi-mic-fill"></i>
-                                                <span> {contact.lastMessage.recordingDuration}</span>
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'raw' && (
-                                              <>
-                                                <i className="bi bi-file-earmark"></i>&nbsp;
-                                                {contact.lastMessage.content || 'document'}
-                                              </>
-                                            )}
-                                          </>
-                                        ) : (
-                                          <> {contact.lastMessage.content} </>
-                                        )}
-                                    </>
-                                :
-                                "No messages yet"
-                            }
-                          </div>
-                        </div>
-                        <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
-                          {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
-                        </div>
-                        {contact.isGroupChat ? (
-                          <></>
-                        ) : (
-                          <span className={`status-indicator ${onlineUsers.includes(contact.users?.find(user => user._id !== currentUser._id)._id) ? 'connect' : 'disconnect'}`}></span>
-                        )}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleFavorite(contact._id);
-                          }}
-                          className="favorite-btn"
-                        >
-                          <i className={`bi ${contact.favoriteBy?.includes(currentUser._id) ? 'bi-heart-fill' : 'bi-heart'}`}></i>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteChat(contact._id);
-                          }}
-                          className="delete-chat-button"
-                        >
-                          <i className="bi bi-trash"></i>
-                        </button>
-                      </div>
+                        contact={contact}
+                        selectedChat={selectedChat}
+                        currentUser={currentUser}
+                        unreadMessagesCount={unreadMessagesCount}
+                        onlineUsers={onlineUsers}
+                        handleContactClick={handleContactClick}
+                        toggleFavorite={toggleFavorite}
+                        deleteChat={deleteChat}
+                        formatLastMessageTime={formatLastMessageTime}
+                        regexPattern={regexPattern}
+                      />
                     )
                     )
                   )) :
@@ -796,173 +643,19 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
                     </div>
                   ) :
                     (sortedFilteredContacts.filter(contact => contact.isGroupChat).map(contact => (
-                      <div
+                      <ChatListItem
                         key={contact._id}
-                        onClick={() => handleContactClick(contact)}
-                        className={`chat-list-item ${selectedChat && selectedChat._id === contact._id ? 'active' : ''}`}
-                      >
-                        <img
-                          src={contact.groupPicture}
-                          alt={contact.chatName}
-                          className="profile-image"
-                        />
-                        <div className="user-info">
-                          <div className="username-container">
-                            <span className="username">
-                              {contact.isGroupChat
-                                ? contact.chatName && contact.chatName.length > 20
-                                  ? `${contact.chatName.substring(0, 20)}...`
-                                  : contact.chatName || 'Unnamed Group'
-                                : contact.chatName
-                                  ? contact.chatName.replace(regexPattern, '').length > 20
-                                    ? `${contact.chatName.replace(regexPattern, '').substring(0, 20)}...`
-                                    : contact.chatName.replace(regexPattern, '')
-                                  : 'Chat'}
-                              {unreadMessagesCount[contact._id] > 0 && (
-                                <span className="unread-badge">
-                                  {unreadMessagesCount[contact._id]}
-                                </span>
-                              )}
-                            </span>
-
-                          </div>
-                          <div className="last-message-preview">
-                            {contact.isGroupChat ?
-                              contact.lastMessage
-                                ? contact.lastMessage.systemMessage && (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                  contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp)
-                                  ? contact.lastMessage.content
-                                  : (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                    contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp)
-                                    ? contact.lastMessage.deletedForEveryone
-                                      ? contact.lastMessage.senderUsername === currentUser.username
-                                        ? "You deleted this message"
-                                        : "This message has been deleted"
-                                      :
-                                      contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
-                                        ? "You deleted this message"
-                                        :
-                                        <>
-                                          {`${contact.lastMessage.senderUsername}: `}
-                                          {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                            (<>
-                                              <i className="bi bi-file-earmark"></i>&nbsp;
-                                              {contact.lastMessage.content || 'document'}
-                                            </>)
-                                            : contact.lastMessage.fileType ? (
-                                              <>
-                                                {contact.lastMessage.fileType === 'image' && (
-                                                  <>
-                                                    <i className="bi bi-image"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'image'}
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'video' && (
-                                                  <>
-                                                    <i className="bi bi-camera-video"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'video'}
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'audio' && (
-                                                  <>
-                                                    <i className="bi bi-mic-fill"></i>
-                                                    <span> {contact.lastMessage.recordingDuration}</span>
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'raw' && (
-                                                  <>
-                                                    <i className="bi bi-file-earmark"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'document'}
-                                                  </>
-                                                )}
-                                              </>
-                                            ) : (
-                                              <> {contact.lastMessage.content} </>
-                                            )}
-                                        </>
-                                    : "No messages yet"
-                                : "No messages yet" :
-
-                              contact.lastMessage ?
-                                contact.lastMessage.deletedForEveryone ?
-                                  contact.lastMessage.senderUsername === currentUser.username ?
-                                    "You deleted this message"
-                                    :
-                                    "This message has been deleted"
-                                  :
-                                  contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
-                                    ? "You deleted this message"
-                                    :
-                                    <>
-                                      {`${contact.lastMessage.senderUsername}: `}
-                                      {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                        (<>
-                                          <i className="bi bi-file-earmark"></i>&nbsp;
-                                          {contact.lastMessage.content || 'document'}
-                                        </>)
-                                        : contact.lastMessage.fileType ? (
-                                          <>
-                                            {contact.lastMessage.fileType === 'image' && (
-                                              <>
-                                                <i className="bi bi-image"></i>&nbsp;
-                                                {contact.lastMessage.content || 'image'}
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'video' && (
-                                              <>
-                                                <i className="bi bi-camera-video"></i>&nbsp;
-                                                {contact.lastMessage.content || 'video'}
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'audio' && (
-                                              <>
-                                                <i className="bi bi-mic-fill"></i>
-                                                <span> {contact.lastMessage.recordingDuration}</span>
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'raw' && (
-                                              <>
-                                                <i className="bi bi-file-earmark"></i>&nbsp;
-                                                {contact.lastMessage.content || 'document'}
-                                              </>
-                                            )}
-                                          </>
-                                        ) : (
-                                          <> {contact.lastMessage.content} </>
-                                        )}
-                                    </>
-                                :
-                                "No messages yet"
-                            }
-                          </div>
-                        </div>
-                        <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
-                          {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
-                        </div>
-                        {contact.isGroupChat ? (
-                          <></>
-                        ) : (
-                          <span className={`status-indicator ${onlineUsers.includes(contact.users?.find(user => user._id !== currentUser._id)._id) ? 'connect' : 'disconnect'}`}></span>
-                        )}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleFavorite(contact._id);
-                          }}
-                          className="favorite-btn"
-                        >
-                          <i className={`bi ${contact.favoriteBy?.includes(currentUser._id) ? 'bi-heart-fill' : 'bi-heart'}`}></i>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteChat(contact._id);
-                          }}
-                          className="delete-chat-button"
-                        >
-                          <i className="bi bi-trash"></i>
-                        </button>
-                      </div>
+                        contact={contact}
+                        selectedChat={selectedChat}
+                        currentUser={currentUser}
+                        unreadMessagesCount={unreadMessagesCount}
+                        onlineUsers={onlineUsers}
+                        handleContactClick={handleContactClick}
+                        toggleFavorite={toggleFavorite}
+                        deleteChat={deleteChat}
+                        formatLastMessageTime={formatLastMessageTime}
+                        regexPattern={regexPattern}
+                      />
                     )))
                 ) :
                   (showingUnreadOnly && !showingGroupsOnly && !showingFavoritesOnly ? (
@@ -977,343 +670,35 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
                         </span>
                       </div>) : (
                         sortedFilteredContacts.filter(contact => unreadMessagesCount[contact._id] > 0).map(contact => (
-                          <div
+                          <ChatListItem
                             key={contact._id}
-                            onClick={() => handleContactClick(contact)}
-                            className={`chat-list-item ${selectedChat && selectedChat._id === contact._id ? 'active' : ''}`}
-                          >
-                            <img
-                              src={contact.isGroupChat ? contact.groupPicture : contact.users?.find(user => user._id !== currentUser._id).profilePicture}
-                              alt={contact.chatName}
-                              className="profile-image"
-                            />
-                            <div className="user-info">
-                              <div className="username-container">
-                                <span className="username">
-                                  {contact.isGroupChat
-                                    ? contact.chatName && contact.chatName.length > 20
-                                      ? `${contact.chatName.substring(0, 20)}...`
-                                      : contact.chatName || 'Unnamed Group'
-                                    : contact.chatName
-                                      ? contact.chatName.replace(regexPattern, '').length > 20
-                                        ? `${contact.chatName.replace(regexPattern, '').substring(0, 20)}...`
-                                        : contact.chatName.replace(regexPattern, '')
-                                      : 'Chat'}
-                                  {unreadMessagesCount[contact._id] > 0 && (
-                                    <span className="unread-badge">
-                                      {unreadMessagesCount[contact._id]}
-                                    </span>
-                                  )}
-                                </span>
-
-                              </div>
-                              <div className="last-message-preview">
-                                {contact.isGroupChat ?
-                                  contact.lastMessage
-                                    ? contact.lastMessage.systemMessage && (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                      contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp)
-                                      ? contact.lastMessage.content
-                                      : (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                        contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp)
-                                        ? contact.lastMessage.deletedForEveryone
-                                          ? contact.lastMessage.senderUsername === currentUser.username
-                                            ? "You deleted this message"
-                                            : "This message has been deleted"
-                                          :
-                                          contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
-                                            ? "You deleted this message"
-                                            :
-                                            <>
-                                              {`${contact.lastMessage.senderUsername}: `}
-                                              {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                                (<>
-                                                  <i className="bi bi-file-earmark"></i>&nbsp;
-                                                  {contact.lastMessage.content || 'document'}
-                                                </>)
-                                                : contact.lastMessage.fileType ? (
-                                                  <>
-                                                    {contact.lastMessage.fileType === 'image' && (
-                                                      <>
-                                                        <i className="bi bi-image"></i>&nbsp;
-                                                        {contact.lastMessage.content || 'image'}
-                                                      </>
-                                                    )}
-                                                    {contact.lastMessage.fileType === 'video' && (
-                                                      <>
-                                                        <i className="bi bi-camera-video"></i>&nbsp;
-                                                        {contact.lastMessage.content || 'video'}
-                                                      </>
-                                                    )}
-                                                    {contact.lastMessage.fileType === 'audio' && (
-                                                      <>
-                                                        <i className="bi bi-mic-fill"></i>
-                                                        <span> {contact.lastMessage.recordingDuration}</span>
-                                                      </>
-                                                    )}
-                                                    {contact.lastMessage.fileType === 'raw' && (
-                                                      <>
-                                                        <i className="bi bi-file-earmark"></i>&nbsp;
-                                                        {contact.lastMessage.content || 'document'}
-                                                      </>
-                                                    )}
-                                                  </>
-                                                ) : (
-                                                  <> {contact.lastMessage.content} </>
-                                                )}
-                                            </>
-                                        : "No messages yet"
-                                    : "No messages yet" :
-
-                                  contact.lastMessage ?
-                                    contact.lastMessage.deletedForEveryone ?
-                                      contact.lastMessage.senderUsername === currentUser.username ?
-                                        "You deleted this message"
-                                        :
-                                        "This message has been deleted"
-                                      :
-                                      contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
-                                        ? "You deleted this message"
-                                        :
-                                        <>
-                                          {`${contact.lastMessage.senderUsername}: `}
-                                          {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                            (<>
-                                              <i className="bi bi-file-earmark"></i>&nbsp;
-                                              {contact.lastMessage.content || 'document'}
-                                            </>)
-                                            : contact.lastMessage.fileType ? (
-                                              <>
-                                                {contact.lastMessage.fileType === 'image' && (
-                                                  <>
-                                                    <i className="bi bi-image"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'image'}
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'video' && (
-                                                  <>
-                                                    <i className="bi bi-camera-video"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'video'}
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'audio' && (
-                                                  <>
-                                                    <i className="bi bi-mic-fill"></i>
-                                                    <span> {contact.lastMessage.recordingDuration}</span>
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'raw' && (
-                                                  <>
-                                                    <i className="bi bi-file-earmark"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'document'}
-                                                  </>
-                                                )}
-                                              </>
-                                            ) : (
-                                              <> {contact.lastMessage.content} </>
-                                            )}
-                                        </>
-                                    :
-                                    "No messages yet"
-                                }
-                              </div>
-                            </div>
-                            <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
-                              {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
-                            </div>
-                            {contact.isGroupChat ? (
-                              <></>
-                            ) : (
-                              <span className={`status-indicator ${onlineUsers.includes(contact.users?.find(user => user._id !== currentUser._id)._id) ? 'connect' : 'disconnect'}`}></span>
-                            )}
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleFavorite(contact._id);
-                              }}
-                              className="favorite-btn"
-                            >
-                              <i className={`bi ${contact.favoriteBy?.includes(currentUser._id) ? 'bi-heart-fill' : 'bi-heart'}`}></i>
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteChat(contact._id);
-                              }}
-                              className="delete-chat-button"
-                            >
-                              <i className="bi bi-trash"></i>
-                            </button>
-                          </div>
+                            contact={contact}
+                            selectedChat={selectedChat}
+                            currentUser={currentUser}
+                            unreadMessagesCount={unreadMessagesCount}
+                            onlineUsers={onlineUsers}
+                            handleContactClick={handleContactClick}
+                            toggleFavorite={toggleFavorite}
+                            deleteChat={deleteChat}
+                            formatLastMessageTime={formatLastMessageTime}
+                            regexPattern={regexPattern}
+                          />
                         )))
                   ) :
                     (sortedFilteredContacts.map(contact => (
-                      <div
+                      <ChatListItem
                         key={contact._id}
-                        onClick={() => handleContactClick(contact)}
-                        className={`chat-list-item ${selectedChat && selectedChat._id === contact._id ? 'active' : ''}`}
-                      >
-                        <img
-                          src={contact.isGroupChat ? contact.groupPicture : contact.users?.find(user => user._id !== currentUser._id).profilePicture}
-                          alt={contact.chatName}
-                          className="profile-image"
-                        />
-                        <div className="user-info">
-                          <div className="username-container">
-                            <span className="username">
-                              {contact.isGroupChat
-                                ? contact.chatName && contact.chatName.length > 20
-                                  ? `${contact.chatName.substring(0, 20)}...`
-                                  : contact.chatName || 'Unnamed Group'
-                                : contact.chatName
-                                  ? contact.chatName.replace(regexPattern, '').length > 20
-                                    ? `${contact.chatName.replace(regexPattern, '').substring(0, 20)}...`
-                                    : contact.chatName.replace(regexPattern, '')
-                                  : 'Chat'}
-                              {unreadMessagesCount[contact._id] > 0 && (
-                                <span className="unread-badge">
-                                  {unreadMessagesCount[contact._id]}
-                                </span>
-                              )}
-                            </span>
-
-                          </div>
-                          <div className="last-message-preview">
-                            {contact.isGroupChat ?
-                              contact.lastMessage
-                                ? contact.lastMessage.systemMessage && (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                  contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp)
-                                  ? contact.lastMessage.content
-                                  : (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                    contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp)
-                                    ? contact.lastMessage.deletedForEveryone
-                                      ? contact.lastMessage.senderUsername === currentUser.username
-                                        ? "You deleted this message"
-                                        : "This message has been deleted"
-                                      :
-                                      contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
-                                        ? "You deleted this message"
-                                        :
-                                        <>
-                                          {`${contact.lastMessage.senderUsername}: `}
-                                          {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                            (<>
-                                              <i className="bi bi-file-earmark"></i>&nbsp;
-                                              {contact.lastMessage.content || 'document'}
-                                            </>)
-                                            : contact.lastMessage.fileType ? (
-                                              <>
-                                                {contact.lastMessage.fileType === 'image' && (
-                                                  <>
-                                                    <i className="bi bi-image"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'image'}
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'video' && (
-                                                  <>
-                                                    <i className="bi bi-camera-video"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'video'}
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'audio' && (
-                                                  <>
-                                                    <i className="bi bi-mic-fill"></i>
-                                                    <span> {contact.lastMessage.recordingDuration}</span>
-                                                  </>
-                                                )}
-                                                {contact.lastMessage.fileType === 'raw' && (
-                                                  <>
-                                                    <i className="bi bi-file-earmark"></i>&nbsp;
-                                                    {contact.lastMessage.content || 'document'}
-                                                  </>
-                                                )}
-                                              </>
-                                            ) : (
-                                              <> {contact.lastMessage.content} </>
-                                            )}
-                                        </>
-                                    : "No messages yet"
-                                : "No messages yet" :
-
-                              contact.lastMessage ?
-                                contact.lastMessage.deletedForEveryone ?
-                                  contact.lastMessage.senderUsername === currentUser.username ?
-                                    "You deleted this message"
-                                    :
-                                    "This message has been deleted"
-                                  :
-                                  contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
-                                    ? "You deleted this message"
-                                    :
-                                    <>
-                                      {`${contact.lastMessage.senderUsername}: `}
-                                      {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                        (<>
-                                          <i className="bi bi-file-earmark"></i>&nbsp;
-                                          {contact.lastMessage.content || 'document'}
-                                        </>)
-                                        : contact.lastMessage.fileType ? (
-                                          <>
-                                            {contact.lastMessage.fileType === 'image' && (
-                                              <>
-                                                <i className="bi bi-image"></i>&nbsp;
-                                                {contact.lastMessage.content || 'image'}
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'video' && (
-                                              <>
-                                                <i className="bi bi-camera-video"></i>&nbsp;
-                                                {contact.lastMessage.content || 'video'}
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'audio' && (
-                                              <>
-                                                <i className="bi bi-mic-fill"></i>
-                                                <span> {contact.lastMessage.recordingDuration}</span>
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'raw' && (
-                                              <>
-                                                <i className="bi bi-file-earmark"></i>&nbsp;
-                                                {contact.lastMessage.content || 'document'}
-                                              </>
-                                            )}
-                                          </>
-                                        ) : (
-                                          <> {contact.lastMessage.content} </>
-                                        )}
-                                    </>
-                                :
-                                "No messages yet"
-                            }
-                          </div>
-                        </div>
-                        <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
-                          {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
-                        </div>
-                        {contact.isGroupChat ? (
-                          <></>
-                        ) : (
-                          <span className={`status-indicator ${onlineUsers.includes(contact.users?.find(user => user._id !== currentUser._id)._id) ? 'connect' : 'disconnect'}`}></span>
-                        )}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleFavorite(contact._id);
-                          }}
-                          className="favorite-btn"
-                        >
-                          <i className={`bi ${contact.favoriteBy?.includes(currentUser._id) ? 'bi-heart-fill' : 'bi-heart'}`}></i>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteChat(contact._id);
-                          }}
-                          className="delete-chat-button"
-                        >
-                          <i className="bi bi-trash"></i>
-                        </button>
-                      </div>
+                        contact={contact}
+                        selectedChat={selectedChat}
+                        currentUser={currentUser}
+                        unreadMessagesCount={unreadMessagesCount}
+                        onlineUsers={onlineUsers}
+                        handleContactClick={handleContactClick}
+                        toggleFavorite={toggleFavorite}
+                        deleteChat={deleteChat}
+                        formatLastMessageTime={formatLastMessageTime}
+                        regexPattern={regexPattern}
+                      />
                     ))
                     ))) : (
               <p className="no-matching-contacts">No matching contacts found.</p>
@@ -1332,7 +717,9 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
                     className="profile-image"
                   />
                   <div className="user-info">
-                    <p>{user.username}</p>
+                    <p>{user.username.length > 20 ? (
+                      `${user.username.substring(0, 15)}...`
+                    ) : (user.username)}</p>
                   </div>
                   <span className={`status-indicator ${onlineUsers.includes(user._id) ? 'connect' : 'disconnect'}`}></span>
                 </div>
@@ -1360,200 +747,19 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
             ) :
               (
                 sortedContacts.filter(contact => contact.favoriteBy?.includes(currentUser._id)).map(contact => (
-                  <div
+                  <ChatListItem
                     key={contact._id}
-                    onClick={() => handleContactClick(contact)}
-                    className={`chat-list-item ${selectedChat && selectedChat._id === contact._id ? 'active' : ''}`}
-                  >
-                    {contact.isGroupChat ? (
-                      <>
-                        <img
-                          src={contact.groupPicture}
-                          alt='groupPicture'
-                          className="profile-image"
-                        />
-                        <div className="user-info">
-                          <div className="username-container">
-                            <span className="username">
-                              {contact.chatName && contact.chatName.length > 20
-                                ? `${contact.chatName.substring(0, 20)}...`
-                                : contact.chatName || 'Unnamed Group'}
-                              {unreadMessagesCount[contact._id] > 0 && (
-                                <span className="unread-badge">
-                                  {unreadMessagesCount[contact._id]}
-                                </span>
-                              )}
-                            </span>
-                          </div>
-                          <div className="last-message-preview">
-                            {contact.lastMessage ? (
-                              contact.lastMessage.systemMessage && (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp) ? (
-                                contact.lastMessage.content
-                              ) : (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp) ? (
-                                contact.lastMessage.deletedForEveryone ? (
-                                  contact.lastMessage.senderUsername === currentUser.username ? (
-                                    "You deleted this message"
-                                  ) : (
-                                    "This message has been deleted"
-                                  )
-                                ) : contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id) ? (
-                                  "You deleted this message"
-                                ) : (
-                                  <>
-                                    {`${contact.lastMessage.senderUsername}: `}
-                                    {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ? (
-                                      <>
-                                        <i className="bi bi-file-earmark"></i>&nbsp;
-                                        {contact.lastMessage.content || 'document'}
-                                      </>
-                                    ) : contact.lastMessage.fileType ? (
-                                      <>
-                                        {contact.lastMessage.fileType === 'image' && (
-                                          <>
-                                            <i className="bi bi-image"></i>&nbsp;
-                                            {contact.lastMessage.content || 'image'}
-                                          </>
-                                        )}
-                                        {contact.lastMessage.fileType === 'video' && (
-                                          <>
-                                            <i className="bi bi-camera-video"></i>&nbsp;
-                                            {contact.lastMessage.content || 'video'}
-                                          </>
-                                        )}
-                                        {contact.lastMessage.fileType === 'audio' && (
-                                          <>
-                                            <i className="bi bi-mic-fill"></i>
-                                            <span> {contact.lastMessage.recordingDuration}</span>
-                                          </>
-                                        )}
-                                        {contact.lastMessage.fileType === 'raw' && (
-                                          <>
-                                            <i className="bi bi-file-earmark"></i>&nbsp;
-                                            {contact.lastMessage.content || 'document'}
-                                          </>
-                                        )}
-                                      </>
-                                    ) : (
-                                      <> {contact.lastMessage.content} </>
-                                    )}
-                                  </>
-                                )
-                              ) : (
-                                "No messages yet"
-                              )
-                            ) : (
-                              "No messages yet"
-                            )}
-                          </div>
-                        </div>
-                        <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
-                          {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
-                        </div>
-                      </>
-                    ) : (
-                      contact.users
-                        .filter((user) => user._id !== currentUser._id)
-                        .map((user) => (
-                          <React.Fragment key={user._id}>
-                            <img
-                              src={user.profilePicture}
-                              alt={user.username}
-                              className="profile-image"
-                            />
-                            <div className="user-info">
-                              <div className="username-container">
-                                <span className="username">
-                                  {user.username}
-                                  {unreadMessagesCount[contact._id] > 0 && (
-                                    <span className="unread-badge">
-                                      {unreadMessagesCount[contact._id]}
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-                              <div className="last-message-preview">
-                                {contact.lastMessage ? (
-                                  contact.lastMessage.deletedForEveryone ? (
-                                    contact.lastMessage.senderUsername === currentUser.username ? (
-                                      "You deleted this message"
-                                    ) : (
-                                      "This message has been deleted"
-                                    )
-                                  ) : contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id) ? (
-                                    "You deleted this message"
-                                  ) : (
-                                    <>
-                                      {`${contact.lastMessage.senderUsername}: `}
-                                      {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ? (
-                                        <>
-                                          <i className="bi bi-file-earmark"></i>&nbsp;
-                                          {contact.lastMessage.content || 'document'}
-                                        </>
-                                      ) : contact.lastMessage.fileType ? (
-                                        <>
-                                          {contact.lastMessage.fileType === 'image' && (
-                                            <>
-                                              <i className="bi bi-image"></i>&nbsp;
-                                              {contact.lastMessage.content || 'image'}
-                                            </>
-                                          )}
-                                          {contact.lastMessage.fileType === 'video' && (
-                                            <>
-                                              <i className="bi bi-camera-video"></i>&nbsp;
-                                              {contact.lastMessage.content || 'video'}
-                                            </>
-                                          )}
-                                          {contact.lastMessage.fileType === 'audio' && (
-                                            <>
-                                              <i className="bi bi-mic-fill"></i>
-                                              <span> {contact.lastMessage.recordingDuration}</span>
-                                            </>
-                                          )}
-                                          {contact.lastMessage.fileType === 'raw' && (
-                                            <>
-                                              <i className="bi bi-file-earmark"></i>&nbsp;
-                                              {contact.lastMessage.content || 'document'}
-                                            </>
-                                          )}
-                                        </>
-                                      ) : (
-                                        <> {contact.lastMessage.content} </>
-                                      )}
-                                    </>
-                                  )
-                                ) : (
-                                  "No messages yet"
-                                )}
-                              </div>
-                            </div>
-                            <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
-                              {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
-                            </div>
-                            <span className={`status-indicator ${onlineUsers.includes(user._id) ? 'connect' : 'disconnect'}`}></span>
-                          </React.Fragment>
-                        ))
-                    )}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFavorite(contact._id);
-                      }}
-                      className="favorite-btn"
-                    >
-                      <i className={`bi ${contact.favoriteBy?.includes(currentUser._id) ? 'bi-heart-fill' : 'bi-heart'}`}></i>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteChat(contact._id);
-                      }}
-                      className="delete-chat-button"
-                    >
-                      <i className="bi bi-trash"></i>
-                    </button>
-                  </div>
+                    contact={contact}
+                    selectedChat={selectedChat}
+                    currentUser={currentUser}
+                    unreadMessagesCount={unreadMessagesCount}
+                    onlineUsers={onlineUsers}
+                    handleContactClick={handleContactClick}
+                    toggleFavorite={toggleFavorite}
+                    deleteChat={deleteChat}
+                    formatLastMessageTime={formatLastMessageTime}
+                    regexPattern={regexPattern}
+                  />
                 )
                 )
               )) :
@@ -1568,168 +774,19 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
                   </span>
                 </div>) :
                 (sortedContacts.filter(contact => contact.isGroupChat).map(contact => (
-                  <div
+                  <ChatListItem
                     key={contact._id}
-                    onClick={() => handleContactClick(contact)}
-                    className={`chat-list-item ${selectedChat && selectedChat._id === contact._id ? 'active' : ''}`}
-                  >
-                    <img
-                      src={contact.groupPicture}
-                      alt={contact.chatName}
-                      className="profile-image"
-                    />
-                    <div className="user-info">
-                      <div className="username-container">
-                        <span className="username">
-                          {contact.isGroupChat
-                            ? contact.chatName && contact.chatName.length > 20
-                              ? `${contact.chatName.substring(0, 20)}...`
-                              : contact.chatName || 'Unnamed Group'
-                            : contact.chatName
-                              ? contact.chatName.replace(regexPattern, '').length > 20
-                                ? `${contact.chatName.replace(regexPattern, '').substring(0, 20)}...`
-                                : contact.chatName.replace(regexPattern, '')
-                              : 'Chat'}
-                          {unreadMessagesCount[contact._id] > 0 && (
-                            <span className="unread-badge">
-                              {unreadMessagesCount[contact._id]}
-                            </span>
-                          )}
-                        </span>
-
-                      </div>
-                      <div className="last-message-preview">
-                        {contact.isGroupChat ?
-                          contact.lastMessage
-                            ? contact.lastMessage.systemMessage && (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                              contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp)
-                              ? contact.lastMessage.content
-                              : (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp)
-                                ? contact.lastMessage.deletedForEveryone
-                                  ? contact.lastMessage.senderUsername === currentUser.username
-                                    ? "You deleted this message"
-                                    : "This message has been deleted"
-                                  :
-                                  contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
-                                    ? "You deleted this message"
-                                    :
-                                    <>
-                                      {`${contact.lastMessage.senderUsername}: `}
-                                      {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                        (<>
-                                          <i className="bi bi-file-earmark"></i>&nbsp;
-                                          {contact.lastMessage.content || 'document'}
-                                        </>)
-                                        : contact.lastMessage.fileType ? (
-                                          <>
-                                            {contact.lastMessage.fileType === 'image' && (
-                                              <>
-                                                <i className="bi bi-image"></i>&nbsp;
-                                                {contact.lastMessage.content || 'image'}
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'video' && (
-                                              <>
-                                                <i className="bi bi-camera-video"></i>&nbsp;
-                                                {contact.lastMessage.content || 'video'}
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'audio' && (
-                                              <>
-                                                <i className="bi bi-mic-fill"></i>
-                                                <span> {contact.lastMessage.recordingDuration}</span>
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'raw' && (
-                                              <>
-                                                <i className="bi bi-file-earmark"></i>&nbsp;
-                                                {contact.lastMessage.content || 'document'}
-                                              </>
-                                            )}
-                                          </>
-                                        ) : (
-                                          <> {contact.lastMessage.content} </>
-                                        )}
-                                    </>
-                                : "No messages yet"
-                            : "No messages yet" :
-
-                          contact.lastMessage ?
-                            contact.lastMessage.deletedForEveryone ?
-                              contact.lastMessage.senderUsername === currentUser.username ?
-                                "You deleted this message"
-                                :
-                                "This message has been deleted"
-                              :
-                              contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id)
-                                ? "You deleted this message"
-                                :
-                                <>
-                                  {`${contact.lastMessage.senderUsername}: `}
-                                  {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ?
-                                    (<>
-                                      <i className="bi bi-file-earmark"></i>&nbsp;
-                                      {contact.lastMessage.content || 'document'}
-                                    </>)
-                                    : contact.lastMessage.fileType ? (
-                                      <>
-                                        {contact.lastMessage.fileType === 'image' && (
-                                          <>
-                                            <i className="bi bi-image"></i>&nbsp;
-                                            {contact.lastMessage.content || 'image'}
-                                          </>
-                                        )}
-                                        {contact.lastMessage.fileType === 'video' && (
-                                          <>
-                                            <i className="bi bi-camera-video"></i>&nbsp;
-                                            {contact.lastMessage.content || 'video'}
-                                          </>
-                                        )}
-                                        {contact.lastMessage.fileType === 'audio' && (
-                                          <>
-                                            <i className="bi bi-mic-fill"></i>
-                                            <span> {contact.lastMessage.recordingDuration}</span>
-                                          </>
-                                        )}
-                                        {contact.lastMessage.fileType === 'raw' && (
-                                          <>
-                                            <i className="bi bi-file-earmark"></i>&nbsp;
-                                            {contact.lastMessage.content || 'document'}
-                                          </>
-                                        )}
-                                      </>
-                                    ) : (
-                                      <> {contact.lastMessage.content} </>
-                                    )}
-                                </>
-                            :
-                            "No messages yet"
-                        }
-                      </div>
-                    </div>
-                    <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
-                      {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFavorite(contact._id);
-                      }}
-                      className="favorite-btn"
-                    >
-                      <i className={`bi ${contact.favoriteBy?.includes(currentUser._id) ? 'bi-heart-fill' : 'bi-heart'}`}></i>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteChat(contact._id);
-                      }}
-                      className="delete-chat-button"
-                    >
-                      <i className="bi bi-trash"></i>
-                    </button>
-                  </div>
+                    contact={contact}
+                    selectedChat={selectedChat}
+                    currentUser={currentUser}
+                    unreadMessagesCount={unreadMessagesCount}
+                    onlineUsers={onlineUsers}
+                    handleContactClick={handleContactClick}
+                    toggleFavorite={toggleFavorite}
+                    deleteChat={deleteChat}
+                    formatLastMessageTime={formatLastMessageTime}
+                    regexPattern={regexPattern}
+                  />
                 )))
             ) :
               (showingUnreadOnly && !showingGroupsOnly && !showingFavoritesOnly ? (
@@ -1744,397 +801,35 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
                     </span>
                   </div>) :
                   (sortedContacts.filter(contact => unreadMessagesCount[contact._id] > 0).map((contact) => (
-                    <div
+                    <ChatListItem
                       key={contact._id}
-                      onClick={() => handleContactClick(contact)}
-                      className={`chat-list-item ${selectedChat && selectedChat._id === contact._id ? 'active' : ''}`}
-                    >
-                      {contact.isGroupChat ? (
-                        <>
-                          <img
-                            src={contact.groupPicture}
-                            alt='groupPicture'
-                            className="profile-image"
-                          />
-                          <div className="user-info">
-                            <div className="username-container">
-                              <span className="username">
-                                {contact.chatName && contact.chatName.length > 20
-                                  ? `${contact.chatName.substring(0, 20)}...`
-                                  : contact.chatName || 'Unnamed Group'}
-                                {unreadMessagesCount[contact._id] > 0 && (
-                                  <span className="unread-badge">
-                                    {unreadMessagesCount[contact._id]}
-                                  </span>
-                                )}
-                              </span>
-                            </div>
-                            <div className="last-message-preview">
-                              {contact.lastMessage ? (
-                                contact.lastMessage.systemMessage && (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                  contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp) ? (
-                                  contact.lastMessage.content
-                                ) : (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                  contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp) ? (
-                                  contact.lastMessage.deletedForEveryone ? (
-                                    contact.lastMessage.senderUsername === currentUser.username ? (
-                                      "You deleted this message"
-                                    ) : (
-                                      "This message has been deleted"
-                                    )
-                                  ) : contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id) ? (
-                                    "You deleted this message"
-                                  ) : (
-                                    <>
-                                      {`${contact.lastMessage.senderUsername}: `}
-                                      {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ? (
-                                        <>
-                                          <i className="bi bi-file-earmark"></i>&nbsp;
-                                          {contact.lastMessage.content || 'document'}
-                                        </>
-                                      ) : contact.lastMessage.fileType ? (
-                                        <>
-                                          {contact.lastMessage.fileType === 'image' && (
-                                            <>
-                                              <i className="bi bi-image"></i>&nbsp;
-                                              {contact.lastMessage.content || 'image'}
-                                            </>
-                                          )}
-                                          {contact.lastMessage.fileType === 'video' && (
-                                            <>
-                                              <i className="bi bi-camera-video"></i>&nbsp;
-                                              {contact.lastMessage.content || 'video'}
-                                            </>
-                                          )}
-                                          {contact.lastMessage.fileType === 'audio' && (
-                                            <>
-                                              <i className="bi bi-mic-fill"></i>
-                                              <span> {contact.lastMessage.recordingDuration}</span>
-                                            </>
-                                          )}
-                                          {contact.lastMessage.fileType === 'raw' && (
-                                            <>
-                                              <i className="bi bi-file-earmark"></i>&nbsp;
-                                              {contact.lastMessage.content || 'document'}
-                                            </>
-                                          )}
-                                        </>
-                                      ) : (
-                                        <> {contact.lastMessage.content} </>
-                                      )}
-                                    </>
-                                  )
-                                ) : (
-                                  "No messages yet"
-                                )
-                              ) : (
-                                "No messages yet"
-                              )}
-                            </div>
-                          </div>
-                          <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
-                            {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
-                          </div>
-                        </>
-                      ) : (
-                        contact.users
-                          .filter((user) => user._id !== currentUser._id)
-                          .map((user) => (
-                            <React.Fragment key={user._id}>
-                              <img
-                                src={user.profilePicture}
-                                alt={user.username}
-                                className="profile-image"
-                              />
-                              <div className="user-info">
-                                <div className="username-container">
-                                  <span className="username">
-                                    {user.username}
-                                    {unreadMessagesCount[contact._id] > 0 && (
-                                      <span className="unread-badge">
-                                        {unreadMessagesCount[contact._id]}
-                                      </span>
-                                    )}
-                                  </span>
-                                </div>
-                                <div className="last-message-preview">
-                                  {contact.lastMessage ? (
-                                    contact.lastMessage.deletedForEveryone ? (
-                                      contact.lastMessage.senderUsername === currentUser.username ? (
-                                        "You deleted this message"
-                                      ) : (
-                                        "This message has been deleted"
-                                      )
-                                    ) : contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id) ? (
-                                      "You deleted this message"
-                                    ) : (
-                                      <>
-                                        {`${contact.lastMessage.senderUsername}: `}
-                                        {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ? (
-                                          <>
-                                            <i className="bi bi-file-earmark"></i>&nbsp;
-                                            {contact.lastMessage.content || 'document'}
-                                          </>
-                                        ) : contact.lastMessage.fileType ? (
-                                          <>
-                                            {contact.lastMessage.fileType === 'image' && (
-                                              <>
-                                                <i className="bi bi-image"></i>&nbsp;
-                                                {contact.lastMessage.content || 'image'}
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'video' && (
-                                              <>
-                                                <i className="bi bi-camera-video"></i>&nbsp;
-                                                {contact.lastMessage.content || 'video'}
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'audio' && (
-                                              <>
-                                                <i className="bi bi-mic-fill"></i>
-                                                <span> {contact.lastMessage.recordingDuration}</span>
-                                              </>
-                                            )}
-                                            {contact.lastMessage.fileType === 'raw' && (
-                                              <>
-                                                <i className="bi bi-file-earmark"></i>&nbsp;
-                                                {contact.lastMessage.content || 'document'}
-                                              </>
-                                            )}
-                                          </>
-                                        ) : (
-                                          <> {contact.lastMessage.content} </>
-                                        )}
-                                      </>
-                                    )
-                                  ) : (
-                                    "No messages yet"
-                                  )}
-                                </div>
-                              </div>
-                              <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
-                                {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
-                              </div>
-                              <span className={`status-indicator ${onlineUsers.includes(user._id) ? 'connect' : 'disconnect'}`}></span>
-                            </React.Fragment>
-                          ))
-                      )}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleFavorite(contact._id);
-                        }}
-                        className="favorite-btn"
-                      >
-                        <i className={`bi ${contact.favoriteBy?.includes(currentUser._id) ? 'bi-heart-fill' : 'bi-heart'}`}></i>
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteChat(contact._id);
-                        }}
-                        className="delete-chat-button"
-                      >
-                        <i className="bi bi-trash"></i>
-                      </button>
-                    </div>
+                      contact={contact}
+                      selectedChat={selectedChat}
+                      currentUser={currentUser}
+                      unreadMessagesCount={unreadMessagesCount}
+                      onlineUsers={onlineUsers}
+                      handleContactClick={handleContactClick}
+                      toggleFavorite={toggleFavorite}
+                      deleteChat={deleteChat}
+                      formatLastMessageTime={formatLastMessageTime}
+                      regexPattern={regexPattern}
+                    />
                   )))
               ) :
                 (sortedContacts.map((contact) => (
-                  <div
+                  <ChatListItem
                     key={contact._id}
-                    onClick={() => handleContactClick(contact)}
-                    className={`chat-list-item ${selectedChat && selectedChat._id === contact._id ? 'active' : ''}`}
-                  >
-                    {contact.isGroupChat ? (
-                      <>
-                        <img
-                          src={contact.groupPicture}
-                          alt='groupPicture'
-                          className="profile-image"
-                        />
-                        <div className="user-info">
-                          <div className="username-container">
-                            <span className="username">
-                              {contact.chatName && contact.chatName.length > 20
-                                ? `${contact.chatName.substring(0, 20)}...`
-                                : contact.chatName || 'Unnamed Group'}
-                              {unreadMessagesCount[contact._id] > 0 && (
-                                <span className="unread-badge">
-                                  {unreadMessagesCount[contact._id]}
-                                </span>
-                              )}
-                            </span>
-                          </div>
-                          <div className="last-message-preview">
-                            {contact.lastMessage ? (
-                              contact.lastMessage.systemMessage && (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp) ? (
-                                contact.lastMessage.content
-                              ) : (!contact.deleteHistoryTimestamp || !contact.deleteHistoryTimestamp[currentUser._id] ||
-                                contact.deleteHistoryTimestamp[currentUser._id] < contact.lastMessage.timestamp) ? (
-                                contact.lastMessage.deletedForEveryone ? (
-                                  contact.lastMessage.senderUsername === currentUser.username ? (
-                                    "You deleted this message"
-                                  ) : (
-                                    "This message has been deleted"
-                                  )
-                                ) : contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id) ? (
-                                  "You deleted this message"
-                                ) : (
-                                  <>
-                                    {`${contact.lastMessage.senderUsername}: `}
-                                    {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ? (
-                                      <>
-                                        <i className="bi bi-file-earmark"></i>&nbsp;
-                                        {contact.lastMessage.content || 'document'}
-                                      </>
-                                    ) : contact.lastMessage.fileType ? (
-                                      <>
-                                        {contact.lastMessage.fileType === 'image' && (
-                                          <>
-                                            <i className="bi bi-image"></i>&nbsp;
-                                            {contact.lastMessage.content || 'image'}
-                                          </>
-                                        )}
-                                        {contact.lastMessage.fileType === 'video' && (
-                                          <>
-                                            <i className="bi bi-camera-video"></i>&nbsp;
-                                            {contact.lastMessage.content || 'video'}
-                                          </>
-                                        )}
-                                        {contact.lastMessage.fileType === 'audio' && (
-                                          <>
-                                            <i className="bi bi-mic-fill"></i>
-                                            <span> {contact.lastMessage.recordingDuration}</span>
-                                          </>
-                                        )}
-                                        {contact.lastMessage.fileType === 'raw' && (
-                                          <>
-                                            <i className="bi bi-file-earmark"></i>&nbsp;
-                                            {contact.lastMessage.content || 'document'}
-                                          </>
-                                        )}
-                                      </>
-                                    ) : (
-                                      <> {contact.lastMessage.content} </>
-                                    )}
-                                  </>
-                                )
-                              ) : (
-                                "No messages yet"
-                              )
-                            ) : (
-                              "No messages yet"
-                            )}
-                          </div>
-                        </div>
-                        <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
-                          {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
-                        </div>
-                      </>
-                    ) : (
-                      contact.users
-                        .filter((user) => user._id !== currentUser._id)
-                        .map((user) => (
-                          <React.Fragment key={user._id}>
-                            <img
-                              src={user.profilePicture}
-                              alt={user.username}
-                              className="profile-image"
-                            />
-                            <div className="user-info">
-                              <div className="username-container">
-                                <span className="username">
-                                  {user.username}
-                                  {unreadMessagesCount[contact._id] > 0 && (
-                                    <span className="unread-badge">
-                                      {unreadMessagesCount[contact._id]}
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-                              <div className="last-message-preview">
-                                {contact.lastMessage ? (
-                                  contact.lastMessage.deletedForEveryone ? (
-                                    contact.lastMessage.senderUsername === currentUser.username ? (
-                                      "You deleted this message"
-                                    ) : (
-                                      "This message has been deleted"
-                                    )
-                                  ) : contact.lastMessage.deletedForUsers && contact.lastMessage.deletedForUsers.includes(currentUser._id) ? (
-                                    "You deleted this message"
-                                  ) : (
-                                    <>
-                                      {`${contact.lastMessage.senderUsername}: `}
-                                      {contact.lastMessage.fileUrl && contact.lastMessage.fileUrl.endsWith('.pdf') ? (
-                                        <>
-                                          <i className="bi bi-file-earmark"></i>&nbsp;
-                                          {contact.lastMessage.content || 'document'}
-                                        </>
-                                      ) : contact.lastMessage.fileType ? (
-                                        <>
-                                          {contact.lastMessage.fileType === 'image' && (
-                                            <>
-                                              <i className="bi bi-image"></i>&nbsp;
-                                              {contact.lastMessage.content || 'image'}
-                                            </>
-                                          )}
-                                          {contact.lastMessage.fileType === 'video' && (
-                                            <>
-                                              <i className="bi bi-camera-video"></i>&nbsp;
-                                              {contact.lastMessage.content || 'video'}
-                                            </>
-                                          )}
-                                          {contact.lastMessage.fileType === 'audio' && (
-                                            <>
-                                              <i className="bi bi-mic-fill"></i>
-                                              <span> {contact.lastMessage.recordingDuration}</span>
-                                            </>
-                                          )}
-                                          {contact.lastMessage.fileType === 'raw' && (
-                                            <>
-                                              <i className="bi bi-file-earmark"></i>&nbsp;
-                                              {contact.lastMessage.content || 'document'}
-                                            </>
-                                          )}
-                                        </>
-                                      ) : (
-                                        <> {contact.lastMessage.content} </>
-                                      )}
-                                    </>
-                                  )
-                                ) : (
-                                  "No messages yet"
-                                )}
-                              </div>
-                            </div>
-                            <div className={`${unreadMessagesCount[contact._id] > 0 ? 'notification' : 'last-message-time'}`}>
-                              {contact.lastMessage && formatLastMessageTime(contact.lastMessage.timestamp)}
-                            </div>
-                            <span className={`status-indicator ${onlineUsers.includes(user._id) ? 'connect' : 'disconnect'}`}></span>
-                          </React.Fragment>
-                        ))
-                    )}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFavorite(contact._id);
-                      }}
-                      className="favorite-btn"
-                    >
-                      <i className={`bi ${contact.favoriteBy?.includes(currentUser._id) ? 'bi-heart-fill' : 'bi-heart'}`}></i>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteChat(contact._id);
-                      }}
-                      className="delete-chat-button"
-                    >
-                      <i className="bi bi-trash"></i>
-                    </button>
-                  </div>
+                    contact={contact}
+                    selectedChat={selectedChat}
+                    currentUser={currentUser}
+                    unreadMessagesCount={unreadMessagesCount}
+                    onlineUsers={onlineUsers}
+                    handleContactClick={handleContactClick}
+                    toggleFavorite={toggleFavorite}
+                    deleteChat={deleteChat}
+                    formatLastMessageTime={formatLastMessageTime}
+                    regexPattern={regexPattern}
+                  />
                 )))
               )) : (
           <p className="no-contacts">You have no contacts</p>
