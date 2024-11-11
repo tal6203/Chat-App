@@ -116,6 +116,12 @@
   .create-group-btn:hover {
     background-color: #075E54; /* Darker shade of green for hover */
   }
+  
+  .button-container{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
 
   .unread-filter-btn {
     background-color: #25D366; /* Blue to stand out */
@@ -126,7 +132,7 @@
     cursor: pointer;
     transition: background-color 0.3s, box-shadow 0.3s;
     border-radius: 20px;
-    font-size: 16px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -140,6 +146,29 @@
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
+.favorite-filter-btn:hover {
+  background-color: #075E54; /* Slightly darker blue on hover */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.favorite-filter-btn{
+  background-color: #25D366; /* Blue to stand out */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  border-radius: 20px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  width: auto;
+}
+
 .all-filter-btn {
   background-color: #25D366; /* Blue to stand out */
   color: white;
@@ -149,7 +178,7 @@
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   border-radius: 20px;
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -172,7 +201,7 @@
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   border-radius: 20px;
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -195,6 +224,24 @@
   line-height: 1.5;
 }
 
+.active-favorite-filter-btn {
+  background-color: #075E54;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  border-radius: 20px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  width: auto;
+}
+
 .active-unread-filter-btn {
   background-color: #075E54;
   color: white;
@@ -204,7 +251,7 @@
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   border-radius: 20px;
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -222,7 +269,7 @@
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   border-radius: 20px;
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -240,7 +287,7 @@
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   border-radius: 20px;
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -454,6 +501,20 @@
     transition: transform 0.3s ease;
   }
 
+  .favorite-btn {
+    margin-left: 15px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px; 
+    transition: transform 0.3s ease, color 0.3s ease;
+    color:  #d9534f;
+  }
+
+  .favorite-btn i {
+    font-size: 20px;
+  }
+
   .delete-chat-button {
     position: absolute;
     right: 7px; /* Consistent right positioning */
@@ -509,6 +570,11 @@
         font-size: 14px;
       }
 
+      .active-favorite-filter-btn {
+        padding: 8px 16px; 
+        font-size: 14px;
+      }
+
       .active-all-filter-btn{
         padding: 8px 16px; 
         font-size: 14px;
@@ -518,6 +584,11 @@
         padding: 8px 16px; /* Adjust padding for smaller screens */
         font-size: 14px;   /* Smaller font size on mobile */
     }
+
+    .favorite-filter-btn {
+      padding: 8px 16px; /* Adjust padding for smaller screens */
+      font-size: 14px;   /* Smaller font size on mobile */
+  }
 
     .view-all-chats-btn {
       font-size: 14px; /* Reduce font size slightly on mobile */
@@ -529,8 +600,17 @@
       }
 
       .delete-chat-button {
-        right: 100px; /* Increased space from the right in smaller screens for better accessibility */
+        right: 125px; /* Increased space from the right in smaller screens for better accessibility */
       }
+
+      .favorite-btn{
+        position: absolute;
+        top: 50%;
+        right: 90px;
+        transform: translateY(-50%); /* Center vertically */
+      }
+
+      
 
 
       .close-button {
@@ -545,8 +625,8 @@
   
   @media (min-height: 791px) {
     .chat-list{
-      max-height: 518px;
-      min-height: 518px;
+      max-height: 457px;
+      min-height: 450px;
     }
     }
   
@@ -597,6 +677,15 @@
 
   .dark-mode .unread-filter-btn {
     background-color: #333;
+  }
+
+  .dark-mode .favorite-filter-btn {
+    background-color: #333;
+  }
+
+  .dark-mode .active-favorite-filter-btn {
+    background-color: #333;
+    color: #25d366;
   }
 
   .dark-mode .all-filter-btn{
