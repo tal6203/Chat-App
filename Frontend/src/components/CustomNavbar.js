@@ -151,7 +151,9 @@ const CustomNavbar = () => {
             </div>
           </div>
           <div className="username-section">
-            <span className="username-nav">{currentUser.username}</span>
+            <span className="username-nav">{currentUser.username.length > 20 ? (
+              `${currentUser.username.substring(0, 15)}..`
+            ) : (currentUser.username)}</span>
           </div>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" onClick={handleNavbarToggle}>
