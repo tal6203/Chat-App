@@ -18,13 +18,16 @@ router.put('/renameGroup', authMiddleware.authenticate, chatController.updateGro
 //Update the Group Picture
 router.put('/updateGroupPicture', authMiddleware.authenticate, chatController.updateGroupPicture);
 
+//Toggle favorite status of a chat
+router.put("/toggleFavorite/:chatId", authMiddleware.authenticate, chatController.toggleFavorite);
+
 //Deleting Users from the Group
 router.delete('/group/delete-users', authMiddleware.authenticate, chatController.deleteUsersFromGroup);
 
 //Adding Users from the Group
 router.put('/group/add-users', authMiddleware.authenticate, chatController.addUsersToGroup);
 
-
+//Shared chat groups between two users
 router.get('/group/shared-chat-groups', authMiddleware.authenticate, chatController.getSharedChatGroups);
 
 // Route to reset unread count
