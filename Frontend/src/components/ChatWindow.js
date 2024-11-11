@@ -410,13 +410,7 @@ const ChatWindow = ({ selectedChat, messages, setMessages, socket, currentUser, 
                 </Modal>
             )}
 
-            {modalReadBy && (
-                <ModalReadBy
-                    selectedMessage={selectedMessage}
-                    show={modalReadBy}
-                    setModalReadBy={setModalReadBy}
-                />
-            )}
+  
         </div>
 
     );
