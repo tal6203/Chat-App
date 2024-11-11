@@ -16,7 +16,9 @@ function ModalReadBy({ show, setModalReadBy, selectedMessage }) {
                 {selectedMessage && selectedMessage.readBy.map(read => (
                     <div key={read._id} className="reader-info">
                         <img src={read.readerId.profilePicture} alt={read.readerId.username} />
-                        <div className="username-readBy">{read.readerId.username}</div>
+                        <div className="username-readBy">{read.readerId.username.length > 20 ? (
+                            `${read.readerId.username.substring(0, 15)}..`
+                        ) : (read.readerId.username)}</div>
                         <div className="read-time">
                             {new Date(read.readAt).toLocaleDateString([], { hour: '2-digit', minute: '2-digit' })}
                         </div>
