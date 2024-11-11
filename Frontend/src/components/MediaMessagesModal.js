@@ -40,7 +40,7 @@ function MediaMessagesModal({ show, onHide, chatId, socket }) {
             });
 
             const newMessages = response.data.messages;
-            if (totalMessagesMedia === 0) {
+            if (totalMessagesMedia === 0 && !lastMediaMessageId) {
                 setTotalMessagesMedia(response.data.totalMessages);
             }
 
