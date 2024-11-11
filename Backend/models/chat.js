@@ -23,7 +23,8 @@ const chatSchema = new mongoose.Schema({
   deleteHistoryTimestamp: {
     type: Map,
     of: Date
-  }
+  },
+  favoriteBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 const Chat = mongoose.model('Chat', chatSchema);
