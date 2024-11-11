@@ -834,7 +834,7 @@ const ChatList = ({ selectedChat, setSelectedChat, setMessages, messages, resetU
               )) : (
           <p className="no-contacts">You have no contacts</p>
         )}
-      </div >
+      </div>
     </>
   );
 };
