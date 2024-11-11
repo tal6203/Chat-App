@@ -454,6 +454,8 @@ const messageController = {
         return res.status(404).json({ error: 'Chat not found' });
       }
 
+      const userDeletedTimestamp = chat.deleteHistoryTimestamp.get(userId.toString());
+
       // Build query for media messages only
       const messageQuery = {
         chatId: chatId,
@@ -462,18 +464,17 @@ const messageController = {
         deletedForUsers: { $ne: userId }
       };
 
+      if (userDeletedTimestamp) {
+        messageQuery.timestamp = { $gt: userDeletedTimestamp };
+      }
+
       if (lastMessageId) {
         // Fetch messages older than the last message ID
         messageQuery._id = { $lt: lastMessageId };
       }
 
       // Get the total count of media messages for pagination info
-      const totalMessages = await Message.countDocuments({
-        chatId: chatId,
-        fileUrl: { $ne: null },
-        deletedForEveryone: { $ne: true },
-        deletedForUsers: { $ne: userId }
-      });
+      const totalMessages = await Message.countDocuments(messageQuery);
 
       // Fetch messages, sort by ID descending, and limit results
       const mediaMessages = await Message.find(messageQuery)
