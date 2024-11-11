@@ -474,7 +474,10 @@ const messageController = {
       }
 
       // Get the total count of media messages for pagination info
-      const totalMessages = await Message.countDocuments(messageQuery);
+      let totalMessages;
+      if (!lastMessageId) {
+        totalMessages = await Message.countDocuments(messageQuery);
+      }
 
       // Fetch messages, sort by ID descending, and limit results
       const mediaMessages = await Message.find(messageQuery)
@@ -484,7 +487,7 @@ const messageController = {
 
       res.status(200).json({
         messages: mediaMessages.reverse(),
-        totalMessages  // Include total message count in the response
+        totalMessages: totalMessages || null  // Only include total message count if calculated
       });
     } catch (error) {
       console.error('Error fetching media messages:', error);
