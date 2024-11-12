@@ -179,7 +179,7 @@ function MediaMessagesModal({ show, onHide, chatId, socket }) {
                 </div>
             </Modal.Body>
             <Modal.Footer className="modal-footer-media-message">
-                <span>Total Media Messages : {totalMessagesMedia}</span>
+                <span>Total Media Messages : {totalMessagesMedia ? totalMessagesMedia : 0}</span>
             </Modal.Footer>
         </Modal>
     );
